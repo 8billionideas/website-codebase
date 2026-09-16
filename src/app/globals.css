@@ -3,13 +3,17 @@
 :root {
   /* Brand palette — approved design plan, do not add/change hex values here.
      Usage rules (see contrast check):
-     - brand (violet) is safe as text, a link color, or white-on-fill.
-
-     - accent (green) is FILL-ONLY:
+     - accent (green) is the primary/CTA color — used for buttons and other
+       filled elements. It is FILL-ONLY:
          1. Never use accent as standalone text or link color (accent-on-paper
             and accent-on-surface both fail WCAG AA, ~1.8-1.9:1).
          2. Any solid accent fill must pair with ink text — never white.
-            White-on-accent fails WCAG AA (~2:1); ink-on-accent passes (~8:1). */
+            White-on-accent fails WCAG AA (~2:1); ink-on-accent passes (~8:1).
+
+     - brand (violet) is a secondary/supporting accent — used sparingly for
+       small highlights (eyebrows, active nav state, decorative borders,
+       icons), not for primary buttons or headlines. It remains safe as
+       text, a link color, or white-on-fill. */
   --color-brand: #6840fc;
   --color-accent: #21d199;
   --color-ink: #16213d;

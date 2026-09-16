@@ -3,7 +3,8 @@ import { ReactNode } from "react";
 
 const VARIANT_STYLES = {
   // For use on paper/surface (light) backgrounds.
-  light: "border-ink/20 text-ink hover:border-brand hover:text-brand",
+  // hover text stays ink, not accent — accent fails WCAG AA as standalone text.
+  light: "border-ink/20 text-ink hover:border-accent",
   // For use on the ink (dark) background, e.g. the final CTA band.
   dark: "border-white/30 text-white hover:border-white/60",
 };

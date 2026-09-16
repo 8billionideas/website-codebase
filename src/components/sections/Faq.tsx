@@ -10,8 +10,8 @@ export default function Faq() {
         <h2 className="text-h2 text-ink">{headline}</h2>
 
         <ul className="mt-10 divide-y divide-ink/10 border-t border-ink/10">
-          {items.map((item) => (
-            <li key={item.question} className="py-6">
+          {items.map((item, index) => (
+            <li key={index} className="py-6">
               <h3 className="text-h3 text-ink">{item.question}</h3>
               <p className="mt-2 max-w-2xl text-body-lg text-muted">
                 {item.answer}

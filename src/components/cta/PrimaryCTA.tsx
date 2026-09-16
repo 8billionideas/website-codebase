@@ -13,7 +13,7 @@ export default function PrimaryCTA({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-body font-medium text-white transition-opacity hover:opacity-90 ${className ?? ""}`}
+      className={`inline-flex items-center justify-center rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-opacity hover:opacity-90 ${className ?? ""}`}
     >
       {children}
     </Link>

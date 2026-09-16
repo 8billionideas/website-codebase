@@ -12,9 +12,10 @@ export interface FaqItem {
 
 export const home = {
   hero: {
-    headline: "Deliver real-world skills alongside academic excellence",
+    headline:
+      "We help schools teach the skills exams don't — from FS1 to Year 13, ending in a real GCSE qualification.",
     subhead:
-      "8billionideas partners with schools globally to deliver the award-winning Critical Curriculum — a proven framework that builds the skills students need to succeed in a changing world.",
+      "A week-to-week curriculum that fits around your existing timetable, teaching the skills the core curriculum doesn't — no overhaul, no new systems to learn, just lessons ready to run, building toward a real GCSE qualification.",
     primaryCta: { label: "Explore the GCSE", href: "/gcse" } as CtaLink,
     secondaryCta: {
       label: "Explore the Critical Curriculum",
