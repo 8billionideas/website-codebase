@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand palette — approved design plan, do not add/change hex values here.
+     Usage rules (see contrast check):
+     - brand (violet) is safe as text, a link color, or white-on-fill.
+
+     - accent (green) is FILL-ONLY:
+         1. Never use accent as standalone text or link color (accent-on-paper
+            and accent-on-surface both fail WCAG AA, ~1.8-1.9:1).
+         2. Any solid accent fill must pair with ink text — never white.
+            White-on-accent fails WCAG AA (~2:1); ink-on-accent passes (~8:1). */
+  --color-brand: #6840fc;
+  --color-accent: #21d199;
+  --color-ink: #16213d;
+  --color-paper: #fffdfa;
+  --color-surface: #f4f2ef;
+  --color-muted: #6b7280;
+}
+
+@theme inline {
+  --color-brand: var(--color-brand);
+  --color-accent: var(--color-accent);
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-muted: var(--color-muted);
+
+  --font-sans: var(--font-poppins);
+
+  /* Type scale */
+  --text-display: 3rem;
+  --text-display--line-height: 1.1;
+  --text-display--font-weight: 600;
+
+  --text-h2: 2.25rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.25;
+  --text-h3--font-weight: 600;
+
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.5;
+
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--font-weight: 500;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), sans-serif;
+}
