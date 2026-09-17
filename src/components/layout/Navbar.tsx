@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "@/content/nav";
@@ -9,9 +10,16 @@ export default function Navbar() {
 
   return (
     <header className="border-b border-surface bg-paper">
-      <nav className="mx-auto flex max-w-[75rem] items-center justify-between px-6 py-4 md:px-12">
-        <Link href="/" className="text-h3 text-ink">
-          8billionideas
+      <nav className="mx-auto flex max-w-[75rem] items-center justify-between px-6 py-5 md:px-12">
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/logo.png"
+            alt="8billionideas"
+            width={154}
+            height={52}
+            priority
+            className="h-9 w-auto md:h-[52px]"
+          />
         </Link>
         <ul className="flex items-center gap-6 text-body">
           {navItems.map((item) => {

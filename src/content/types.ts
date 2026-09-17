@@ -12,3 +12,9 @@ export interface NamedItem {
   name: string;
   description: string;
 }
+
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
