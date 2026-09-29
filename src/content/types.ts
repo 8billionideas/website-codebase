@@ -15,6 +15,8 @@ export interface NamedItem {
 
 export interface Testimonial {
   quote: string;
+  excerpt?: string;
   name: string;
   role: string;
+  sourceUrl?: string | null;
 }

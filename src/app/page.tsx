@@ -1,10 +1,10 @@
 import Hero from "@/components/sections/Hero";
 import CriticalCurriculum from "@/components/sections/CriticalCurriculum";
-import Gcse from "@/components/sections/Gcse";
-import StageFlow from "@/components/sections/StageFlow";
+import QualificationSection from "@/components/sections/QualificationSection";
+import CurriculumFitSection from "@/components/home/CurriculumFitSection";
+import SkillsFramework from "@/components/sections/SkillsFramework";
+import Progression from "@/components/sections/Progression";
 import ChampionSchools from "@/components/sections/ChampionSchools";
-import CrossCurricularAlignment from "@/components/sections/CrossCurricularAlignment";
-import Proof from "@/components/sections/Proof";
 import Faq from "@/components/sections/Faq";
 import FinalCta from "@/components/sections/FinalCta";
 
@@ -13,11 +13,11 @@ export default function Home() {
     <>
       <Hero />
       <CriticalCurriculum />
-      <Gcse />
-      <StageFlow />
+      <SkillsFramework />
+      <Progression />
+      <QualificationSection />
+      <CurriculumFitSection />
       <ChampionSchools />
-      <CrossCurricularAlignment />
-      <Proof />
       <Faq />
       <FinalCta />
     </>

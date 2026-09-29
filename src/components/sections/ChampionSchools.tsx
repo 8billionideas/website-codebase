@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import Container from "@/components/layout/Container";
-import { schools } from "@/content/schools";
+import { schools as defaultSchools, SchoolLogo } from "@/content/schools";
 import { home } from "@/content/home";
 
 function logoFileExists(imagePath: string) {
@@ -9,15 +9,20 @@ function logoFileExists(imagePath: string) {
   return fs.existsSync(path.join(process.cwd(), "public", "logos", filename));
 }
 
-export default function ChampionSchools() {
-  const { headline } = home.championSchools;
+export default function ChampionSchools({
+  schools = defaultSchools,
+  headline = home.championSchools.headline,
+}: {
+  schools?: SchoolLogo[];
+  headline?: string;
+}) {
   // Rendered twice back-to-back so the -50% keyframe loops seamlessly.
   const track = [...schools, ...schools];
 
   return (
-    <section className="py-12 md:py-16">
+    <section className="pt-6 pb-12 md:pt-8 md:pb-16">
       <Container>
-        <p className="text-center text-caption font-medium uppercase tracking-wide text-muted">
+        <p className="text-center text-caption uppercase tracking-wide text-muted">
           {headline}
         </p>
       </Container>
@@ -39,8 +44,8 @@ export default function ChampionSchools() {
                     className="max-h-12 w-auto object-contain"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center rounded-md border border-ink/10 bg-surface text-caption font-medium text-muted">
-                    {String(school.number).padStart(2, "0")}
+                  <div className="flex h-full w-full items-center justify-center rounded-md border border-ink/10 bg-surface p-1.5 text-center text-[9px] font-normal leading-tight text-muted">
+                    {school.name ?? String(school.number).padStart(2, "0")}
                   </div>
                 )}
               </div>

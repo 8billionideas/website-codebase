@@ -25,7 +25,7 @@ export default function Proof() {
           ))}
         </ul>
 
-        <p className="mt-16 text-caption font-medium uppercase tracking-wide text-muted">
+        <p className="mt-16 text-caption uppercase tracking-wide text-muted">
           {testimonialsLabel}
         </p>
         <ul className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -35,7 +35,7 @@ export default function Proof() {
               className="rounded-lg bg-paper p-6 text-body-lg text-ink"
             >
               <p>&ldquo;{testimonial.quote}&rdquo;</p>
-              <p className="mt-4 text-caption font-medium text-ink">
+              <p className="mt-4 text-caption text-ink">
                 {testimonial.name}
               </p>
               <p className="text-caption text-muted">{testimonial.role}</p>

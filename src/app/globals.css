@@ -30,21 +30,23 @@
   --color-surface: var(--color-surface);
   --color-muted: var(--color-muted);
 
-  --font-sans: var(--font-poppins);
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
 
-  /* Type scale */
+  /* Type scale — weights follow the site-wide light system: headings 300,
+     body/labels 400. See globals.css `@layer base` below for the h1-h6
+     fallback that covers headings not built from these tokens. */
   --text-display: 3rem;
   --text-display--line-height: 1.1;
-  --text-display--font-weight: 600;
+  --text-display--font-weight: 300;
 
   --text-h2: 2.25rem;
   --text-h2--line-height: 1.15;
   --text-h2--letter-spacing: -0.02em;
-  --text-h2--font-weight: 600;
+  --text-h2--font-weight: 300;
 
   --text-h3: 1.5rem;
   --text-h3--line-height: 1.25;
-  --text-h3--font-weight: 600;
+  --text-h3--font-weight: 300;
 
   --text-body-lg: 1.0625rem;
   --text-body-lg--line-height: 1.5;
@@ -54,13 +56,28 @@
 
   --text-caption: 0.8125rem;
   --text-caption--line-height: 1.4;
-  --text-caption--font-weight: 500;
+  --text-caption--font-weight: 400;
 }
 
 body {
   background: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-sans);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 300;
+  }
+
+  body {
+    font-weight: 400;
+  }
 }
 
 @keyframes fade-in-up {

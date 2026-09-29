@@ -1,0 +1,514 @@
+"use client";
+
+import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BookOpen,
+  GraduationCap,
+  Minus,
+  Plus,
+  SlidersHorizontal,
+  Users,
+  FileText,
+  MessageSquare,
+  type LucideIcon,
+} from "lucide-react";
+import {
+  PILLAR_OPTIONS,
+  PRICE_PER_PILLAR_PER_YEAR_GROUP,
+  YEAR_GROUPS_MIN,
+  YEAR_GROUPS_MAX,
+  DEFAULT_YEAR_GROUPS,
+  DEFAULT_PILLARS,
+  STUDENTS_MIN,
+  STUDENTS_MAX,
+  DEFAULT_STUDENTS,
+  GCSE_TIERS,
+  calculateCurriculumPrice,
+  getGcseTier,
+  formatMoney,
+} from "@/lib/pricing";
+
+const DEMO_HREF = "#book-a-demo";
+
+type Product = "cc" | "gcse" | "both";
+type StepKind = "yearGroups" | "pillars" | "students" | "feeBand";
+
+const PRODUCT_OPTIONS: { value: Product; label: string; icons: LucideIcon[] }[] = [
+  { value: "cc", label: "Critical Curriculum", icons: [BookOpen] },
+  { value: "gcse", label: "International GCSE", icons: [GraduationCap] },
+  { value: "both", label: "Both", icons: [BookOpen, GraduationCap] },
+];
+
+const VALUE_POINTS: { icon: LucideIcon; title: string; description: string }[] = [
+  {
+    icon: SlidersHorizontal,
+    title: "Flexible",
+    description: "Choose the year groups and pillars that fit your school.",
+  },
+  {
+    icon: Users,
+    title: "Built for your context",
+    description: "Start with a few year groups or roll it out more widely.",
+  },
+  {
+    icon: FileText,
+    title: "Clear and transparent",
+    description: "Simple pricing based on what you choose. No hidden costs.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Talk to our team",
+    description: "Need a different configuration? Get in touch for a tailored quote.",
+  },
+];
+
+function FadeOnChange({ value, className }: { value: string; className?: string }) {
+  const [visible, setVisible] = useState(true);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setVisible(false);
+    const frame = requestAnimationFrame(() => setVisible(true));
+    return () => cancelAnimationFrame(frame);
+  }, [value]);
+
+  return (
+    <span
+      className={`inline-block transition-opacity duration-300 motion-reduce:transition-none ${
+        visible ? "opacity-100" : "opacity-0"
+      } ${className ?? ""}`}
+    >
+      {value}
+    </span>
+  );
+}
+
+function StepShell({
+  number,
+  title,
+  helper,
+  children,
+}: {
+  number: number;
+  title: string;
+  helper: string;
+  children: ReactNode;
+}) {
+  return (
+    <div>
+      <div className="flex items-start gap-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink text-[15px] font-normal text-white">
+          {number}
+        </span>
+        <div>
+          <p className="text-[20px] font-normal text-ink">{title}</p>
+          <p className="mt-1 text-[15px] text-ink/65">{helper}</p>
+        </div>
+      </div>
+      <div className="mt-5 pl-14">{children}</div>
+    </div>
+  );
+}
+
+function PillStepper({
+  value,
+  min,
+  max,
+  label,
+  onChange,
+  editable = false,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  label: string;
+  onChange: (next: number) => void;
+  editable?: boolean;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+
+  function decrement() {
+    onChange(Math.max(min, value - 1));
+  }
+  function increment() {
+    onChange(Math.min(max, value + 1));
+  }
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
+      e.preventDefault();
+      increment();
+    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      decrement();
+    }
+  }
+
+  const displayValue = draft ?? value.toLocaleString("en-GB");
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="inline-flex items-center divide-x divide-ink/15 rounded-full border border-ink/15">
+        <button
+          type="button"
+          onClick={decrement}
+          disabled={value <= min}
+          aria-label={`Decrease ${label}`}
+          className="flex h-12 w-12 shrink-0 items-center justify-center text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <Minus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        </button>
+        {editable ? (
+          <input
+            type="text"
+            inputMode="numeric"
+            aria-label={`Number of ${label}`}
+            value={displayValue}
+            onFocus={() => setDraft(String(value))}
+            onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ""))}
+            onBlur={() => {
+              const parsed = draft === null || draft === "" ? value : parseInt(draft, 10);
+              const clamped = Math.min(max, Math.max(min, Number.isNaN(parsed) ? value : parsed));
+              onChange(clamped);
+              setDraft(null);
+            }}
+            onKeyDown={handleKeyDown}
+            className="h-12 w-24 border-0 bg-transparent text-center text-[28px] font-light text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          />
+        ) : (
+          <div
+            role="spinbutton"
+            tabIndex={0}
+            aria-label={`Number of ${label}`}
+            aria-valuemin={min}
+            aria-valuemax={max}
+            aria-valuenow={value}
+            onKeyDown={handleKeyDown}
+            className="flex h-12 w-16 items-center justify-center text-[28px] font-light text-ink outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          >
+            {value}
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={increment}
+          disabled={value >= max}
+          aria-label={`Increase ${label}`}
+          className="flex h-12 w-12 shrink-0 items-center justify-center text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <Plus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        </button>
+      </div>
+      <span className="text-[15px] text-ink/60">{label}</span>
+    </div>
+  );
+}
+
+export default function PricingCalculator() {
+  const [product, setProduct] = useState<Product>("both");
+  const [yearGroups, setYearGroups] = useState(DEFAULT_YEAR_GROUPS);
+  const [pillars, setPillars] = useState<number>(DEFAULT_PILLARS);
+  const [students, setStudents] = useState(DEFAULT_STUDENTS);
+  const radioGroupName = useId();
+
+  const showCC = product === "cc" || product === "both";
+  const showGcse = product === "gcse" || product === "both";
+
+  const { perYearGroup, total: ccTotal } = calculateCurriculumPrice(pillars, yearGroups);
+  const gcseTier = getGcseTier(students);
+  const gcseTotal = gcseTier.fee * students;
+
+  const steps: StepKind[] =
+    product === "cc"
+      ? ["yearGroups", "pillars"]
+      : product === "gcse"
+        ? ["students", "feeBand"]
+        : ["yearGroups", "pillars", "students", "feeBand"];
+
+  function renderStep(kind: StepKind, number: number) {
+    switch (kind) {
+      case "yearGroups":
+        return (
+          <StepShell
+            key={kind}
+            number={number}
+            title="How many year groups?"
+            helper="Select the number of year groups you want to use 8billionideas with."
+          >
+            <PillStepper
+              value={yearGroups}
+              min={YEAR_GROUPS_MIN}
+              max={YEAR_GROUPS_MAX}
+              label={yearGroups === 1 ? "year group" : "year groups"}
+              onChange={setYearGroups}
+            />
+          </StepShell>
+        );
+      case "pillars":
+        return (
+          <StepShell
+            key={kind}
+            number={number}
+            title="How many pillars per year group?"
+            helper="Choose how many pillars you'd like to deliver in each selected year group."
+          >
+            <fieldset>
+              <legend className="sr-only">How many pillars per year group?</legend>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {PILLAR_OPTIONS.map((option) => (
+                  <label
+                    key={option}
+                    className="relative flex cursor-pointer flex-col rounded-xl border border-ink/12 bg-white p-5 text-ink transition-colors has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2"
+                  >
+                    <input
+                      type="radio"
+                      name={`pillars-${radioGroupName}`}
+                      value={option}
+                      checked={pillars === option}
+                      onChange={() => setPillars(option)}
+                      className="sr-only"
+                    />
+                    <span className="text-[18px]">
+                      {option} pillar{option === 1 ? "" : "s"}
+                    </span>
+                    <span className="mt-1 text-[14px] opacity-70">
+                      {formatMoney(option * PRICE_PER_PILLAR_PER_YEAR_GROUP)} per year group
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </StepShell>
+        );
+      case "students":
+        return (
+          <StepShell
+            key={kind}
+            number={number}
+            title="How many students will take the qualification?"
+            helper="Select the number of students you expect to enter for the International GCSE."
+          >
+            <PillStepper
+              value={students}
+              min={STUDENTS_MIN}
+              max={STUDENTS_MAX}
+              label="students"
+              onChange={setStudents}
+              editable
+            />
+          </StepShell>
+        );
+      case "feeBand":
+        return (
+          <StepShell
+            key={kind}
+            number={number}
+            title="Which fee band applies?"
+            helper="The per student fee is based on your total number of students."
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {GCSE_TIERS.map((tier) => {
+                const active = tier.label === gcseTier.label;
+                return (
+                  <button
+                    key={tier.label}
+                    type="button"
+                    onClick={() => setStudents(tier.min)}
+                    aria-current={active ? "true" : undefined}
+                    className={`rounded-xl border p-4 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
+                      active
+                        ? "border-ink bg-ink text-white"
+                        : "border-ink/12 bg-white text-ink hover:border-ink/25"
+                    }`}
+                  >
+                    <span className="block text-[16px]">{tier.label}</span>
+                    <span className={`mt-1 block text-[13px] ${active ? "opacity-75" : "opacity-60"}`}>
+                      {formatMoney(tier.fee)} / student
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </StepShell>
+        );
+    }
+  }
+
+  return (
+    <div className="mt-12">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[58fr_42fr] lg:items-start lg:gap-12">
+        {/* LEFT — controls */}
+        <div>
+          <p className="text-[12px] uppercase tracking-[0.25em] text-accent">
+            THE CRITICAL CURRICULUM
+          </p>
+          <h2 className="mt-4 text-[34px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+            Create a programme
+            <br />
+            that fits your school.
+          </h2>
+          <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-ink/70">
+            Choose what you&apos;d like to include and see an indicative price, calculated
+            live. Pricing is simple, transparent and scales with what you need.
+          </p>
+
+          {/* Product selector */}
+          <fieldset className="mt-10">
+            <legend className="text-[12px] uppercase tracking-[0.2em] text-ink/60">
+              WHAT ARE YOU LOOKING TO BRING INTO YOUR SCHOOL?
+            </legend>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {PRODUCT_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className="relative flex cursor-pointer items-center justify-center gap-2 rounded-[10px] border border-ink/12 bg-white px-5 py-4 text-[16px] text-ink transition-colors has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2"
+                >
+                  <input
+                    type="radio"
+                    name={`product-${radioGroupName}`}
+                    value={option.value}
+                    checked={product === option.value}
+                    onChange={() => setProduct(option.value)}
+                    className="sr-only"
+                  />
+                  <span className="flex items-center gap-1">
+                    {option.icons.map((Icon, i) => (
+                      <Icon key={i} className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+                    ))}
+                  </span>
+                  {option.label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          {/* Steps */}
+          <div className="mt-10">
+            {steps.map((kind, i) => (
+              <Fragment key={kind}>
+                {i > 0 && <div className="my-8 h-px w-full bg-ink/10" aria-hidden="true" />}
+                {renderStep(kind, i + 1)}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — price panel */}
+        <div className="rounded-2xl bg-ink p-9 text-white lg:sticky lg:top-24">
+          <p className="text-[12px] uppercase tracking-[0.25em] text-white/70">
+            YOUR INDICATIVE ANNUAL PRICING
+          </p>
+
+          {showCC && (
+            <div className="mt-6">
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
+                  <BookOpen className="h-6 w-6 text-white" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-[20px] font-normal text-white">Critical Curriculum</p>
+                  <p className="text-[12px] uppercase tracking-[0.1em] text-white/60">
+                    (School-funded)
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-6" aria-live="polite">
+                <FadeOnChange
+                  value={formatMoney(ccTotal)}
+                  className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
+                />
+                <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
+              </p>
+
+              <div className="mt-6 space-y-4 text-[16px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80">Year groups</span>
+                  <span>{yearGroups}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80">Pillars per year group</span>
+                  <span>{pillars}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80">Price per year group</span>
+                  <span>{formatMoney(perYearGroup)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showCC && showGcse && (
+            <div className="my-8 h-px w-full bg-white/15" aria-hidden="true" />
+          )}
+
+          {showGcse && (
+            <div className={showCC ? "" : "mt-6"}>
+              <div className="flex items-center gap-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
+                  <GraduationCap className="h-6 w-6 text-white" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-[20px] font-normal text-white">International GCSE</p>
+                  <p className="text-[12px] uppercase tracking-[0.1em] text-white/60">
+                    (Typically parent-funded)
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-6" aria-live="polite">
+                <FadeOnChange
+                  value={formatMoney(gcseTotal)}
+                  className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
+                />
+                <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
+              </p>
+
+              <div className="mt-6 space-y-4 text-[16px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80">Students</span>
+                  <span>{students.toLocaleString("en-GB")}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-white/80">Price per student</span>
+                  <span>{formatMoney(gcseTier.fee)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <p className="mt-8 text-[15px] leading-[1.6] text-white/80">
+            These are indicative prices based on your current selections. Get in touch for a
+            tailored quote based on your school&apos;s specific needs.
+          </p>
+
+          <Link
+            href={DEMO_HREF}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-white px-6 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-accent hover:text-ink"
+          >
+            Request a tailored quote
+            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Four value points */}
+      <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-ink/12">
+        {VALUE_POINTS.map((point) => (
+          <div key={point.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/[0.12]">
+              <point.icon className="h-5 w-5 text-accent" strokeWidth={1.5} aria-hidden="true" />
+            </span>
+            <p className="mt-4 text-[17px] font-normal text-ink">{point.title}</p>
+            <p className="mt-1 text-[14px] text-ink/65">{point.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

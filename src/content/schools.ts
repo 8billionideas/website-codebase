@@ -4,6 +4,9 @@ export interface SchoolLogo {
   image: string;
   // Fill in once the real logo is added (e.g. "Springfield Academy logo").
   alt: string;
+  // Real school name — shown as fallback text instead of the numbered
+  // placeholder when no logo file exists yet at `image`.
+  name?: string;
 }
 
 export const schools: SchoolLogo[] = [
@@ -28,4 +31,55 @@ export const schools: SchoolLogo[] = [
   { number: 19, image: "/logos/school-19.png", alt: "" },
   { number: 20, image: "/logos/school-20.png", alt: "" },
   { number: 21, image: "/logos/school-21.png", alt: "" },
+];
+
+export const gcseSchools: SchoolLogo[] = [
+  {
+    number: 1,
+    image: "/logos/gcse-school-01.png",
+    alt: "North Gate British School logo",
+    name: "North Gate British School",
+  },
+  {
+    number: 2,
+    image: "/logos/gcse-school-02.png",
+    alt: "Queen's Qatar logo",
+    name: "Queen's Qatar",
+  },
+  {
+    number: 3,
+    image: "/logos/gcse-school-03.png",
+    alt: "Noya British School logo",
+    name: "Noya British School",
+  },
+  {
+    number: 4,
+    image: "/logos/gcse-school-04.png",
+    alt: "Sotogrande International School logo",
+    name: "Sotogrande International School",
+  },
+  {
+    number: 5,
+    image: "/logos/gcse-school-05.png",
+    alt: "Dubai British School Mira logo",
+    name: "Dubai British School Mira",
+  },
+  {
+    number: 6,
+    image: "/logos/gcse-school-06.png",
+    alt: "King's College School Panama logo",
+    name: "King's College School Panama",
+  },
+  {
+    number: 7,
+    image: "/logos/gcse-school-07.png",
+    alt: "King's College School Cascais logo",
+    name: "King's College School Cascais",
+  },
+  {
+    number: 8,
+    image: "/logos/gcse-school-08.png",
+    alt: "BCG The British College of Gava logo",
+    name: "BCG The British College of Gava",
+  },
 ];
