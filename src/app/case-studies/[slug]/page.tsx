@@ -4,8 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Award } from "lucide-react";
 import Container from "@/components/layout/Container";
-import { Eyebrow, SectionH2 } from "@/components/home/SectionHeading";
-import RequestDemoButton from "@/components/shared/RequestDemoButton";
+import { Eyebrow } from "@/components/home/SectionHeading";
 import CaseStudyCard from "@/components/shared/CaseStudyCard";
 import { caseStudies, getCaseStudyBySlug, type CaseStudy } from "@/lib/case-studies";
 
@@ -166,18 +165,6 @@ export default async function CaseStudyPage({
             )}
           </div>
         )}
-
-        {/* Closing CTA */}
-        <div className="mt-16 text-center md:mt-24">
-          <SectionH2 variant="light" className="mx-auto">
-            Want to do this
-            <br />
-            <em className="text-accent">at your school?</em>
-          </SectionH2>
-          <div className="mt-8 flex justify-center">
-            <RequestDemoButton className="sm:w-auto" />
-          </div>
-        </div>
 
         {/* More case studies */}
         {moreCaseStudies.length > 0 && (

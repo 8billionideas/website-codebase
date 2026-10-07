@@ -66,9 +66,9 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 
 ## Site structure
 
-Nav: Our Curriculum (link) · Qualifications (link to /gcse) · Case Studies · Pricing · About (dropdown: About Us, Resources, Community, Blog) · Login · Request a demo.
+Nav: Our Curriculum (link) · Qualifications (link to /gcse) · Case Studies · Pricing · About (dropdown: About Us, Resources, Contact us) · Login · Request a demo.
 
-Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /community, /blog. /implementation redirects to /curriculum-mapping. Old NOC and EPQ routes redirect to /gcse.
+Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /contact. /community and /blog redirect to /about. /implementation redirects to /curriculum-mapping. Old NOC and EPQ routes redirect to /gcse.
 
 ## Key facts and data
 

@@ -1,30 +1,14 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
-import {
-  ArrowRight,
-  BookOpen,
-  TrendingUp,
-  LayoutGrid,
-  Rocket,
-  Users,
-  Lightbulb,
-  Briefcase,
-  Coins,
-  Heart,
-  Activity,
-  Leaf,
-  Cpu,
-  type LucideIcon,
-} from "lucide-react";
+import { Fragment } from "react";
+import { ArrowRight, BookOpen, TrendingUp, LayoutGrid, type LucideIcon } from "lucide-react";
 import Container from "@/components/layout/Container";
-import { Eyebrow, SectionH2, SectionBody } from "@/components/home/SectionHeading";
-import PartnerCards from "@/components/shared/PartnerCards";
-import ChampionSchools from "@/components/sections/ChampionSchools";
-import Faq from "@/components/sections/Faq";
+import { Eyebrow } from "@/components/home/SectionHeading";
 import { gcse } from "@/content/gcse";
-import { gcseSchools } from "@/content/schools";
-import { homepageFaqs, type HomepageFaq } from "@/lib/homepage-faqs";
+import { PILLARS, type PillarName } from "@/content/curriculumMapping";
+import PillarQuestionSelector from "@/components/gcse/PillarQuestionSelector";
+import WhyPartner from "@/components/gcse/WhyPartner";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
   title: "OxfordAQA International GCSE Global Skills Projects | 8billionideas",
@@ -32,38 +16,12 @@ export const metadata: Metadata = {
     "A real qualification built on real projects, developed with OxfordAQA and delivered by 8billionideas.",
 };
 
-const DEMO_HREF = "#book-a-demo";
-
-// Same icon choices as the homepage pillar carousel (PillarCarousel.tsx),
-// duplicated locally since that component is client-only.
-const PILLAR_ICONS: Record<string, LucideIcon> = {
-  Entrepreneurship: Lightbulb,
-  Careers: Briefcase,
-  "Financial Literacy": Coins,
-  Wellbeing: Heart,
-  "Health & Performance": Activity,
-  Leadership: Users,
-  Sustainability: Leaf,
-  Technology: Cpu,
-};
 
 const PLATFORM_ICONS: Record<string, LucideIcon> = {
   BookOpen,
   TrendingUp,
   LayoutGrid,
 };
-
-const WHY_US_ICONS: Record<string, LucideIcon> = {
-  Rocket,
-  BookOpen,
-  Users,
-};
-
-const globalSkillsFaq = homepageFaqs.find(
-  (faq) => faq.question === "Can schools following any curriculum offer the Global Skills GCSE?"
-)!;
-
-const gcseFaqItems: HomepageFaq[] = [...gcse.faq.items, globalSkillsFaq];
 
 function RequestDemoButton({
   className = "",
@@ -75,23 +33,24 @@ function RequestDemoButton({
   const hoverClasses =
     hoverVariant === "light" ? "hover:bg-white hover:text-ink" : "hover:bg-ink hover:text-white";
   return (
-    <Link
-      href={DEMO_HREF}
+    <DemoTrigger
       className={`inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors ${hoverClasses} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:w-auto ${className}`}
     >
       Request a demo
       <ArrowRight className="h-4 w-4" aria-hidden="true" />
-    </Link>
+    </DemoTrigger>
   );
 }
 
 export default function GcsePage() {
-  const { hero, whatItIs, howItWorks, projectThemes, platform, partnership, whyUs, quotesLabel, quotes, recognition, championSchoolsHeadline } =
-    gcse;
+  const { hero, whatItIs, howItWorks, projectThemes, platform } = gcse;
+  const orderedPillars = [...projectThemes.pillars].sort(
+    (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
+  );
 
   return (
     <>
-      {/* 1. Hero */}
+      {/* Hero */}
       <section className="relative flex min-h-[540px] items-center overflow-hidden bg-ink md:min-h-[600px]">
         <Image
           src="/images/gcse-hero.webp"
@@ -154,59 +113,93 @@ export default function GcsePage() {
         </Container>
       </section>
 
-      {/* 2. What it is */}
-      <div className="py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="light">{whatItIs.eyebrow}</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
-            {whatItIs.headingLine1}
-            <br />
-            <em className="text-accent">{whatItIs.headingLine2}</em>
-          </SectionH2>
-          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-            {whatItIs.paragraphs.map((paragraph, i) => (
-              <p key={i} className="text-[18px] leading-[1.6] text-ink/75">
-                {paragraph}
-              </p>
-            ))}
+      {/* 1. How it fits */}
+      <section className="relative isolate overflow-hidden bg-paper xl:flex xl:min-h-[640px] xl:items-center">
+        <Image
+          src={whatItIs.image.src}
+          alt={whatItIs.image.alt}
+          fill
+          loading="lazy"
+          sizes="100vw"
+          className="hidden object-cover object-[right_top] mix-blend-multiply xl:block"
+        />
+        <div
+          className="absolute inset-0 hidden xl:block"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 35%, rgba(255,253,250,0) 55%)",
+          }}
+          aria-hidden="true"
+        />
+        <Container className="relative z-10 w-full py-16 md:py-24">
+          <div className="max-w-[600px] text-left">
+            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{whatItIs.eyebrow}</p>
+            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+              {whatItIs.headingLines.map((line) => (
+                <Fragment key={line}>
+                  {line}
+                  <br />
+                </Fragment>
+              ))}
+              <em className="text-accent">{whatItIs.headingEmphasis}</em>
+            </h2>
+            <div className="mt-8 max-w-[560px] space-y-5">
+              {whatItIs.paragraphs.map((paragraph, i) => (
+                <p key={i} className="text-[18px] leading-[1.6] text-ink/75">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
         </Container>
-      </div>
+        <div className="relative aspect-[4/3] w-full xl:hidden">
+          <Image
+            src={whatItIs.image.src}
+            alt={whatItIs.image.alt}
+            fill
+            loading="lazy"
+            sizes="100vw"
+            className="object-cover object-[right_top] mix-blend-multiply"
+          />
+        </div>
+      </section>
 
-      {/* 3. How it works */}
-      <div className="bg-surface py-16 md:py-24">
+      {/* 2. How it works */}
+      <section className="bg-ink py-16 lg:py-24">
         <Container>
-          <Eyebrow variant="light">{howItWorks.eyebrow}</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
+          <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{howItWorks.eyebrow}</p>
+          <h2 className="mt-4 text-[40px] font-light leading-[1.05] tracking-[-0.01em] text-white md:text-[64px]">
             {howItWorks.headingLine1}
             <br />
             <em className="text-accent">{howItWorks.headingLine2}</em>
-          </SectionH2>
+          </h2>
 
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+          <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
             {howItWorks.cards.map((card) => (
               <div
                 key={card.label}
-                className="rounded-2xl border border-ink/10 bg-paper p-8"
+                className="flex h-full flex-col rounded-2xl bg-paper p-8 shadow-[0_8px_24px_rgba(0,0,0,0.15)] lg:p-12"
               >
-                <p className="text-caption uppercase tracking-[0.2em] text-accent">
+                <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-accent">
                   {card.label}
                 </p>
-                <h3 className="mt-3 text-h3 text-ink">{card.title}</h3>
-                <p className="mt-3 text-body-lg text-muted">{card.line}</p>
-                <p className="mt-4 text-body text-ink/75">
+                <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink lg:text-[36px]">
+                  {card.title}
+                </h3>
+                <p className="mt-4 max-w-[560px] text-[18px] leading-[1.6] text-ink/70">{card.line}</p>
+                <p className="mt-4 text-[16px] leading-[1.6] text-ink/75">
                   {card.taughtHours} taught learning hours + {card.guidedHours} guided
                   learning hours
                 </p>
 
-                <p className="mt-6 text-caption uppercase tracking-wide text-muted">
-                  Key outcomes
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-2">
+                <div className="my-6 h-px w-full bg-ink/10" aria-hidden="true" />
+
+                <p className="text-[12px] uppercase tracking-[0.2em] text-ink/55">Key outcomes</p>
+                <ul className="mt-4 flex list-none flex-wrap gap-[10px] p-0">
                   {card.outcomes.map((outcome) => (
                     <li
                       key={outcome}
-                      className="rounded-full bg-accent/10 px-3 py-1 text-caption font-normal text-ink"
+                      className="rounded-full bg-accent/[0.12] px-5 py-2 text-[15px] font-normal text-ink"
                     >
                       {outcome}
                     </li>
@@ -216,198 +209,185 @@ export default function GcsePage() {
             ))}
           </div>
         </Container>
-      </div>
+      </section>
 
-      {/* 4. Project themes */}
-      <div className="py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="light">{projectThemes.eyebrow}</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
-            {projectThemes.headingLine1}
-            <br />
-            <em className="text-accent">{projectThemes.headingLine2}</em>
-          </SectionH2>
-
-          <h3 className="mt-10 text-h3 text-ink">{projectThemes.firstYearHeading}</h3>
-          <p className="mt-2 text-body-lg text-muted">{projectThemes.firstYearLine}</p>
-
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {projectThemes.pillars.map((pillar) => {
-              const Icon = PILLAR_ICONS[pillar.name];
-              return (
-                <div key={pillar.name} className="rounded-2xl border border-ink/10 p-6">
-                  <Icon className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden="true" />
-                  <p className="mt-4 text-body-lg text-ink">{pillar.name}</p>
-                  <p className="mt-2 text-body italic text-muted">
-                    &ldquo;{pillar.question}&rdquo;
-                  </p>
-                </div>
-              );
-            })}
+      {/* 3. Project themes */}
+      <section className="relative isolate bg-paper">
+        {/* Height = text + 56px, or the brief image (capped at 430px) if that's taller, so the
+            pills sit just below the text without running into the document. */}
+        <div className="relative xl:min-h-[min(28.97vw,430px)]">
+          {/* Contained in a right-hand box (not cover) so the brief stays clear of the text;
+              the mask fades its cut edges into the paper. */}
+          <div
+            className="absolute top-0 right-0 hidden aspect-[2057/764] max-h-[430px] w-[78%] mix-blend-multiply xl:block"
+            style={{
+              maskImage:
+                "linear-gradient(to bottom, black 62%, transparent 100%), linear-gradient(to right, transparent 0%, black 14%)",
+              maskComposite: "intersect",
+              WebkitMaskComposite: "source-in",
+            }}
+          >
+            <Image
+              src={projectThemes.image.src}
+              alt={projectThemes.image.alt}
+              fill
+              loading="lazy"
+              sizes="78vw"
+              className="object-cover object-[right_top]"
+            />
           </div>
-
-          <div className="mt-8 rounded-2xl bg-accent/[0.08] p-8 md:p-12">
-            <h3 className="text-h3 text-ink">{projectThemes.secondYearHeading}</h3>
-            <p className="mt-3 max-w-2xl text-body-lg text-muted">
-              {projectThemes.secondYearLine}
-            </p>
-          </div>
-        </Container>
-      </div>
-
-      {/* 5. The platform */}
-      <div className="bg-surface py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="light">{platform.eyebrow}</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
-            {platform.headingLine1}
-            <br />
-            <em className="text-accent">{platform.headingLine2}</em>
-          </SectionH2>
-          <SectionBody variant="light" className="mt-5">
-            {platform.body}
-          </SectionBody>
-
-          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {platform.points.map((point) => {
-              const Icon = PLATFORM_ICONS[point.icon];
-              return (
-                <div key={point.title} className="flex items-center gap-3">
-                  <Icon
-                    className="h-5 w-5 shrink-0 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <p className="text-body-lg text-ink">{point.title}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {platform.showPlatformVideo && (
-            <div className="mt-10">
-              <Link
-                href={DEMO_HREF}
-                className="inline-flex items-center gap-2 rounded-full border border-accent px-7 py-3 text-body font-medium text-ink transition-colors hover:bg-accent"
-              >
-                See the platform
-              </Link>
-              <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-ink/5" />
+          <div
+            className="absolute inset-0 hidden xl:block"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.8) 35%, rgba(255,253,250,0) 55%)",
+            }}
+            aria-hidden="true"
+          />
+          <Container className="relative z-10 pt-16 md:pt-24 xl:pb-14">
+            <div className="max-w-[640px] text-left">
+              <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{projectThemes.eyebrow}</p>
+              <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+                {projectThemes.headingLine1}
+                <br />
+                <em className="text-accent">{projectThemes.headingLine2}</em>
+              </h2>
+              <p className="mt-5 max-w-[540px] text-[18px] leading-[1.6] text-ink/70">{projectThemes.intro}</p>
             </div>
-          )}
+          </Container>
+          <div className="relative mt-8 aspect-[4/3] w-full mix-blend-multiply md:mt-14 xl:hidden">
+            <Image
+              src={projectThemes.image.src}
+              alt={projectThemes.image.alt}
+              fill
+              loading="lazy"
+              sizes="100vw"
+              className="object-cover object-[right_top]"
+            />
+          </div>
+        </div>
+
+        <Container className="relative z-10 mt-8 md:mt-14 xl:mt-0">
+          <PillarQuestionSelector
+            pillars={orderedPillars}
+            eyebrow={projectThemes.firstYearEyebrow}
+            label={projectThemes.questionLabel}
+          />
         </Container>
-      </div>
 
-      {/* 6. Qualification and delivery */}
-      <div className="bg-ink py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="dark">{partnership.eyebrow}</Eyebrow>
-
-          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-0 md:divide-x md:divide-white/10">
-            <div className="md:pr-12">
-              <p className="text-h3 text-balance font-light text-white">
-                A recognised qualification,{" "}
-                <em className="text-accent">fully supported from start to finish</em>
+        {/* Second year band. Background is the globe image's own mint so there is no seam. */}
+        <div className="relative isolate mt-16 flex items-center overflow-hidden bg-[#F0F5F1] py-16 xl:min-h-[360px] xl:py-0">
+          {/* The source crops the globe flat at its top edge; the mask fades that edge into the mint. */}
+          <div
+            className="absolute inset-0 opacity-30 xl:opacity-100"
+            style={{ maskImage: "linear-gradient(to bottom, transparent 12%, black 45%)" }}
+            aria-hidden="true"
+          >
+            <Image
+              src={projectThemes.globeImage}
+              alt=""
+              aria-hidden="true"
+              fill
+              loading="lazy"
+              sizes="100vw"
+              className="object-cover object-right xl:object-contain xl:object-[right_bottom]"
+            />
+          </div>
+          <Container className="relative z-10 w-full">
+            <div className="max-w-[560px] text-left xl:py-16">
+              <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{projectThemes.secondYear.eyebrow}</p>
+              <h3 className="mt-4 text-[34px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[44px]">
+                {projectThemes.secondYear.title}
+              </h3>
+              <p className="mt-2 text-[22px] font-light italic leading-[1.3] text-[#1A9E74] md:text-[28px]">
+                {projectThemes.secondYear.subtitle}
               </p>
+              <p className="mt-5 text-[18px] leading-[1.6] text-ink/70">{projectThemes.secondYear.line}</p>
             </div>
-            <div className="md:pl-12">
-              <p className="max-w-md text-body-lg text-white/70">
-                OxfordAQA provides the qualification, while we make it easier
-                for schools to deliver through ready-to-teach learning,
-                resources and support.
-              </p>
-            </div>
-          </div>
+          </Container>
+        </div>
+      </section>
 
-          <PartnerCards />
-        </Container>
-      </div>
+      {/* 4. The platform */}
+      {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
+      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
+        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
+            navy edges blend into the band, and the mask softens the lit desk reflection. */}
+        <div
+          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
+          }}
+        >
+          <Image
+            src={platform.image.src}
+            alt={platform.image.alt}
+            fill
+            loading="lazy"
+            sizes="78vw"
+            className="object-contain object-right"
+          />
+        </div>
+        <div
+          className="absolute inset-0 hidden xl:block"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(22,33,61,0.9) 0%, rgba(22,33,61,0.6) 35%, rgba(22,33,61,0) 55%)",
+          }}
+          aria-hidden="true"
+        />
+        <Container className="relative z-10 w-full py-16 md:py-24">
+          <div className="max-w-[620px] text-left">
+            <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{platform.eyebrow}</p>
+            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px]">
+              {platform.headingLine1}
+              <br />
+              <em className="text-accent">{platform.headingLine2}</em>
+            </h2>
+            <p className="mt-5 text-[18px] leading-[1.6] text-white/80">{platform.body}</p>
 
-      {/* 7. Why partner with 8billionideas */}
-      <div className="py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="light">{whyUs.eyebrow}</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
-            {whyUs.headingLine1}
-            <br />
-            <em className="text-accent">{whyUs.headingLine2}</em>
-          </SectionH2>
+            <ul className="mt-10 grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
+              {platform.points.map((point) => {
+                const Icon = PLATFORM_ICONS[point.icon];
+                return (
+                  <li key={point.title} className="flex items-start gap-3">
+                    <Icon
+                      className="h-7 w-7 shrink-0 text-accent"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <span className="text-[16px] leading-[1.5] text-white/90">{point.title}</span>
+                  </li>
+                );
+              })}
+            </ul>
 
-          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {whyUs.points.map((point) => {
-              const Icon = WHY_US_ICONS[point.icon];
-              return (
-                <div key={point.title}>
-                  <Icon className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden="true" />
-                  <p className="mt-4 text-h3 text-ink">{point.title}</p>
-                  <p className="mt-2 text-body-lg text-muted">{point.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </Container>
-      </div>
-
-      {/* 8. Quotes */}
-      <div className="bg-surface py-16 md:py-24">
-        <Container>
-          <Eyebrow variant="light">{quotesLabel}</Eyebrow>
-
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {quotes.map((item) => {
-              const isPlaceholder = item.quote.startsWith("[Paste");
-              return (
-                <div
-                  key={item.name}
-                  className={`rounded-2xl p-8 ${
-                    isPlaceholder
-                      ? "border border-dashed border-ink/20 bg-paper"
-                      : "border border-ink/10 bg-paper"
-                  }`}
+            {platform.showPlatformVideo && (
+              <div className="mt-10">
+                <DemoTrigger
+                  className="inline-flex items-center gap-2 rounded-full border border-white/40 px-7 py-3 text-body font-medium text-white transition-colors hover:border-white hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
                 >
-                  {isPlaceholder ? (
-                    <p className="italic text-muted">Quote to be added.</p>
-                  ) : (
-                    <p className="font-light italic text-ink">&ldquo;{item.quote}&rdquo;</p>
-                  )}
-                  <p className="mt-4 text-caption text-ink">{item.name}</p>
-                  <p className="text-caption text-muted">{item.role}</p>
-                </div>
-              );
-            })}
+                  See the platform
+                </DemoTrigger>
+                <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />
+              </div>
+            )}
           </div>
         </Container>
-      </div>
+        <div className="relative aspect-video w-full xl:hidden">
+          <Image
+            src={platform.image.src}
+            alt={platform.image.alt}
+            fill
+            loading="lazy"
+            sizes="100vw"
+            className="object-cover object-right"
+          />
+        </div>
+      </section>
 
-      {/* 9. Recognition */}
-      <div className="py-12 md:py-16">
-        <Container>
-          <div className="border-t border-b border-ink/10 py-8 text-center">
-            <Eyebrow variant="light">{recognition.eyebrow}</Eyebrow>
-            <p className="mt-3 text-[22px] font-light text-ink">{recognition.line}</p>
-          </div>
-        </Container>
-      </div>
-
-      {/* 10. Champion schools */}
-      <ChampionSchools schools={gcseSchools} headline={championSchoolsHeadline} />
-
-      {/* 11. FAQ */}
-      <Faq headline={gcse.faq.heading} faqs={gcseFaqItems} />
-
-      {/* 12. Closing CTA */}
-      <div className="py-16 md:py-24 text-center">
-        <Container>
-          <SectionH2 variant="light" className="mx-auto">
-            {gcse.closingCta.headingLine1}
-            <br />
-            <em className="text-accent">{gcse.closingCta.headingLine2}</em>
-          </SectionH2>
-          <div className="mt-8 flex justify-center">
-            <RequestDemoButton className="focus-visible:ring-ink sm:w-auto" />
-          </div>
-        </Container>
-      </div>
+      {/* 5. Why partner with us */}
+      <WhyPartner />
     </>
   );
 }

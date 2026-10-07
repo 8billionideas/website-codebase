@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { home } from "@/content/home";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export default function Hero() {
   const { headline, subhead } = home.hero;
@@ -37,13 +37,12 @@ export default function Hero() {
         </h1>
         <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">{subhead}</p>
         <div className="mt-8">
-          <Link
-            href="#book-a-demo"
+          <DemoTrigger
             className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink md:w-auto"
           >
             Request a demo
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          </DemoTrigger>
         </div>
       </Container>
     </section>

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
+import DemoModalProvider from "@/components/demo/DemoModalProvider";
+import BookDemoSection from "@/components/shared/BookDemoSection";
+import HideOnRoutes from "@/components/shared/HideOnRoutes";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -21,8 +24,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} h-full scroll-smooth antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
-        <Navbar />
-        <main className="flex-1">{children}</main>
+        <DemoModalProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          {/* /resources and /contact have their own closing sections instead. */}
+          <HideOnRoutes routes={["/resources", "/contact"]}>
+            <BookDemoSection />
+          </HideOnRoutes>
+        </DemoModalProvider>
       </body>
     </html>
   );

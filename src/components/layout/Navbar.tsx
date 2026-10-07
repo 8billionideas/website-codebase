@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { navItems, type NavItem } from "@/content/nav";
-import { PLATFORM_LOGIN_URL } from "@/lib/config";
-
-const DEMO_HREF = "#book-a-demo";
+import LoginModal from "@/components/layout/LoginModal";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -47,20 +46,22 @@ function navLinkClass(active: boolean) {
 
 function DemoButton({
   className = "",
-  onClick,
+  onBeforeOpen,
+  returnFocusTo,
 }: {
   className?: string;
-  onClick?: () => void;
+  onBeforeOpen?: () => void;
+  returnFocusTo?: () => HTMLElement | null;
 }) {
   return (
-    <Link
-      href={DEMO_HREF}
-      onClick={onClick}
+    <DemoTrigger
+      onBeforeOpen={onBeforeOpen}
+      returnFocusTo={returnFocusTo}
       className={`inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 ${className}`}
     >
       Request a demo
       <ArrowRight className="h-4 w-4" aria-hidden="true" />
-    </Link>
+    </DemoTrigger>
   );
 }
 
@@ -70,6 +71,15 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const desktopNavRef = useRef<HTMLDivElement>(null);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const desktopLoginRef = useRef<HTMLButtonElement>(null);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+  // The mobile Login button unmounts with the menu, so focus returns to the menu toggle.
+  const loginOpenedFrom = useRef<"desktop" | "mobile">("desktop");
+  const loginReturnFocus = useCallback(
+    () => (loginOpenedFrom.current === "mobile" ? menuToggleRef.current : desktopLoginRef.current),
+    []
+  );
 
   // Closes whichever desktop dropdown is open when a click lands outside
   // the desktop nav group entirely.
@@ -168,18 +178,25 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-6 text-body">
-            <Link
-              href={PLATFORM_LOGIN_URL}
+            <button
+              ref={desktopLoginRef}
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => {
+                loginOpenedFrom.current = "desktop";
+                setLoginOpen(true);
+              }}
               className="font-normal text-muted transition-colors hover:text-brand"
             >
               Login
-            </Link>
+            </button>
             <DemoButton />
           </div>
         </div>
 
         {/* Mobile menu toggle — hidden at xl and above. */}
         <button
+          ref={menuToggleRef}
           type="button"
           onClick={() => setMobileOpen((value) => !value)}
           aria-expanded={mobileOpen}
@@ -254,17 +271,25 @@ export default function Navbar() {
           </ul>
 
           <div className="mt-4 flex flex-col gap-4 border-t border-surface pt-4">
-            <Link
-              href={PLATFORM_LOGIN_URL}
-              onClick={closeMobile}
-              className="font-normal text-muted transition-colors hover:text-brand"
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => {
+                closeMobile();
+                loginOpenedFrom.current = "mobile";
+                setLoginOpen(true);
+              }}
+              className="text-left font-normal text-muted transition-colors hover:text-brand"
             >
               Login
-            </Link>
-            <DemoButton className="w-full" onClick={closeMobile} />
+            </button>
+            {/* The mobile menu (and this button) closes first, so focus returns to the menu toggle. */}
+            <DemoButton className="w-full" onBeforeOpen={closeMobile} returnFocusTo={() => menuToggleRef.current} />
           </div>
         </div>
       )}
+
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} returnFocusTo={loginReturnFocus} />
     </header>
   );
 }

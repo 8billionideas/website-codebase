@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       { source: "/noc", destination: "/gcse", permanent: true },
       { source: "/nocn", destination: "/gcse", permanent: true },
       { source: "/epq", destination: "/gcse", permanent: true },
+      // Blog and Community were placeholder pages; retired in favour of /about.
+      { source: "/community", destination: "/about", permanent: true },
+      { source: "/blog", destination: "/about", permanent: true },
       {
         source: "/implementation",
         destination: "/curriculum-mapping",

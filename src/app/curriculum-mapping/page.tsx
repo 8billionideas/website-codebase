@@ -1,6 +1,4 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import CurriculumExplorer from "@/components/curriculum/CurriculumExplorer";
 import CurriculumHero from "@/components/curriculum/CurriculumHero";
@@ -8,8 +6,9 @@ import ImplementationSupportSection from "@/components/curriculum/Implementation
 import LessonPlatformShowcase from "@/components/curriculum/LessonPlatformShowcase";
 import PillarProgrammeExplorer from "@/components/curriculum/PillarProgrammeExplorer";
 import StudentProgressionShowcase from "@/components/curriculum/StudentProgressionShowcase";
-import { Eyebrow, SectionH2 } from "@/components/home/SectionHeading";
+import { Eyebrow } from "@/components/home/SectionHeading";
 import { curriculumMapping } from "@/content/curriculumMapping";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
   title: "Our Curriculum | 8billionideas",
@@ -57,12 +56,11 @@ export default function CurriculumMappingPage() {
 
           <p className="mt-12 max-w-2xl text-body text-muted md:mt-16">
             {footnote.pre}
-            <Link
-              href={footnote.href}
+            <DemoTrigger
               className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
             >
               {footnote.linkLabel}
-            </Link>
+            </DemoTrigger>
             {footnote.post}
           </p>
         </Container>
@@ -76,35 +74,6 @@ export default function CurriculumMappingPage() {
       <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
 
       <ImplementationSupportSection />
-
-      {/* Closing CTA */}
-      <div className="bg-paper py-16 md:py-24">
-        <Container>
-          <div className="text-center">
-            <SectionH2 variant="light" className="mx-auto">
-              Ready to see how it
-              <br />
-              <em className="text-accent">fits your school?</em>
-            </SectionH2>
-
-            <div className="mt-8 flex flex-col items-center gap-6 sm:flex-row sm:justify-center">
-              <Link
-                href="#book-a-demo"
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink sm:w-auto"
-              >
-                Book a call
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/pricing"
-                className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
-              >
-                See pricing →
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </div>
     </>
   );
 }

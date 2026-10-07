@@ -1,3 +1,3 @@
-// Update here when the new platform launches — every Login link reads from
-// this single constant rather than hardcoding the URL.
-export const PLATFORM_LOGIN_URL = "https://app.8billionideas.com";
+// Every Login option reads from these constants rather than hardcoding the URLs.
+export const TEACHER_LOGIN_URL = "https://teacher-8billionideas.nyusoft.in/login";
+export const STUDENT_LOGIN_URL = "https://child-8billionideas.nyusoft.in/login";

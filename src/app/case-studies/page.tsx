@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { Eyebrow, SectionH2 } from "@/components/home/SectionHeading";
 import Container from "@/components/layout/Container";
-import RequestDemoButton from "@/components/shared/RequestDemoButton";
 import CaseStudyTestimonials from "@/components/shared/CaseStudyTestimonials";
 import { getFeaturedCaseStudy, getOtherCaseStudies } from "@/lib/case-studies";
 import { home } from "@/content/home";
@@ -198,20 +197,6 @@ export default function CaseStudiesPage() {
             }
             testimonials={testimonials}
           />
-        </Container>
-      </div>
-
-      {/* Closing CTA */}
-      <div className="py-16 text-center md:py-24">
-        <Container>
-          <SectionH2 variant="light" className="mx-auto">
-            Want results like these
-            <br />
-            <em className="text-accent">at your school?</em>
-          </SectionH2>
-          <div className="mt-8 flex justify-center">
-            <RequestDemoButton className="sm:w-auto" />
-          </div>
         </Container>
       </div>
     </div>

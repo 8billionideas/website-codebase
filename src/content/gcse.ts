@@ -42,14 +42,17 @@ export const gcse = {
   },
 
   whatItIs: {
-    eyebrow: "WHAT IT IS",
-    headingLine1: "A GCSE that sits alongside",
-    headingLine2: "your core subjects",
+    eyebrow: "HOW IT FITS",
+    headingLines: ["A GCSE that sits", "alongside your"],
+    headingEmphasis: "core subjects",
     paragraphs: [
-      "International GCSE Global Skills Projects is a qualification from OxfordAQA, designed to sit alongside core GCSE subjects such as English, maths, sciences and languages.",
-      "Students can start developing global skills from the beginning of secondary school, building towards formal GCSE assessment through two structured, assessed projects.",
-      "As the official delivery partner, 8billionideas provides the lessons, resources, platform and support schools need to deliver it.",
+      "Our International GCSE in Global Skills Projects is designed to work alongside the subjects you already offer. It fits into the timetable schools already run, giving students a structured space to develop real-world skills through project-based learning.",
+      "It complements core classroom learning in subjects like Maths, English, Science and Languages – not instead of them – helping students make connections, apply their knowledge and see the bigger picture.",
     ],
+    image: {
+      src: "/images/gcse/how-it-fits.webp",
+      alt: "A student's desk with Maths, English, Science and Languages books and a timetable showing Global Skills Projects lessons alongside them",
+    },
   },
 
   howItWorks: {
@@ -124,6 +127,22 @@ export const gcse = {
     secondYearHeading: "Second year: a United Nations goal",
     secondYearLine:
       "Group projects work towards one of the United Nations Sustainable Development Goals, applying what students have learned to a shared, real-world challenge.",
+
+    intro:
+      "Students explore meaningful questions through projects that help them apply what they learn to the world around them.",
+    firstYearEyebrow: "FIRST YEAR · INDIVIDUAL PROJECT",
+    questionLabel: "Research question",
+    secondYear: {
+      eyebrow: "SECOND YEAR",
+      title: "Group project",
+      subtitle: "United Nations Sustainable Development Goal",
+      line: "Students work together on a shared, real-world challenge, applying what they have learned to a broader global issue.",
+    },
+    image: {
+      src: "/images/gcse/project-themes.webp",
+      alt: "A Global Skills Project brief for Entrepreneurship lying on a desk, showing its research question and project details",
+    },
+    globeImage: "/images/gcse/sdg-globe.webp",
   },
 
   platform: {
@@ -139,6 +158,10 @@ export const gcse = {
     // Set to true once a real platform video is ready. While false, no
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,
+    image: {
+      src: "/images/gcse/platform.webp",
+      alt: "The 8billionideas platform on a laptop, showing the International GCSE Global Skills Project course and its lessons",
+    },
   },
 
   partnership: {
@@ -154,21 +177,25 @@ export const gcse = {
         icon: "Rocket",
         title: "Implementation",
         description:
-          "A dedicated partnership manager and a one-stop digital platform for delivery and guidance",
+          "A dedicated Partnership Manager and a one-stop digital platform for delivery and guidance.",
       },
       {
         icon: "BookOpen",
         title: "Experience",
         description:
-          "Full access to all our lessons and educational content for students and teachers",
+          "Full access to all our lessons and educational content for students and teachers.",
       },
       {
         icon: "Users",
         title: "Community",
         description:
-          "Mentorship opportunities and a global network of forward-thinking schools",
+          "Mentorship opportunities and a global network of forward-thinking schools.",
       },
     ] as GcseIconTextPoint[],
+    image: {
+      src: "/images/gcse/why-partner.webp",
+      alt: "A partnership manager talking through materials with two teachers around a table",
+    },
   },
 
   quotesLabel: "WHAT OUR PARTNERS SAY",

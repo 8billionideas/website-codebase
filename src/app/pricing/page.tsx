@@ -1,19 +1,9 @@
-import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
-import {
-  ArrowRight,
-  GraduationCap,
-  UserRound,
-  UsersRound,
-  Laptop,
-  FileBadge,
-  Users,
-  Megaphone,
-  type LucideIcon,
-} from "lucide-react";
 import Container from "@/components/layout/Container";
-import { SectionH2 } from "@/components/home/SectionHeading";
 import PricingCalculator from "@/components/pricing/PricingCalculator";
+import WhatsIncluded from "@/components/pricing/WhatsIncluded";
+import Faq from "@/components/sections/Faq";
 import { pricing } from "@/content/pricing";
 
 export const metadata: Metadata = {
@@ -22,82 +12,54 @@ export const metadata: Metadata = {
     "Indicative pricing for the Critical Curriculum and the OxfordAQA International GCSE Global Skills Projects.",
 };
 
-const INCLUDED_ICONS: Record<string, LucideIcon> = {
-  "Partnership Manager": UserRound,
-  "Staff Onboarding": UsersRound,
-  "Teacher Learning Platform": Laptop,
-  "Student Learning Platform": GraduationCap,
-  "Student Certificates": FileBadge,
-  "Community Access": Users,
-  "Marketing Kit": Megaphone,
-};
-
 export default function PricingPage() {
-  const { headline, included, cta } = pricing;
+  const { hero } = pricing;
 
   return (
     <div className="bg-paper">
-      <Container className="py-16 md:py-24">
-        {/* Header */}
-        <div className="h-[3px] w-12 bg-accent" aria-hidden="true" />
-        <h1 className="mt-6 text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-          {headline}
-        </h1>
+      <section className="relative isolate flex min-h-[460px] items-center overflow-hidden bg-paper lg:min-h-[520px]">
+        <Image
+          src={hero.image.src}
+          alt={hero.image.alt}
+          fill
+          preload
+          sizes="100vw"
+          className="object-cover object-[80%_center] mix-blend-multiply lg:object-right"
+        />
+        <div
+          className="absolute inset-0 lg:hidden"
+          style={{ backgroundColor: "rgba(255,253,250,0.85)" }}
+          aria-hidden="true"
+        />
+        <div
+          className="absolute inset-0 hidden lg:block"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 35%, rgba(255,253,250,0) 60%)",
+          }}
+          aria-hidden="true"
+        />
+        <Container className="relative z-10 w-full py-16 md:py-20 lg:py-24">
+          <div className="max-w-[600px] text-left">
+            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{hero.eyebrow}</p>
+            <h1 className="mt-4 text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink text-balance md:text-[56px]">
+              {hero.headlineLead}
+              <br />
+              <em className="text-accent">{hero.headlineEmphasis}</em>
+            </h1>
+            <p className="mt-6 max-w-[560px] text-[18px] leading-[1.6] text-ink/75">{hero.intro}</p>
+          </div>
+        </Container>
+      </section>
 
+      <Container className="pb-16 md:pb-24">
         {/* Combined pricing calculator */}
         <PricingCalculator />
-
-        {/* Row 2 — every school gets */}
-        <div className="mt-5 rounded-[20px] border border-ink/8 bg-white p-8">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_3fr]">
-            <div>
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent/[0.12]">
-                <Users className="h-6 w-6 text-accent" strokeWidth={1.5} aria-hidden="true" />
-              </span>
-              <p className="mt-4 text-[30px] font-light text-ink">{included.heading}</p>
-              <p className="mt-2 text-[15px] text-ink/70">
-                Everything you need to deliver, support and grow the programme — all in one
-                partnership.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {included.items.map((item) => {
-                const Icon = INCLUDED_ICONS[item.name];
-                return (
-                  <div key={item.name} className="flex items-start gap-3">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/[0.12]">
-                      <Icon className="h-5 w-5 text-accent" strokeWidth={1.5} aria-hidden="true" />
-                    </span>
-                    <div>
-                      <p className="text-[15px] font-medium text-ink">{item.name}</p>
-                      <p className="mt-1 text-[14px] text-ink/70">{item.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Closing CTA */}
-        <div className="mt-5 text-center">
-          <SectionH2 variant="light" className="mx-auto">
-            Ready to bring this
-            <br />
-            <em className="text-accent">to your school?</em>
-          </SectionH2>
-          <div className="mt-8 flex justify-center">
-            <Link
-              href={cta.primaryCta.href}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 sm:w-auto"
-            >
-              {cta.primaryCta.label}
-              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
       </Container>
+
+      <WhatsIncluded />
+
+      <Faq includeSchema={false} hideLinksTo="/pricing" tone="paper" />
     </div>
   );
 }

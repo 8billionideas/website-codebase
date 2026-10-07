@@ -29,9 +29,22 @@ function buildStructuredData(faqs: HomepageFaq[]) {
 interface FaqProps {
   headline?: string;
   faqs?: HomepageFaq[];
+  // Only one FAQPage block should exist per page, so secondary placements turn it off.
+  includeSchema?: boolean;
+  // Drops answer links to this route, e.g. "/pricing" when shown on /pricing itself.
+  hideLinksTo?: string;
+  tone?: "surface" | "paper";
 }
 
-export default function Faq({ headline = home.faq.headline, faqs = homepageFaqs }: FaqProps) {
+const TONE_BG = { surface: "bg-surface", paper: "bg-paper" } as const;
+
+export default function Faq({
+  headline = home.faq.headline,
+  faqs = homepageFaqs,
+  includeSchema = true,
+  hideLinksTo,
+  tone = "surface",
+}: FaqProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const splitIndex = Math.ceil(faqs.length / 2);
   const leftColumn = faqs.slice(0, splitIndex).map((faq, i) => ({ faq, index: i }));
@@ -92,7 +105,7 @@ export default function Faq({ headline = home.faq.headline, faqs = homepageFaqs 
               {faq.paragraphs.map((paragraph, pIndex) => (
                 <p key={pIndex}>{paragraph}</p>
               ))}
-              {faq.link && (
+              {faq.link && faq.link.href !== hideLinksTo && (
                 <p>
                   <Link
                     href={faq.link.href}
@@ -110,7 +123,7 @@ export default function Faq({ headline = home.faq.headline, faqs = homepageFaqs 
   }
 
   return (
-    <section className="bg-surface py-16 md:py-24">
+    <section className={`${TONE_BG[tone]} py-16 md:py-24`}>
       <Container>
         <h2 className="text-h2 text-ink">{headline}</h2>
 
@@ -124,10 +137,12 @@ export default function Faq({ headline = home.faq.headline, faqs = homepageFaqs 
         </div>
       </Container>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStructuredData(faqs)) }}
-      />
+      {includeSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStructuredData(faqs)) }}
+        />
+      )}
     </section>
   );
 }

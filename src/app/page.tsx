@@ -6,7 +6,6 @@ import SkillsFramework from "@/components/sections/SkillsFramework";
 import Progression from "@/components/sections/Progression";
 import ChampionSchools from "@/components/sections/ChampionSchools";
 import Faq from "@/components/sections/Faq";
-import FinalCta from "@/components/sections/FinalCta";
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
       <CurriculumFitSection />
       <ChampionSchools />
       <Faq />
-      <FinalCta />
     </>
   );
 }

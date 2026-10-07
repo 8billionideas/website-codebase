@@ -191,9 +191,4 @@ export const home = {
     ] as FaqItem[],
   },
 
-  finalCta: {
-    headline: "Ready to bring the Critical Curriculum to your school?",
-    primaryCta: { label: "Find out more", href: "/find-out-more" } as CtaLink,
-    secondaryCta: { label: "Book a demo", href: "#book-a-demo" } as CtaLink,
-  },
 };

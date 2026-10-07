@@ -1,8 +1,8 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { Eyebrow, SectionBody, SectionH2 } from "@/components/home/SectionHeading";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
   title: "About Us | 8billionideas",
@@ -10,17 +10,15 @@ export const metadata: Metadata = {
     "Our mission is to give every student on the planet the skills and belief to change the world.",
 };
 
-const CONTACT_HREF = "#book-a-demo";
 
 function GetInTouchButton({ label, className = "" }: { label: string; className?: string }) {
   return (
-    <Link
-      href={CONTACT_HREF}
+    <DemoTrigger
       className={`group inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink ${className}`}
     >
       {label}
       <ArrowRight className="h-4 w-4" aria-hidden="true" />
-    </Link>
+    </DemoTrigger>
   );
 }
 
@@ -208,18 +206,6 @@ export default function AboutPage() {
                   <p className="mt-2 text-body text-muted">{text}</p>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* 8. Closing CTA */}
-          <div className="mt-20 text-center md:mt-28">
-            <SectionH2 variant="light" className="mx-auto">
-              Want to bring this
-              <br />
-              <em className="text-accent">to your school?</em>
-            </SectionH2>
-            <div className="mt-8 flex justify-center">
-              <GetInTouchButton label="Book a call" className="w-full sm:w-auto" />
             </div>
           </div>
         </Container>

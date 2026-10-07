@@ -1,48 +1,56 @@
-import { CtaLink, NamedItem } from "./types";
+import { NamedItem } from "./types";
 
 export const pricing = {
-  headline: "Pricing",
+  hero: {
+    eyebrow: "PRICING",
+    headlineLead: "Find the right price",
+    headlineEmphasis: "for your school",
+    intro:
+      "Every school will use 8billionideas slightly differently, the price depends on what you choose, so you can build the right option below and see what that could look like before speaking to our team.",
+    image: {
+      src: "/images/pricing/hero.webp",
+      alt: "Secondary students working together around a table with notebooks and a laptop",
+    },
+  },
 
-  included: {
-    heading: "Every school gets",
-    items: [
+  whatsIncluded: {
+    eyebrow: "WHAT'S INCLUDED",
+    headingLead: "What's included",
+    headingEmphasis: "in the price",
+    intro:
+      "Everything you need to get started, with the flexibility to add more support when you need it.",
+    core: [
       {
-        name: "Partnership Manager",
+        name: "Ready-to-teach learning",
         description:
-          "Takes you through every step of the way — your direct point of contact for any questions about the course.",
+          "Structured lessons, videos, activity materials and teacher guidance already built.",
       },
       {
-        name: "Staff Onboarding",
-        description: "Structured onboarding so your team starts strong from day one.",
+        name: "Teacher and student platform access",
+        description: "A dedicated space for delivery, learning, resources and progress.",
       },
       {
-        name: "Teacher Learning Platform",
-        description: "Everything your teachers need to deliver lessons with confidence.",
-      },
-      {
-        name: "Student Learning Platform",
+        name: "Built-in progression checks",
         description:
-          "Where students access lessons, track progress, and complete work.",
-      },
-      {
-        name: "Student Certificates",
-        description: "Recognised certificates marking real progress and achievement.",
-      },
-      {
-        name: "Community Access",
-        description:
-          "Join a network of schools doing the same work, sharing what works.",
-      },
-      {
-        name: "Marketing Kit",
-        description:
-          "Ready-made materials to tell parents and governors what you're doing.",
+          "Simple start and end-of-programme assessments to show development over time.",
       },
     ] as NamedItem[],
+    support: [
+      {
+        name: "A dedicated Partnership Manager",
+        description: "Support with implementation, curriculum mapping and ongoing delivery.",
+      },
+      {
+        name: "Staff onboarding and support",
+        description: "Helping your team get set up quickly and deliver with confidence.",
+      },
+    ] as NamedItem[],
+    more: {
+      name: "Looking for more?",
+      description:
+        "Live launch sessions, live drop-down days and facilitator-led delivery can be added separately.",
+      ariaLabel: "Talk to us about live sessions and delivery",
+    },
   },
 
-  cta: {
-    headline: "Ready to bring this to your school?",
-    primaryCta: { label: "Request a demo", href: "#book-a-demo" } as CtaLink,
-  },
 };

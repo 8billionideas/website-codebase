@@ -175,7 +175,6 @@ export const curriculumMapping = {
     pre: "This is illustrative — every school's framework is different. ",
     linkLabel: "Get in touch",
     post: " and we'll map our pillars directly to yours.",
-    href: "#book-a-demo",
   },
 };
 

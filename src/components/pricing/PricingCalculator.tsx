@@ -1,17 +1,12 @@
 "use client";
 
 import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
   BookOpen,
   GraduationCap,
   Minus,
   Plus,
-  SlidersHorizontal,
-  Users,
-  FileText,
-  MessageSquare,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -24,44 +19,20 @@ import {
   STUDENTS_MIN,
   STUDENTS_MAX,
   DEFAULT_STUDENTS,
-  GCSE_TIERS,
   calculateCurriculumPrice,
   getGcseTier,
   formatMoney,
 } from "@/lib/pricing";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 
-const DEMO_HREF = "#book-a-demo";
 
 type Product = "cc" | "gcse" | "both";
-type StepKind = "yearGroups" | "pillars" | "students" | "feeBand";
+type StepKind = "yearGroups" | "pillars" | "students";
 
 const PRODUCT_OPTIONS: { value: Product; label: string; icons: LucideIcon[] }[] = [
   { value: "cc", label: "Critical Curriculum", icons: [BookOpen] },
   { value: "gcse", label: "International GCSE", icons: [GraduationCap] },
   { value: "both", label: "Both", icons: [BookOpen, GraduationCap] },
-];
-
-const VALUE_POINTS: { icon: LucideIcon; title: string; description: string }[] = [
-  {
-    icon: SlidersHorizontal,
-    title: "Flexible",
-    description: "Choose the year groups and pillars that fit your school.",
-  },
-  {
-    icon: Users,
-    title: "Built for your context",
-    description: "Start with a few year groups or roll it out more widely.",
-  },
-  {
-    icon: FileText,
-    title: "Clear and transparent",
-    description: "Simple pricing based on what you choose. No hidden costs.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Talk to our team",
-    description: "Need a different configuration? Get in touch for a tailored quote.",
-  },
 ];
 
 function FadeOnChange({ value, className }: { value: string; className?: string }) {
@@ -227,8 +198,8 @@ export default function PricingCalculator() {
     product === "cc"
       ? ["yearGroups", "pillars"]
       : product === "gcse"
-        ? ["students", "feeBand"]
-        : ["yearGroups", "pillars", "students", "feeBand"];
+        ? ["students"]
+        : ["yearGroups", "pillars", "students"];
 
   function renderStep(kind: StepKind, number: number) {
     switch (kind) {
@@ -301,39 +272,6 @@ export default function PricingCalculator() {
               onChange={setStudents}
               editable
             />
-          </StepShell>
-        );
-      case "feeBand":
-        return (
-          <StepShell
-            key={kind}
-            number={number}
-            title="Which fee band applies?"
-            helper="The per student fee is based on your total number of students."
-          >
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-              {GCSE_TIERS.map((tier) => {
-                const active = tier.label === gcseTier.label;
-                return (
-                  <button
-                    key={tier.label}
-                    type="button"
-                    onClick={() => setStudents(tier.min)}
-                    aria-current={active ? "true" : undefined}
-                    className={`rounded-xl border p-4 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${
-                      active
-                        ? "border-ink bg-ink text-white"
-                        : "border-ink/12 bg-white text-ink hover:border-ink/25"
-                    }`}
-                  >
-                    <span className="block text-[16px]">{tier.label}</span>
-                    <span className={`mt-1 block text-[13px] ${active ? "opacity-75" : "opacity-60"}`}>
-                      {formatMoney(tier.fee)} / student
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
           </StepShell>
         );
     }
@@ -487,27 +425,13 @@ export default function PricingCalculator() {
             tailored quote based on your school&apos;s specific needs.
           </p>
 
-          <Link
-            href={DEMO_HREF}
+          <DemoTrigger
             className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-white px-6 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-accent hover:text-ink"
           >
             Request a tailored quote
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          </Link>
+          </DemoTrigger>
         </div>
-      </div>
-
-      {/* Four value points */}
-      <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-ink/12">
-        {VALUE_POINTS.map((point) => (
-          <div key={point.title} className="lg:px-8 lg:first:pl-0 lg:last:pr-0">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/[0.12]">
-              <point.icon className="h-5 w-5 text-accent" strokeWidth={1.5} aria-hidden="true" />
-            </span>
-            <p className="mt-4 text-[17px] font-normal text-ink">{point.title}</p>
-            <p className="mt-1 text-[14px] text-ink/65">{point.description}</p>
-          </div>
-        ))}
       </div>
     </div>
   );
