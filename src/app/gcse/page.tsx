@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { Fragment } from "react";
-import { ArrowRight, BookOpen, TrendingUp, LayoutGrid, type LucideIcon } from "lucide-react";
+import { BookOpen, TrendingUp, LayoutGrid, type LucideIcon } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { Eyebrow } from "@/components/home/SectionHeading";
 import { gcse } from "@/content/gcse";
@@ -23,21 +23,10 @@ const PLATFORM_ICONS: Record<string, LucideIcon> = {
   LayoutGrid,
 };
 
-function RequestDemoButton({
-  className = "",
-  hoverVariant = "ink",
-}: {
-  className?: string;
-  hoverVariant?: "ink" | "light";
-}) {
-  const hoverClasses =
-    hoverVariant === "light" ? "hover:bg-white hover:text-ink" : "hover:bg-ink hover:text-white";
+function RequestDemoButton({ className = "" }: { className?: string }) {
   return (
-    <DemoTrigger
-      className={`inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors ${hoverClasses} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:w-auto ${className}`}
-    >
+    <DemoTrigger appearance="button" className={`w-full md:w-auto ${className}`}>
       Request a demo
-      <ArrowRight className="h-4 w-4" aria-hidden="true" />
     </DemoTrigger>
   );
 }
@@ -105,10 +94,7 @@ export default function GcsePage() {
             {hero.subline}
           </p>
           <div className="mt-8">
-            <RequestDemoButton
-              hoverVariant="light"
-              className="focus-visible:ring-white focus-visible:ring-offset-ink"
-            />
+            <RequestDemoButton />
           </div>
         </Container>
       </section>
@@ -165,10 +151,11 @@ export default function GcsePage() {
       </section>
 
       {/* 2. How it works */}
-      <section className="bg-ink py-16 lg:py-24">
+      {/* Full-width hairlines above and below separate it from the light sections either side. */}
+      <section className="border-y border-ink/[0.08] bg-paper py-16 lg:py-24">
         <Container>
-          <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{howItWorks.eyebrow}</p>
-          <h2 className="mt-4 text-[40px] font-light leading-[1.05] tracking-[-0.01em] text-white md:text-[64px]">
+          <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{howItWorks.eyebrow}</p>
+          <h2 className="mt-4 text-[40px] font-light leading-[1.05] tracking-[-0.01em] text-ink md:text-[64px]">
             {howItWorks.headingLine1}
             <br />
             <em className="text-accent">{howItWorks.headingLine2}</em>
@@ -178,7 +165,7 @@ export default function GcsePage() {
             {howItWorks.cards.map((card) => (
               <div
                 key={card.label}
-                className="flex h-full flex-col rounded-2xl bg-paper p-8 shadow-[0_8px_24px_rgba(0,0,0,0.15)] lg:p-12"
+                className="flex h-full flex-col rounded-2xl border border-ink/[0.08] bg-white p-8 shadow-[0_4px_20px_rgba(22,33,61,0.06)] lg:p-12"
               >
                 <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-accent">
                   {card.label}
@@ -364,9 +351,7 @@ export default function GcsePage() {
 
             {platform.showPlatformVideo && (
               <div className="mt-10">
-                <DemoTrigger
-                  className="inline-flex items-center gap-2 rounded-full border border-white/40 px-7 py-3 text-body font-medium text-white transition-colors hover:border-white hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
-                >
+                <DemoTrigger appearance="button" arrow={false}>
                   See the platform
                 </DemoTrigger>
                 <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />

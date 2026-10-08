@@ -1,9 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+
 import Container from "@/components/layout/Container";
 import { Eyebrow, SectionBody, SectionH2, SectionMarker } from "@/components/home/SectionHeading";
 import PartnerCards from "@/components/shared/PartnerCards";
+import ChampionSchools from "@/components/sections/ChampionSchools";
+import Button from "@/components/ui/Button";
 
 // x-positions are percentages of content width (so they line up with the
 // left-bleed stub regardless of viewport), y-positions are exact pixels
@@ -360,17 +361,16 @@ export default function QualificationSection() {
 
         {/* CTA */}
         <div className="mt-16 flex justify-center">
-          <Link
-            href="/gcse"
-            className="group inline-flex items-center gap-2 rounded-full border border-accent px-7 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink"
-          >
+          <Button href="/gcse" arrow>
             Explore the qualification
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          </Button>
         </div>
 
-        {/* Bottom-right tagline — desktop corner */}
-        <div className="mt-16 hidden items-start gap-4 md:absolute md:right-6 md:bottom-10 md:mt-0 md:flex lg:right-12">
+        <ChampionSchools />
+
+        {/* Bottom-right tagline — desktop. In flow (not pinned to the corner) so it sits
+            below the champion schools strip instead of over it. */}
+        <div className="mt-12 hidden items-start justify-end gap-4 md:flex">
           <div className="mt-1 h-12 w-px bg-white/40" aria-hidden="true" />
           <div className="space-y-1 text-caption uppercase tracking-[0.15em] text-white/50">
             <p>MORE CONFIDENT</p>

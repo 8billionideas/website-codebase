@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import DemoModalProvider from "@/components/demo/DemoModalProvider";
 import BookDemoSection from "@/components/shared/BookDemoSection";
 import HideOnRoutes from "@/components/shared/HideOnRoutes";
@@ -20,6 +21,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+// Locks the site to its designed light theme. "only light" also stops browsers
+// (e.g. Chrome on Android, Samsung Internet) from auto-darkening the page.
+export const viewport: Viewport = {
+  colorScheme: "only light",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} h-full scroll-smooth antialiased`}>
@@ -31,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <HideOnRoutes routes={["/resources", "/contact"]}>
             <BookDemoSection />
           </HideOnRoutes>
+          <Footer />
         </DemoModalProvider>
       </body>
     </html>

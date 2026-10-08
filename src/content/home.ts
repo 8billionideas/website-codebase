@@ -52,10 +52,6 @@ export const home = {
     curriculums: ["BRITISH", "IB", "AMERICAN", "INDIAN", "INTERNATIONAL", "AND MORE"],
   },
 
-  championSchools: {
-    headline: "Our first champion schools",
-  },
-
   proof: {
     headline: "Why choose us",
     leadItem: {

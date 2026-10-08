@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 :root {
+  /* Light theme only (see viewport.colorScheme in layout.tsx); stops browsers
+     from restyling form controls and scrollbars, or auto-darkening the page. */
+  color-scheme: only light;
+
   /* Brand palette — approved design plan, do not add/change hex values here.
      Usage rules (see contrast check):
      - accent (green) is the primary/CTA color — used for buttons and other

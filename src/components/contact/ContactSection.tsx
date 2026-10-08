@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { HUBSPOT_CONTACT_FORM_ID, isContactFormConfigured, submitHubspotForm } from "@/lib/hubspot";
+import Button from "@/components/ui/Button";
 
 // Confirm these match the internal field names in the HubSpot form.
 const HUBSPOT_FIELDS = {
@@ -389,24 +390,16 @@ export default function ContactSection() {
                 )}
 
                 <div>
-                  <button
+                  <Button
                     type="submit"
+                    size="form"
+                    arrow
+                    loading={status === "submitting"}
                     disabled={status === "submitting" || !isContactFormConfigured}
                     aria-describedby={!isContactFormConfigured ? id("not-connected") : undefined}
-                    className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-6 text-body font-medium text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent disabled:hover:text-ink"
                   >
-                    {status === "submitting" ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin motion-reduce:animate-none" strokeWidth={1.5} aria-hidden="true" />
-                        Sending…
-                      </>
-                    ) : (
-                      <>
-                        Begin your journey with 8billionideas
-                        <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-                      </>
-                    )}
-                  </button>
+                    {status === "submitting" ? "Sending…" : "Begin your journey with 8billionideas"}
+                  </Button>
                   {!isContactFormConfigured && (
                     <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/55">
                       The contact form isn&apos;t connected yet (review version).

@@ -1,14 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import {
-  ArrowRight,
-  BookOpen,
-  GraduationCap,
-  Minus,
-  Plus,
-  type LucideIcon,
-} from "lucide-react";
+import { BookOpen, GraduationCap, Minus, Plus, type LucideIcon } from "lucide-react";
 import {
   PILLAR_OPTIONS,
   PRICE_PER_PILLAR_PER_YEAR_GROUP,
@@ -425,11 +418,8 @@ export default function PricingCalculator() {
             tailored quote based on your school&apos;s specific needs.
           </p>
 
-          <DemoTrigger
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-[10px] bg-white px-6 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-accent hover:text-ink"
-          >
+          <DemoTrigger appearance="button" className="mt-6 w-full">
             Request a tailored quote
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
           </DemoTrigger>
         </div>
       </div>

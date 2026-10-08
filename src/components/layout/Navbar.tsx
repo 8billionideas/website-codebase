@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { navItems, type NavItem } from "@/content/nav";
 import LoginModal from "@/components/layout/LoginModal";
 import DemoTrigger from "@/components/demo/DemoTrigger";
+import Logo from "@/components/layout/Logo";
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
@@ -44,6 +44,156 @@ function navLinkClass(active: boolean) {
   }`;
 }
 
+// How long the dropdown waits after the pointer leaves before closing, so a
+// slightly wandering mouse doesn't snap it shut.
+const CLOSE_DELAY_MS = 150;
+
+function DesktopDropdown({
+  item,
+  open,
+  active,
+  onOpenChange,
+}: {
+  item: NavItem;
+  open: boolean;
+  active: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLUListElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A hover-opened menu stays open on the first click, so a mouse user who
+  // hovers then clicks "About" doesn't close the menu they just saw appear.
+  const openedByHover = useRef(false);
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  }, []);
+
+  useEffect(() => cancelClose, [cancelClose]);
+
+  function links() {
+    return Array.from(panelRef.current?.querySelectorAll<HTMLAnchorElement>("a") ?? []);
+  }
+
+  function focusItem(index: number) {
+    const all = links();
+    if (all.length) all[(index + all.length) % all.length].focus();
+  }
+
+  function openAndFocus(index: number) {
+    openedByHover.current = false;
+    onOpenChange(true);
+    // The panel mounts on the next render.
+    requestAnimationFrame(() => focusItem(index));
+  }
+
+  return (
+    <li
+      className="relative"
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "mouse") return;
+        cancelClose();
+        if (!open) {
+          openedByHover.current = true;
+          onOpenChange(true);
+        }
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType !== "mouse") return;
+        cancelClose();
+        closeTimer.current = setTimeout(() => onOpenChange(false), CLOSE_DELAY_MS);
+      }}
+      onBlur={(event) => {
+        // Tabbing out of the trigger and its links closes the menu.
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) onOpenChange(false);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && open) {
+          event.preventDefault();
+          onOpenChange(false);
+          triggerRef.current?.focus();
+        }
+      }}
+    >
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => {
+          cancelClose();
+          if (open && openedByHover.current) {
+            openedByHover.current = false;
+            return;
+          }
+          openedByHover.current = false;
+          onOpenChange(!open);
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openedByHover.current = false;
+            onOpenChange(!open);
+          } else if (event.key === "ArrowDown") {
+            event.preventDefault();
+            openAndFocus(0);
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            openAndFocus(-1);
+          }
+        }}
+        aria-expanded={open}
+        aria-haspopup="true"
+        className={`flex items-center gap-1 ${navLinkClass(active)}`}
+      >
+        {item.label}
+        <ChevronIcon open={open} />
+      </button>
+
+      {open && (
+        // Sits flush under the trigger (no dead gap), above all page content.
+        <div className="absolute left-0 top-full z-50">
+          <ul
+            ref={panelRef}
+            className="w-48 rounded-lg border border-ink/10 bg-paper py-2 shadow-lg"
+            onKeyDown={(event) => {
+              const all = links();
+              const index = all.indexOf(document.activeElement as HTMLAnchorElement);
+              if (event.key === "ArrowDown") {
+                event.preventDefault();
+                focusItem(index + 1);
+              } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                focusItem(index - 1);
+              } else if (event.key === "Home") {
+                event.preventDefault();
+                focusItem(0);
+              } else if (event.key === "End") {
+                event.preventDefault();
+                focusItem(-1);
+              }
+            }}
+          >
+            {item.items?.map((sub) => (
+              <li key={sub.href}>
+                <Link
+                  href={sub.href}
+                  onClick={() => onOpenChange(false)}
+                  className="flex min-h-11 w-full items-center px-4 font-normal text-muted transition-colors hover:text-brand"
+                >
+                  {sub.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </li>
+  );
+}
+
 function DemoButton({
   className = "",
   onBeforeOpen,
@@ -54,13 +204,8 @@ function DemoButton({
   returnFocusTo?: () => HTMLElement | null;
 }) {
   return (
-    <DemoTrigger
-      onBeforeOpen={onBeforeOpen}
-      returnFocusTo={returnFocusTo}
-      className={`inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 ${className}`}
-    >
+    <DemoTrigger appearance="button" onBeforeOpen={onBeforeOpen} returnFocusTo={returnFocusTo} className={className}>
       Request a demo
-      <ArrowRight className="h-4 w-4" aria-hidden="true" />
     </DemoTrigger>
   );
 }
@@ -99,17 +244,12 @@ export default function Navbar() {
   }
 
   return (
-    <header className="border-b border-surface bg-paper">
+    // Own stacking context above page content (hero layers use z-10), below modals (z-50).
+    <header className="relative z-40 border-b border-surface bg-paper">
       <nav className="mx-auto flex max-w-[75rem] items-center justify-between px-6 py-5 md:px-12">
         <Link href="/" className="shrink-0" onClick={closeMobile}>
-          <Image
-            src="/logo.png"
-            alt="8billionideas"
-            width={154}
-            height={52}
-            priority
-            className="h-9 w-auto md:h-[52px]"
-          />
+          {/* The nav is always solid paper, so it always uses the light-background logo. */}
+          <Logo className="h-9 w-auto md:h-[52px]" />
         </Link>
 
         {/* Desktop nav — hidden below xl, where it's replaced by the mobile menu. */}
@@ -117,52 +257,18 @@ export default function Navbar() {
           <ul className="flex items-center gap-6 text-body">
             {navItems.map((item) => {
               if (item.items) {
-                const open = openDropdown === item.label;
-                const active = isItemActive(item, pathname);
                 return (
-                  <li
+                  <DesktopDropdown
                     key={item.label}
-                    className="relative"
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") {
-                        setOpenDropdown(null);
-                        (event.currentTarget.querySelector("button") as HTMLElement | null)?.focus();
-                      }
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setOpenDropdown(open ? null : item.label)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          setOpenDropdown(open ? null : item.label);
-                        }
-                      }}
-                      aria-expanded={open}
-                      aria-haspopup="true"
-                      className={`flex items-center gap-1 ${navLinkClass(active)}`}
-                    >
-                      {item.label}
-                      <ChevronIcon open={open} />
-                    </button>
-
-                    {open && (
-                      <ul className="absolute left-0 top-full z-10 w-48 rounded-lg border border-ink/10 bg-paper py-2 shadow-lg">
-                        {item.items.map((sub) => (
-                          <li key={sub.href}>
-                            <Link
-                              href={sub.href}
-                              onClick={() => setOpenDropdown(null)}
-                              className="block px-4 py-2 font-normal text-muted transition-colors hover:text-brand"
-                            >
-                              {sub.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
+                    item={item}
+                    open={openDropdown === item.label}
+                    active={isItemActive(item, pathname)}
+                    onOpenChange={(next) =>
+                      setOpenDropdown((current) =>
+                        next ? item.label : current === item.label ? null : current
+                      )
+                    }
+                  />
                 );
               }
 
@@ -237,13 +343,13 @@ export default function Navbar() {
                       <ChevronIcon open={expanded} />
                     </button>
                     {expanded && (
-                      <ul className="ml-4 flex flex-col border-l border-ink/10 pl-4">
+                      <ul className="ml-4 flex flex-col border-l border-ink/10">
                         {item.items.map((sub) => (
                           <li key={sub.href}>
                             <Link
                               href={sub.href}
                               onClick={closeMobile}
-                              className="block py-2 font-normal text-muted transition-colors hover:text-brand"
+                              className="flex min-h-11 w-full items-center pl-4 font-normal text-muted transition-colors hover:text-brand"
                             >
                               {sub.label}
                             </Link>

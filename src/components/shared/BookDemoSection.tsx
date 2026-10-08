@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+
 import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { bookDemo } from "@/content/bookDemo";
@@ -19,9 +19,8 @@ export default function BookDemoSection() {
           </h2>
           <p className="mx-auto mt-5 text-[18px] leading-[1.6] text-white/85">{bookDemo.line}</p>
           <div className="mt-8 flex justify-center">
-            <DemoTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink sm:w-auto">
+            <DemoTrigger appearance="button" className="w-full sm:w-auto">
               {bookDemo.cta}
-              <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
             </DemoTrigger>
           </div>
         </div>

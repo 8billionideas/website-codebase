@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+
 import Container from "@/components/layout/Container";
 import { Eyebrow, SectionBody, SectionH2 } from "@/components/home/SectionHeading";
-import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
   title: "About Us | 8billionideas",
@@ -10,17 +10,6 @@ export const metadata: Metadata = {
     "Our mission is to give every student on the planet the skills and belief to change the world.",
 };
 
-
-function GetInTouchButton({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <DemoTrigger
-      className={`group inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink ${className}`}
-    >
-      {label}
-      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-    </DemoTrigger>
-  );
-}
 
 const timeline: { year: string; text?: string; placeholder?: boolean }[] = [
   {
@@ -69,38 +58,86 @@ const givingBack = [
   },
 ];
 
+const HERO_IMAGE = {
+  src: "/images/about/hero.webp",
+  alt: "Members of the 8billionideas team talking and laughing together around a table",
+};
+
 export default function AboutPage() {
   return (
     <>
-      <div className="bg-paper py-16 md:py-24">
-        <Container>
-          {/* 1. Hero */}
-          <Eyebrow variant="light">ABOUT US</Eyebrow>
-          <h1 className="mt-4 max-w-[900px] text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-            Our mission is to give every student on the planet the skills and
-            belief to <em className="text-accent">change the world</em>
-          </h1>
-          <p className="mt-6 max-w-[640px] text-[18px] leading-[1.6] text-ink/75">
-            We&apos;re a multi-award winning EdTech and Services company,
-            trusted by 350+ schools across the world to help them provide their
-            students with the tools and resources they need to thrive in an
-            ever-evolving world.
-          </p>
-          <div className="mt-8">
-            <GetInTouchButton label="Get in touch" />
+      {/* 1. Hero */}
+      <section className="relative isolate overflow-hidden bg-paper xl:flex xl:min-h-[560px] xl:items-center">
+        {/* Desktop: the photo sits in a right-hand box rather than full-bleed cover, so all four
+            people stay clear of the text; its cut edges fade into the paper. */}
+        <div
+          className="absolute top-1/2 right-0 hidden aspect-[1923/818] w-[64%] -translate-y-1/2 mix-blend-multiply xl:block"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%), linear-gradient(to right, transparent 0%, black 12%)",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
+        >
+          <Image
+            src={HERO_IMAGE.src}
+            alt={HERO_IMAGE.alt}
+            fill
+            preload
+            sizes="64vw"
+            quality={85}
+            className="object-cover object-right"
+          />
+        </div>
+        <div
+          className="absolute inset-0 hidden xl:block"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 38%, rgba(255,253,250,0) 55%)",
+          }}
+          aria-hidden="true"
+        />
+        <Container className="relative z-10 w-full py-14 md:py-20 xl:py-24">
+          <div className="max-w-[560px] text-left">
+            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">ABOUT 8BILLIONIDEAS</p>
+            <h1 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[48px]">
+              We believe education should prepare students for the world they&apos;re actually going into
+            </h1>
+            <p className="mt-6 text-[17px] leading-[1.6] text-ink/70">
+              We&apos;re a team of educators, creators and people who care deeply about what happens to
+              young people beyond the classroom, and everything we build comes back to giving them more
+              of the skills, confidence and experiences they&apos;ll need to shape whatever comes next.
+            </p>
           </div>
         </Container>
-      </div>
+        {/* Tablet and mobile: stacked, photo below the text. */}
+        <div className="relative aspect-[16/10] w-full mix-blend-multiply xl:hidden">
+          <Image
+            src={HERO_IMAGE.src}
+            alt={HERO_IMAGE.alt}
+            fill
+            loading="eager"
+            sizes="100vw"
+            quality={85}
+            className="object-cover object-right"
+          />
+        </div>
+      </section>
 
-      {/* 2. Partner line (ink band) */}
-      <div className="bg-ink py-12 md:py-16">
+      {/* 2. Mission band (ink) */}
+      <section className="bg-ink py-14 md:py-20">
         <Container>
-          <p className="mx-auto max-w-3xl text-center text-[22px] font-light leading-[1.4] text-white md:text-[28px]">
-            We have partnered with over 350 schools. Small to big.
-            Cross-curriculum. Globally.
+          <p className="text-[12px] uppercase tracking-[0.25em] text-accent">OUR MISSION</p>
+          <h2 className="mt-5 max-w-[1100px] text-balance text-[32px] font-light leading-[1.2] tracking-[-0.01em] text-white md:text-[52px]">
+            Give every student on the planet the{" "}
+            <em className="text-accent">skills, belief and values</em> to change the world.
+          </h2>
+          <div className="mt-8 h-px w-20 bg-white/15" aria-hidden="true" />
+          <p className="mt-6 text-[17px] leading-[1.6] text-white/75">
+            We have partnered with over 350 schools. Small to big. Cross-curriculum. Globally.
           </p>
         </Container>
-      </div>
+      </section>
 
       <div className="bg-paper py-16 md:py-24">
         <Container>

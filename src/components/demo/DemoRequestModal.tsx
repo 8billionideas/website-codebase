@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent } from "react";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { Check } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import { isHubspotConfigured, submitDemoRequest } from "@/lib/hubspot";
+import Button from "@/components/ui/Button";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
@@ -212,13 +213,9 @@ export default function DemoRequestModal({
               </li>
             ))}
           </ol>
-          <button
-            type="button"
-            onClick={onClose}
-            className="mt-10 inline-flex cursor-pointer items-center justify-center rounded-full border border-white/40 px-7 py-3 text-body font-medium text-white transition-colors hover:border-white hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
-          >
+          <Button onClick={onClose} className="mt-10">
             Close
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -270,24 +267,16 @@ export default function DemoRequestModal({
             )}
 
             <div className="mt-1">
-              <button
+              <Button
                 type="submit"
+                size="form"
+                arrow
+                loading={status === "submitting"}
                 disabled={status === "submitting" || !isHubspotConfigured}
                 aria-describedby={!isHubspotConfigured ? id("not-connected") : undefined}
-                className="flex h-14 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent px-6 text-body font-medium text-ink transition-colors hover:bg-ink hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent disabled:hover:text-ink"
               >
-                {status === "submitting" ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin motion-reduce:animate-none" strokeWidth={1.5} aria-hidden="true" />
-                    Sending…
-                  </>
-                ) : (
-                  <>
-                    Request a demonstration
-                    <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-                  </>
-                )}
-              </button>
+                {status === "submitting" ? "Sending…" : "Request a demonstration"}
+              </Button>
               {!isHubspotConfigured && (
                 <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/55">
                   Demo requests aren&apos;t connected yet (review version).

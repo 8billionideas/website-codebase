@@ -33,7 +33,7 @@ const PILLAR_ICONS: Record<string, LucideIcon> = {
   Technology: Cpu,
 };
 
-// Icons for the "Example project" thumbnail specifically — kept separate
+// Icons for the card's navy box specifically — kept separate
 // from PILLAR_ICONS (which drives the icon row below) since the two lists
 // differ for Financial Literacy and Leadership.
 const EXAMPLE_PROJECT_ICONS: Record<string, LucideIcon> = {
@@ -47,20 +47,11 @@ const EXAMPLE_PROJECT_ICONS: Record<string, LucideIcon> = {
   Technology: Cpu,
 };
 
-function splitExample(exampleProject: string) {
-  const [first, ...rest] = exampleProject.split(" — ");
-  if (rest.length === 0) {
-    return { title: "Coming soon", detail: "" };
-  }
-  return { title: first, detail: rest.join(" — ") };
-}
-
 export default function PillarCarousel() {
-  const { eyebrow, heading, subheading, ctaLabel, cards } = pillarCarousel;
+  const { eyebrow, heading, subheading, cards } = pillarCarousel;
   const [index, setIndex] = useState(0);
   const card = cards[index];
   const total = cards.length;
-  const example = splitExample(card.exampleProject);
   const ExampleIcon = EXAMPLE_PROJECT_ICONS[card.name] ?? Lightbulb;
   const rowRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -116,19 +107,13 @@ export default function PillarCarousel() {
             <p className="text-caption font-normal text-accent">
               {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </p>
-            <h3 className="mt-3 text-display text-ink">{card.name}</h3>
+            {/* Long names ("Entrepreneurship") are ~8.4× the font size wide, so
+                scale down below lg to stay inside the column. */}
+            <h3 className="mt-3 text-display text-ink max-md:text-[clamp(28px,10vw,48px)] md:max-lg:text-[28px]">{card.name}</h3>
             <p className="mt-4 max-w-md text-body-lg text-ink">{card.description}</p>
-
-            <button
-              type="button"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-body font-medium text-white transition-opacity hover:opacity-90"
-            >
-              {ctaLabel}
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </button>
           </div>
 
-          {/* RIGHT — blob image + example project card (scaled ~1.5x) */}
+          {/* RIGHT — blob image + navy box (icon and supporting line) */}
           <div className="relative mx-auto w-full max-w-[576px]">
             <svg
               viewBox="0 0 40 40"
@@ -165,46 +150,24 @@ export default function PillarCarousel() {
               )}
             </div>
 
-            <div className="relative mt-4 flex w-full items-center gap-[18px] rounded-xl bg-ink p-[18px] shadow-lg lg:absolute lg:-bottom-12 lg:-right-9 lg:mt-0 lg:w-96">
+            {/* Min heights match the old "Example project" box, so its size and position hold. */}
+            <div className="relative mt-4 flex min-h-[172px] w-full flex-col items-center justify-center rounded-xl bg-ink px-[18px] py-[14px] text-center shadow-lg lg:absolute lg:-bottom-12 lg:-right-9 lg:mt-0 lg:min-h-[149px] lg:w-96">
               {card.exampleImage ? (
-                <div className="relative h-[96px] w-[96px] shrink-0 overflow-hidden rounded-lg">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
                   <Image
                     src={card.exampleImage.src}
                     alt={card.exampleImage.alt}
                     fill
-                    sizes="96px"
+                    sizes="56px"
                     className="object-cover"
                   />
                 </div>
               ) : (
-                <div className="flex h-[96px] w-[96px] shrink-0 flex-col items-center justify-center gap-1.5 rounded-lg bg-white/[0.06] px-1.5 text-center">
-                  <ExampleIcon
-                    className="h-12 w-12 text-accent"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <p className="text-[13px] font-normal leading-tight text-accent">
-                    {example.title}
-                  </p>
-                </div>
+                <ExampleIcon className="h-14 w-14 shrink-0 text-accent" strokeWidth={1.5} aria-hidden="true" />
               )}
-              <div className="min-w-0 flex-1">
-                <p className="text-[15px] font-normal uppercase tracking-wide text-accent">
-                  Example project
-                </p>
-                <p className="text-[22.5px] font-normal leading-tight text-white">
-                  {example.title}
-                </p>
-                <span className="mt-1 inline-block rounded-full border border-white/25 bg-accent/10 px-3 py-[3px] text-[15px] font-normal text-white/70">
-                  {card.name}
-                </span>
-              </div>
-              <span
-                aria-hidden="true"
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20 text-ink"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </span>
+              <p className="mt-4 max-w-[320px] text-[16px] font-normal leading-[1.5] text-white/85">
+                {card.supportingLine}
+              </p>
             </div>
           </div>
         </div>

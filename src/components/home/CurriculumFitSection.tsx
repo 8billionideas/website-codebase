@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+
 import Container from "@/components/layout/Container";
 import { Eyebrow, SectionBody, SectionH2, SectionMarker, Tagline } from "@/components/home/SectionHeading";
 import { home } from "@/content/home";
+import Button from "@/components/ui/Button";
 
 // Matches Container's own right inset (mx-auto max-w-[75rem] + md:px-12)
 // exactly, so the image placeholder's right edge lands precisely on the
@@ -34,13 +34,9 @@ export default function CurriculumFitSection() {
             </div>
 
             <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-center">
-              <Link
-                href={cta.href}
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-7 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink md:w-auto"
-              >
+              <Button href={cta.href} arrow className="w-full md:w-auto">
                 {cta.label}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
+              </Button>
               <Tagline lines={ctaTagline} variant="light" />
             </div>
           </div>

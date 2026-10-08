@@ -1,10 +1,13 @@
 export interface PillarCarouselCard {
   name: string;
   description: string;
+  // Kept for reference; no longer rendered on the card.
   exampleProject: string;
+  // Short line shown under the icon in the card's navy box.
+  supportingLine: string;
   image?: { src: string; alt: string; position: string } | null;
-  // Optional real photo for the "Example project" thumbnail. When unset,
-  // the thumbnail shows the pillar's icon and the project name instead.
+  // Optional real photo for the navy box. When set, it replaces the
+  // pillar's icon; the supporting line still shows.
   exampleImage?: { src: string; alt: string } | null;
 }
 
@@ -13,10 +16,10 @@ export const pillarCarousel = {
   heading: "A progressive learning journey across eight key areas",
   subheading:
     "Each area is taught through structured, age-appropriate learning that develops as students move through each year group.",
-  ctaLabel: "Explore this area",
   cards: [
     {
       name: "Entrepreneurship",
+      supportingLine: "Spotting problems, testing ideas and taking initiative",
       description: "Building an entrepreneurial mindset that turns ideas into action",
       exampleProject:
         "Lightbulb Moments — turning a first idea into something they can actually show.",
@@ -28,6 +31,7 @@ export const pillarCarousel = {
     },
     {
       name: "Careers",
+      supportingLine: "Exploring jobs, pathways and the skills employers value",
       description:
         "A broader view of the paths ahead and the different ways students might find their place within them",
       exampleProject:
@@ -40,6 +44,7 @@ export const pillarCarousel = {
     },
     {
       name: "Financial Literacy",
+      supportingLine: "Budgeting, saving and making informed money decisions",
       description:
         "Helping students understand the role money plays in everyday life and the choices that come with it",
       exampleProject:
@@ -52,6 +57,7 @@ export const pillarCarousel = {
     },
     {
       name: "Wellbeing",
+      supportingLine: "Self-awareness, resilience and looking after your mind",
       description:
         "Understanding yourself, managing everyday pressures and building habits that support you",
       exampleProject:
@@ -64,6 +70,7 @@ export const pillarCarousel = {
     },
     {
       name: "Health & Performance",
+      supportingLine: "Sleep, nutrition, focus and performing under pressure",
       description:
         "Understanding what helps you perform well and get the best from yourself",
       exampleProject: "Work Smart — designing a system that actually works for them.",
@@ -75,6 +82,7 @@ export const pillarCarousel = {
     },
     {
       name: "Leadership",
+      supportingLine: "Communicating clearly, making decisions and bringing others with you",
       description:
         "Exploring how people bring others with them, make decisions and create positive change",
       exampleProject:
@@ -87,6 +95,7 @@ export const pillarCarousel = {
     },
     {
       name: "Sustainability",
+      supportingLine: "Understanding our impact and acting for people and the planet",
       description:
         "Understanding how our choices affect people, resources and the world around us",
       exampleProject: "coming soon.",
@@ -98,6 +107,7 @@ export const pillarCarousel = {
     },
     {
       name: "Technology",
+      supportingLine: "Using digital tools and AI with confidence and responsibility",
       description:
         "The technology shaping the world around us and the possibilities it is opening up",
       exampleProject: "coming soon.",

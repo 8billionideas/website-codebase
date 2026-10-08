@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Fragment,
   useEffect,
   useRef,
   useState,
@@ -20,7 +19,6 @@ import {
   Layers,
   Clock,
   BarChart,
-  ArrowRight,
   type LucideIcon,
 } from "lucide-react";
 import Container from "@/components/layout/Container";
@@ -46,33 +44,66 @@ function LabelHeading({ children }: { children: ReactNode }) {
   return <p className="text-[12px] uppercase tracking-[0.25em] text-ink/70">{children}</p>;
 }
 
-function LessonCard({ lesson }: { lesson: Lesson }) {
+function LessonBoxes({
+  lessons,
+  comingSoon,
+  year,
+}: {
+  lessons: Lesson[];
+  comingSoon: boolean;
+  year: number;
+}) {
   return (
-    <div className="flex h-full flex-col rounded-xl border border-ink/[0.08] bg-white p-6">
-      <div className="flex items-center gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/[0.15] text-[13px] font-normal text-accent">
-          {lesson.number}
-        </span>
-        <span className="text-[12px] uppercase tracking-[0.2em] text-ink/55">
-          Lesson {lesson.number}
-        </span>
-      </div>
-      <div className="mt-4">
-        {lesson.title ? (
-          <>
-            <p className="text-[17px] font-normal text-ink">{lesson.title}</p>
-            {lesson.description && (
-              <p className="mt-2 text-[14px] leading-[1.5] text-ink/65">{lesson.description}</p>
-            )}
-          </>
-        ) : (
-          <p className="text-[14px] text-ink/45">Details coming soon</p>
-        )}
-      </div>
-      <div className="mt-auto flex items-center gap-1.5 pt-4 text-[14px] text-ink/60">
-        <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
-        {lesson.duration}
-      </div>
+    // Five equal boxes in a row from lg; below that they scroll sideways on one line.
+    // Focusable so keyboard users can scroll the row.
+    <div
+      role="region"
+      aria-label={`Lessons for Year ${year}`}
+      tabIndex={0}
+      className={`[-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto rounded-xl pb-1 [&::-webkit-scrollbar]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 lg:overflow-visible lg:pb-0 ${
+        comingSoon ? "opacity-50" : ""
+      }`}
+    >
+      <ol className="flex list-none snap-x snap-mandatory gap-3 p-0 lg:grid lg:snap-none lg:grid-cols-5">
+        {lessons.map((lesson) => (
+          <li
+            key={lesson.number}
+            className="flex min-h-[130px] w-[220px] shrink-0 snap-start flex-col rounded-xl border border-ink/10 bg-white p-4 md:w-[200px] lg:w-auto lg:min-w-0"
+          >
+            <div className="flex items-center gap-2.5">
+              <span
+                aria-hidden="true"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent/[0.15] text-[13px] font-medium text-accent"
+              >
+                {lesson.number}
+              </span>
+              <span className="text-[12px] uppercase tracking-[0.15em] text-ink/55">
+                Lesson {lesson.number}
+              </span>
+            </div>
+
+            <div className="mt-3">
+              {lesson.title ? (
+                <>
+                  <p className="line-clamp-2 text-[15px] font-normal leading-[1.4] text-ink">{lesson.title}</p>
+                  {lesson.description && (
+                    <p className="mt-1 line-clamp-3 text-[13px] leading-[1.45] text-ink/65">
+                      {lesson.description}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-[13px] text-ink/45">Details coming soon</p>
+              )}
+            </div>
+
+            <div className="mt-auto flex items-center gap-1.5 pt-3 text-[13px] text-ink/60">
+              <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+              {lesson.duration}
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -86,7 +117,6 @@ export default function PillarProgrammeExplorer() {
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   const programme = getProgramme(selectedPillar);
-  const Icon = PILLAR_ICONS[selectedPillar];
   const lessons = programme.yearGroups[selectedYear];
   const fadeKey = `${selectedPillar}:${selectedYear}`;
 
@@ -150,45 +180,11 @@ export default function PillarProgrammeExplorer() {
     </span>
   );
 
-  const pillarSummary = (
-    <div>
-      <LabelHeading>Year {selectedYear}</LabelHeading>
-      <div className="mt-3 flex flex-wrap items-center gap-3">
-        <h3 className="text-[36px] font-light leading-[1.05] text-white md:text-[48px]">
-          {selectedPillar}
-        </h3>
-        {comingSoonBadge}
-      </div>
-      <p className="mt-3 text-[19px] leading-[1.6] text-white/85">{programme.description}</p>
-    </div>
-  );
-
-  const factLessons = (
-    <div>
-      <Layers className="h-7 w-7 text-white/80" strokeWidth={1.5} aria-hidden="true" />
-      <p className="mt-3 text-[26px] font-light leading-[1.1] text-white">5 lessons</p>
-      <p className="mt-1 text-[15px] text-white/75">
-        A complete programme for Year {selectedYear}
-      </p>
-    </div>
-  );
-
-  const factDuration = (
-    <div>
-      <Clock className="h-7 w-7 text-white/80" strokeWidth={1.5} aria-hidden="true" />
-      <p className="mt-3 text-[26px] font-light leading-[1.1] text-white">40-60 minutes</p>
-      <p className="mt-1 text-[15px] text-white/75">per lesson</p>
-    </div>
-  );
-
-  const factSkills = (
-    <div>
-      <BarChart className="h-7 w-7 text-white/80" strokeWidth={1.5} aria-hidden="true" />
-      <p className="mt-3 text-[26px] font-light leading-[1.1] text-white">Skills for life</p>
-      <p className="mt-1 text-[15px] text-white/75">Practical, real-world learning</p>
-    </div>
-  );
-
+  const facts = [
+    { icon: Layers, value: "5 lessons", label: `A complete programme for Year ${selectedYear}` },
+    { icon: Clock, value: "40-60 minutes", label: "per lesson" },
+    { icon: BarChart, value: "Skills for life", label: "Practical, real-world learning" },
+  ];
   return (
     <div className="mt-12">
       {/* 1. Year group */}
@@ -280,75 +276,52 @@ export default function PillarProgrammeExplorer() {
         />
       </div>
 
-      <div className="mt-8" aria-live="polite">
+      <div className="mt-5" aria-live="polite">
         <CrossFade fadeKey={fadeKey}>
           {/* Detail band — full width, ink background */}
-          <div className="relative left-1/2 w-screen -translate-x-1/2 bg-ink py-12">
+          <div className="relative left-1/2 w-screen -translate-x-1/2 bg-ink py-7">
             <Container>
-              {/* Desktop: four columns with vertical dividers */}
-              <div className="hidden lg:grid lg:grid-cols-[34fr_22fr_22fr_22fr] lg:divide-x lg:divide-white/15">
-                <div className="lg:pr-8">{pillarSummary}</div>
-                <div className="lg:px-8">{factLessons}</div>
-                <div className="lg:px-8">{factDuration}</div>
-                <div className="lg:px-8">{factSkills}</div>
-              </div>
-
-              {/* Tablet and mobile: summary on top, facts in a row (tablet)
-                  or stacked (mobile), with horizontal dividers. */}
-              <div className="lg:hidden">
-                {pillarSummary}
-                <div className="mt-8 grid grid-cols-1 divide-y divide-white/15 border-t border-white/15 pt-8 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:border-t-0">
-                  <div className="py-6 first:pt-0 sm:px-6 sm:py-0 sm:first:pl-0">
-                    {factLessons}
+              {/* Desktop (xl): summary and facts side by side. Below xl: summary on top, facts below. */}
+              <div className="xl:grid xl:grid-cols-[40fr_60fr] xl:items-center xl:gap-8">
+                <div>
+                  <p className="text-[12px] uppercase leading-[1.2] tracking-[0.25em] text-white/65">
+                    Year {selectedYear}
+                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-3">
+                    <h3 className="text-[30px] font-light leading-[1.1] text-white">{selectedPillar}</h3>
+                    {comingSoonBadge}
                   </div>
-                  <div className="py-6 sm:px-6 sm:py-0">{factDuration}</div>
-                  <div className="py-6 last:pb-0 sm:px-6 sm:py-0 sm:last:pr-0">
-                    {factSkills}
-                  </div>
+                  {/* Two lines reserved from md so the band keeps a steady height between pillars. */}
+                  <p className="mt-1 line-clamp-2 text-[15px] leading-[1.4] text-white/80 md:min-h-[2.8em]">
+                    {programme.description}
+                  </p>
                 </div>
+
+                <ul className="mt-5 flex list-none flex-col gap-3 p-0 md:flex-row md:gap-0 md:divide-x md:divide-white/15 xl:mt-0">
+                  {facts.map(({ icon: FactIcon, value, label }) => (
+                    <li
+                      key={value}
+                      className="flex items-start gap-3 md:flex-auto md:px-4 md:first:pl-0 md:last:pr-0"
+                    >
+                      <FactIcon
+                        className="mt-0.5 h-5 w-5 shrink-0 text-accent"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <p className="whitespace-nowrap text-[15px] font-medium leading-[1.35] text-white">{value}</p>
+                        <p className="text-balance text-[13px] leading-[1.35] text-white/65">{label}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </Container>
           </div>
 
-          {/* Lesson cards */}
-          <div className="relative mt-10 lg:min-h-[240px]">
-            <svg
-              className="absolute -top-10 left-6 hidden h-10 w-6 lg:block"
-              viewBox="0 0 24 40"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path d="M12 0 V30" stroke="#21D199" strokeWidth="2" />
-              <path
-                d="M6 24 L12 32 L18 24"
-                stroke="#21D199"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <div
-              className={`[-ms-overflow-style:none] [scrollbar-width:none] flex items-stretch gap-3 overflow-x-auto pb-2 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden lg:snap-none lg:gap-4 lg:overflow-visible lg:pb-0 ${
-                programme.comingSoon ? "opacity-50" : ""
-              }`}
-            >
-              {lessons.map((lesson, i) => (
-                <Fragment key={lesson.number}>
-                  <div className="w-[240px] shrink-0 snap-start lg:w-auto lg:min-w-0 lg:flex-1">
-                    <LessonCard lesson={lesson} />
-                  </div>
-                  {i < lessons.length - 1 && (
-                    <ArrowRight
-                      className="shrink-0 self-center text-accent"
-                      style={{ width: 20, height: 20 }}
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  )}
-                </Fragment>
-              ))}
-            </div>
+          {/* Lessons — five compact boxes */}
+          <div className="mt-5">
+            <LessonBoxes lessons={lessons} comingSoon={programme.comingSoon} year={selectedYear} />
           </div>
         </CrossFade>
       </div>

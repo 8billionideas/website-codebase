@@ -1,10 +1,11 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
-import { ArrowRight, Check, FileDown } from "lucide-react";
+import { Check, FileDown } from "lucide-react";
 import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { KITS, closingImage, type Resource } from "@/lib/resources";
+import Button from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Resources | 8billionideas",
@@ -114,15 +115,9 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
           </div>
         )}
         <div className="mt-6">
-          <a
-            href={kit.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-body font-medium text-white transition-colors hover:bg-accent hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-          >
+          <Button href={kit.url} target="_blank" rel="noopener noreferrer" arrow>
             {kit.cta}
-            <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-          </a>
+          </Button>
         </div>
       </div>
     </article>
@@ -214,9 +209,8 @@ export default function ResourcesPage() {
               support from our team.
             </p>
             <div className="mt-8">
-              <DemoTrigger className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-body font-medium text-ink transition-colors hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-ink sm:w-auto">
+              <DemoTrigger appearance="button" className="w-full sm:w-auto">
                 Request a demo
-                <ArrowRight className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
               </DemoTrigger>
             </div>
           </div>
