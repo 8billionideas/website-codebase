@@ -25,6 +25,9 @@ import Container from "@/components/layout/Container";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import { YEAR_GROUPS, getProgramme, type Lesson } from "@/lib/pillar-programmes";
 import { CrossFade } from "@/components/curriculum/CrossFade";
+import LevelModeToggle from "@/components/shared/LevelModeToggle";
+import { useLevelMode } from "@/lib/level-mode";
+import { formatLevel, formatLevelUpper } from "@/lib/year-grade";
 
 const PILLAR_ICONS: Record<PillarName, LucideIcon> = {
   Entrepreneurship: Lightbulb,
@@ -110,11 +113,14 @@ function LessonBoxes({
 
 export default function PillarProgrammeExplorer() {
   const [selectedYear, setSelectedYear] = useState(DEFAULT_YEAR);
+  const [levelMode] = useLevelMode();
   const [selectedPillar, setSelectedPillar] = useState<PillarName>(DEFAULT_PILLAR);
   const yearButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const pillarButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const pillarRowRef = useRef<HTMLDivElement | null>(null);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const yearRowRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollYears, setCanScrollYears] = useState(false);
 
   const programme = getProgramme(selectedPillar);
   const lessons = programme.yearGroups[selectedYear];
@@ -174,6 +180,22 @@ export default function PillarProgrammeExplorer() {
     };
   }, []);
 
+  // The year/grade row can overflow too (Grades mode is wider); fade its right edge while
+  // there's more to scroll. Re-checked when the mode changes, as the pills change width.
+  useEffect(() => {
+    const el = yearRowRef.current;
+    if (!el) return;
+    const update = () => setCanScrollYears(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const resizeObserver = new ResizeObserver(update);
+    resizeObserver.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      resizeObserver.disconnect();
+    };
+  }, [levelMode]);
+
   const comingSoonBadge = programme.comingSoon && (
     <span className="rounded-full border border-white/30 px-2.5 py-0.5 text-[12px] text-white/80">
       Coming soon
@@ -181,18 +203,25 @@ export default function PillarProgrammeExplorer() {
   );
 
   const facts = [
-    { icon: Layers, value: "5 lessons", label: `A complete programme for Year ${selectedYear}` },
+    { icon: Layers, value: "5 lessons", label: `A complete programme for ${formatLevel(selectedYear, levelMode)}` },
     { icon: Clock, value: "40-60 minutes", label: "per lesson" },
     { icon: BarChart, value: "Skills for life", label: "Practical, real-world learning" },
   ];
   return (
     <div className="mt-12">
-      {/* 1. Year group */}
-      <LabelHeading>1. Select a year group</LabelHeading>
+      {/* 1. Year group — label left, Years/Grades toggle right (below the label on mobile). */}
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <LabelHeading>{levelMode === "grades" ? "1. Select a grade" : "1. Select a year group"}</LabelHeading>
+        <LevelModeToggle />
+      </div>
+      {/* One line; scrolls sideways where the pills don't fit (e.g. Grades mode, with the
+          wider "Kindergarten" pill). Pills grow to fill the row when there's room. */}
+      <div className="relative mt-4">
       <div
+        ref={yearRowRef}
         role="radiogroup"
-        aria-label="Select a year group"
-        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-4 flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden lg:overflow-visible"
+        aria-label={levelMode === "grades" ? "Select a grade" : "Select a year group"}
+        className="[-ms-overflow-style:none] [scrollbar-width:none] flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
       >
         {YEAR_GROUPS.map((year, i) => {
           const selected = year === selectedYear;
@@ -208,14 +237,21 @@ export default function PillarProgrammeExplorer() {
               tabIndex={selected ? 0 : -1}
               onKeyDown={(e) => handleYearKeyDown(e, i)}
               onClick={() => setSelectedYear(year)}
-              className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2.5 text-[15px] transition-colors lg:min-w-0 lg:flex-1 lg:px-3 ${
+              className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2.5 text-[15px] transition-colors lg:flex-1 lg:px-3 ${
                 selected ? "border-ink bg-ink text-white" : "border-ink/12 bg-white text-ink"
               }`}
             >
-              Year {year}
+              {formatLevel(year, levelMode)}
             </button>
           );
         })}
+      </div>
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute top-0 right-0 h-full w-10 bg-gradient-to-l from-paper to-transparent transition-opacity duration-200 ${
+            canScrollYears ? "opacity-100" : "opacity-0"
+          }`}
+        />
       </div>
 
       <div className="my-8 h-px w-full bg-ink/10" aria-hidden="true" />
@@ -285,7 +321,7 @@ export default function PillarProgrammeExplorer() {
               <div className="xl:grid xl:grid-cols-[40fr_60fr] xl:items-center xl:gap-8">
                 <div>
                   <p className="text-[12px] uppercase leading-[1.2] tracking-[0.25em] text-white/65">
-                    Year {selectedYear}
+                    {formatLevelUpper(selectedYear, levelMode)}
                   </p>
                   <div className="mt-1 flex flex-wrap items-center gap-3">
                     <h3 className="text-[30px] font-light leading-[1.1] text-white">{selectedPillar}</h3>

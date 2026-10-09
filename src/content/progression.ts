@@ -16,7 +16,13 @@ export const progression = {
   subheading:
     "As students move through the curriculum, they revisit the same core skills with greater challenge, independence and depth, giving them more opportunities to use what they know in increasingly complex ways",
   annotation: "A clearer path to what's next.",
-  yearHeaders: ["YEAR 1 / EXPLORE", "YEAR 3 / BUILD", "YEAR 7 / DEEPEN", "YEAR 10 / LEAD"],
+  // Column headers: the year label comes from the Years/Grades helper (src/lib/year-grade.ts).
+  stages: [
+    { year: 1, stage: "EXPLORE" },
+    { year: 3, stage: "BUILD" },
+    { year: 7, stage: "DEEPEN" },
+    { year: 10, stage: "LEAD" },
+  ],
   categories: [
     {
       name: "Discover",

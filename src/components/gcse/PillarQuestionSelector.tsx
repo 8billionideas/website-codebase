@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import type { GcsePillarTile } from "@/content/gcse";
 
 export default function PillarQuestionSelector({
@@ -14,6 +14,8 @@ export default function PillarQuestionSelector({
 }) {
   const [active, setActive] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const listRef = useRef<HTMLDivElement>(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const baseId = useId();
   const tabId = (i: number) => `${baseId}-tab-${i}`;
   const panelId = `${baseId}-panel`;
@@ -25,6 +27,22 @@ export default function PillarQuestionSelector({
     tab?.focus();
     tab?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
+
+  // Below xl the row scrolls sideways; fade the right edge only while there's more to see.
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    const update = () =>
+      setCanScrollRight(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
 
   function handleKeyDown(e: KeyboardEvent, index: number) {
     const keys: Record<string, number> = {
@@ -43,37 +61,48 @@ export default function PillarQuestionSelector({
 
   return (
     <div>
-      <div
-        role="tablist"
-        aria-label="Pillars"
-        className="-mx-6 flex gap-3 overflow-x-auto px-6 pb-2 md:-mx-12 md:px-12 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0"
-      >
-        {pillars.map((pillar, i) => {
-          const selected = i === active;
-          return (
-            <button
-              key={pillar.name}
-              ref={(el) => {
-                tabRefs.current[i] = el;
-              }}
-              id={tabId(i)}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              aria-controls={panelId}
-              tabIndex={selected ? 0 : -1}
-              onClick={() => setActive(i)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`shrink-0 whitespace-nowrap rounded-full px-[22px] py-3 text-[15px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
-                selected
-                  ? "border border-transparent bg-accent/[0.18] font-medium"
-                  : "border border-ink/12 bg-white font-normal hover:border-ink/25"
-              }`}
-            >
-              {pillar.name}
-            </button>
-          );
-        })}
+      {/* One line always: fits from xl (about 1015px of pills in a 1104px row); below that
+          it scrolls sideways with snap, a hidden scrollbar and a fade on the right. */}
+      <div className="relative">
+        <div
+          ref={listRef}
+          role="tablist"
+          aria-label="Pillars"
+          className="[-ms-overflow-style:none] [scrollbar-width:none] -mx-6 flex snap-x snap-mandatory flex-nowrap gap-2 overflow-x-auto px-6 pb-2 [&::-webkit-scrollbar]:hidden md:-mx-12 md:px-12 xl:mx-0 xl:snap-none xl:overflow-visible xl:px-0 xl:pb-0"
+        >
+          {pillars.map((pillar, i) => {
+            const selected = i === active;
+            return (
+              <button
+                key={pillar.name}
+                ref={(el) => {
+                  tabRefs.current[i] = el;
+                }}
+                id={tabId(i)}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-controls={panelId}
+                tabIndex={selected ? 0 : -1}
+                onClick={() => setActive(i)}
+                onKeyDown={(e) => handleKeyDown(e, i)}
+                className={`shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
+                  selected
+                    ? "border border-transparent bg-accent/[0.18] font-medium"
+                    : "border border-ink/12 bg-white font-normal hover:border-ink/25"
+                }`}
+              >
+                {pillar.name}
+              </button>
+            );
+          })}
+        </div>
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute top-0 -right-6 bottom-2 w-12 bg-gradient-to-l from-paper to-transparent transition-opacity duration-200 md:-right-12 xl:hidden ${
+            canScrollRight ? "opacity-100" : "opacity-0"
+          }`}
+        />
       </div>
 
       <div
@@ -82,7 +111,9 @@ export default function PillarQuestionSelector({
         aria-labelledby={tabId(active)}
         className="mt-8"
       >
-        <p className="text-[12px] uppercase tracking-[0.2em] text-accent">{eyebrow}</p>
+        <p className="text-[12px] uppercase tracking-[0.2em] text-accent">
+          {eyebrow}
+        </p>
         <p className="mt-3 text-[14px] text-ink/55">{label}</p>
         {/* Every question sits in the same grid cell so the tallest one sets the height. */}
         <div className="mt-3 grid max-w-[820px]" aria-live="polite">

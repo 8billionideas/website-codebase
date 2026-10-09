@@ -2,6 +2,7 @@ import { Compass, TrendingUp, Target, Plus, ArrowRight, type LucideIcon } from "
 import Container from "@/components/layout/Container";
 import { progression } from "@/content/progression";
 import type { ProgressionCategory } from "@/content/progression";
+import LevelModeToggle, { LevelText } from "@/components/shared/LevelModeToggle";
 
 const CATEGORY_ICONS: Record<ProgressionCategory["icon"], LucideIcon> = {
   Compass,
@@ -26,8 +27,7 @@ function MountainSilhouette() {
 }
 
 export default function Progression() {
-  const { index, eyebrow, heading, subheading, annotation, yearHeaders, categories, bottom } =
-    progression;
+  const { index, eyebrow, heading, subheading, annotation, stages, categories, bottom } = progression;
 
   return (
     <section className="relative overflow-hidden py-16 md:py-24">
@@ -36,11 +36,15 @@ export default function Progression() {
           <p className="text-caption text-muted">{index}</p>
           <div className="mt-2 h-8 w-px bg-accent" aria-hidden="true" />
 
-          <p className="mt-6 text-caption uppercase tracking-[0.2em] text-muted">
-            {eyebrow}
-          </p>
-          <h2 className="mt-3 max-w-2xl text-display text-ink">{heading}</h2>
-          <p className="mt-4 max-w-xl text-body-lg text-muted">{subheading}</p>
+          {/* Heading block on the left, Years/Grades toggle on the right (below the line on mobile). */}
+          <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
+            <div>
+              <p className="text-caption uppercase tracking-[0.2em] text-muted">{eyebrow}</p>
+              <h2 className="mt-3 max-w-2xl text-display text-ink">{heading}</h2>
+              <p className="mt-4 max-w-xl text-body-lg text-muted">{subheading}</p>
+            </div>
+            <LevelModeToggle className="self-start" />
+          </div>
 
           <p className="absolute right-0 top-0 hidden -rotate-3 text-body italic text-muted md:block">
             {annotation}
@@ -53,12 +57,12 @@ export default function Progression() {
         <div className="hidden md:block">
           <div className="mt-16 grid grid-cols-[220px_repeat(4,1fr)] gap-x-6">
             <div />
-            {yearHeaders.map((label) => (
+            {stages.map(({ year, stage }) => (
               <p
-                key={label}
+                key={stage}
                 className="text-center text-caption uppercase tracking-wide text-muted"
               >
-                {label}
+                <LevelText year={year} suffix={` / ${stage}`} upper />
               </p>
             ))}
           </div>
@@ -119,7 +123,7 @@ export default function Progression() {
                   {category.cells.map((cell, i) => (
                     <div key={cell.verb}>
                       <p className="text-caption uppercase tracking-wide text-accent">
-                        {yearHeaders[i]}
+                        <LevelText year={stages[i].year} suffix={` / ${stages[i].stage}`} upper />
                       </p>
                       <p className="mt-1 text-body-lg text-ink">{cell.verb}</p>
                       <p className="mt-1 text-caption text-muted">{cell.text}</p>

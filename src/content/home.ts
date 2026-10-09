@@ -134,6 +134,32 @@ export const home = {
       },
     ] as Testimonial[],
 
+    // Real testimonials shown on /about only — kept out of `testimonials` so they don't
+    // also appear on /case-studies. Reviewers' wording kept exactly as written.
+    aboutOnlyTestimonials: [
+      {
+        quote:
+          "We have been an 8 Billion Ideas Partner School for over five years. 8Bill has energised our enterprise work and helped us broaden its scope to our Prep/ Primary School as well as our Senior School. Parents love our week-long Prep School summer enterprise projects with content delivered by 8Bill, culminating in our children presenting to their peers and parents.",
+        name: "Silas Edmonds",
+        role: "Principal, Ewell Castle School",
+        sourceUrl: null,
+      },
+      {
+        quote:
+          "The team of 8Billionideas have been a brilliant addition to our programme at an international school in Germany. We have worked with them in purely online, purely in person and in hybrid mode. Throughout this experience they have been responsive, friendly, personable, approachable and able to help us work out what packages work for us. They have been so flexible and understanding also and maintain regular contact with us. Their workshop leaders are engaging, energetic, passionate people who bring much to enhance the delivery. We have really enjoyed with them in flagship enrichment events and also our careers programmes. Highly recommended.",
+        name: "Tom Penny",
+        role: "Assistant Principal, International School of Stuttgart",
+        sourceUrl: null,
+      },
+      {
+        quote:
+          "8Billionideas offer something to schools that no other company does. Additionally their staff are professional and knowledgeable. Our students were totally engaged in their project for the days 8Billionideas were with us and really proud of their achievement. 8Billionideas support schools in bringing life skills for the future into the wider curriculum; entrepreneurship, collaboration, problem-solving, creativity - time with 8Billionideas brings all of this to students.",
+        name: "Adele O'Doherty",
+        role: "Principal, EEP",
+        sourceUrl: null,
+      },
+    ] as Testimonial[],
+
     // Kept out of `testimonials` so it doesn't also appear in the /case-studies carousel.
     bandTestimonial: {
       quote:

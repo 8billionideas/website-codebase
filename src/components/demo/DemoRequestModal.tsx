@@ -9,11 +9,12 @@ import Button from "@/components/ui/Button";
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
 type FieldName = "firstname" | "lastname" | "company" | "jobtitle" | "email";
-type Values = Record<FieldName, string> & { interested_in: string };
+type Values = Record<FieldName, string>;
 type Errors = Partial<Record<FieldName, string>>;
 
-const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "", interested_in: "" };
-const ORDER: FieldName[] = ["firstname", "lastname", "company", "jobtitle", "email"];
+const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "" };
+// Display order, also used to focus the first invalid field on submit.
+const ORDER: FieldName[] = ["firstname", "lastname", "email", "company", "jobtitle"];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function validate(name: FieldName, value: string): string | undefined {
@@ -48,8 +49,9 @@ const STEPS = [
   },
 ];
 
+// Pill-shaped inputs, 44px tall.
 const INPUT =
-  "h-[52px] w-full rounded-lg border bg-white px-4 text-[16px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink/40 focus:border-accent focus:ring-[3px] focus:ring-accent/20";
+  "h-11 w-full rounded-full border bg-white px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink/45 focus:border-accent focus:ring-[3px] focus:ring-accent/20";
 
 export default function DemoRequestModal({
   open,
@@ -86,9 +88,9 @@ export default function DemoRequestModal({
     if (status === "success") successHeadingRef.current?.focus();
   }, [status]);
 
-  function update(name: keyof Values, value: string) {
+  function update(name: FieldName, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
-    if (name !== "interested_in" && errors[name]) {
+    if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
     }
   }
@@ -128,7 +130,6 @@ export default function DemoRequestModal({
         company: values.company.trim(),
         jobtitle: values.jobtitle.trim(),
         email: values.email.trim(),
-        interested_in: values.interested_in || undefined,
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       setSubmittedName(firstName);
@@ -142,7 +143,7 @@ export default function DemoRequestModal({
     const error = errors[name];
     return (
       <div>
-        <label htmlFor={id(name)} className="block text-[14px] font-medium text-ink">
+        <label htmlFor={id(name)} className="block text-[14px] font-medium text-ink/80">
           {label}
         </label>
         <input
@@ -227,31 +228,16 @@ export default function DemoRequestModal({
             <p className="mt-2 text-[17px] text-ink/60">It should only take a minute.</p>
           </div>
 
-          <form ref={formRef} noValidate onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              {field("firstname", "First name", { autoComplete: "given-name" })}
-              {field("lastname", "Last name", { autoComplete: "family-name" })}
+          {/* 16px between rows, 12px between columns; two-column rows stack below 640px. */}
+          <form ref={formRef} noValidate onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+            <div className="grid grid-cols-1 gap-x-3 gap-y-4 sm:grid-cols-2">
+              {field("firstname", "First name", { autoComplete: "given-name", placeholder: "First name" })}
+              {field("lastname", "Last name", { autoComplete: "family-name", placeholder: "Last name" })}
             </div>
-            {field("company", "School / organisation", { autoComplete: "organization" })}
-            {field("jobtitle", "Job title", { autoComplete: "organization-title" })}
-            {field("email", "Work email address", { type: "email", autoComplete: "email", placeholder: "name@school.edu" })}
-
-            <div>
-              <label htmlFor={id("interested_in")} className="block text-[14px] font-medium text-ink">
-                I&apos;m interested in (optional)
-              </label>
-              <select
-                id={id("interested_in")}
-                name="interested_in"
-                value={values.interested_in}
-                onChange={(e) => update("interested_in", e.target.value)}
-                className={`mt-2 ${INPUT} border-ink/15`}
-              >
-                <option value="" />
-                <option value="Critical Curriculum">Critical Curriculum</option>
-                <option value="International GCSE">International GCSE</option>
-                <option value="Both">Both</option>
-              </select>
+            {field("email", "Work email", { type: "email", autoComplete: "email", placeholder: "name@school.com" })}
+            <div className="grid grid-cols-1 gap-x-3 gap-y-4 sm:grid-cols-2">
+              {field("company", "School / organisation", { autoComplete: "organization", placeholder: "School name" })}
+              {field("jobtitle", "Job title", { autoComplete: "organization-title", placeholder: "Your role" })}
             </div>
 
             {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
@@ -266,6 +252,7 @@ export default function DemoRequestModal({
               </p>
             )}
 
+            {/* 20px below the last row (16px gap + 4px). */}
             <div className="mt-1">
               <Button
                 type="submit"
@@ -275,7 +262,7 @@ export default function DemoRequestModal({
                 disabled={status === "submitting" || !isHubspotConfigured}
                 aria-describedby={!isHubspotConfigured ? id("not-connected") : undefined}
               >
-                {status === "submitting" ? "Sending…" : "Request a demonstration"}
+                {status === "submitting" ? "Sending…" : "Request a demo"}
               </Button>
               {!isHubspotConfigured && (
                 <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/55">
@@ -284,17 +271,17 @@ export default function DemoRequestModal({
               )}
             </div>
 
-            <div className="-mt-1 text-center">
-              <p className="text-[13px] text-ink/55">We&apos;ll get back to you to arrange a time that works for you.</p>
-              <p className="mt-2 text-[12px] text-ink/50">
+            <div className="text-center text-[14px] leading-[1.5] text-ink/65">
+              <p>We&apos;ll get back to you to arrange a time that works for you.</p>
+              <p className="mt-1">
                 By submitting, you agree to our{" "}
                 <a
                   href={PRIVACY_POLICY_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-ink"
+                  className="text-ink underline underline-offset-2"
                 >
-                  privacy policy
+                  Privacy Policy
                 </a>
                 .
               </p>

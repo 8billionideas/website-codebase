@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
-import { Eyebrow, SectionBody, SectionH2 } from "@/components/home/SectionHeading";
+import OurStorySection from "@/components/about/OurStorySection";
+import TeamSection from "@/components/about/TeamSection";
+import TrustSection from "@/components/about/TrustSection";
+import WorkWithUsSection from "@/components/about/WorkWithUsSection";
 
 export const metadata: Metadata = {
   title: "About Us | 8billionideas",
@@ -11,57 +14,30 @@ export const metadata: Metadata = {
 };
 
 
-const timeline: { year: string; text?: string; placeholder?: boolean }[] = [
-  {
-    year: "2021",
-    text: "In the wake of the pandemic, a survey of more than 1,000 parents revealed that over a third felt their college-age children were ill-prepared for professional life. 8billionideas was created to meet the needs of thousands of students and educators worldwide.",
-  },
-  {
-    year: "2022",
-    text: "We reached over 150,000 students and launched the Future Jobs Kit, a free resource designed to equip students with the skills and knowledge required for the jobs of tomorrow.",
-  },
-  {
-    year: "2023",
-    text: "We formed a strategic partnership with APEX2100 to introduce Perform Better, the best performance programme, to students worldwide.",
-  },
-  {
-    year: "2024",
-    text: "We reached 350 schools and over half a million students, and created nearly 400 pieces of in-house content.",
-  },
-  { year: "2025", placeholder: true },
-  {
-    year: "Today",
-    text: "Over 1 million students reached across 350+ schools worldwide.",
-  },
-];
-
-const recognitions = [
-  "The History of Parliament Trust",
-  "British Schools in the Middle East",
-  "Council of British International Schools",
-  "Times Education Supplement (TES)",
-  "Edufuturist Awards",
-];
-
-const givingBack = [
-  {
-    title: "KYGN",
-    text: "A Tanzanian organisation improving educational opportunities for young girls in the Kilimanjaro Region. We've supported KYGN's work for several years.",
-  },
-  {
-    title: "Lions ROAR",
-    text: "Our partnership with Lions Club International has reached 25,000+ students through ROAR, a primary programme building future-proof skills in line with the national curriculum and PSHE education.",
-  },
-  {
-    title: "African Promise",
-    text: "A charity improving the quality of education in rural Kenyan primary schools. We've raised over £11,500, with our team running three marathons so far.",
-  },
-];
-
 const HERO_IMAGE = {
   src: "/images/about/hero.webp",
   alt: "Members of the 8billionideas team talking and laughing together around a table",
 };
+
+const WHY_WE_CARE_COLUMNS = [
+  "Young people spend years learning what they need to know, but we believe being ready for the world takes more than knowledge. It takes confidence to speak up, judgement to make decisions, resilience when things go wrong and the belief that you can make something happen.",
+  "Those things can be harder to teach, harder to timetable and harder to measure, which means they can too easily be treated as extras. We've never believed they are. For us, they are a fundamental part of what education should give every young person.",
+];
+
+// Cropped from the "Collaborative Classroom Moments" strip (originals kept as .png).
+// The previous set (why-we-care-1 to -4) is kept in public/images/about as a backup.
+const WHY_WE_CARE_PHOTOS: { src: string; alt: string; position?: string }[] = [
+  {
+    src: "/images/about/why-we-care-v2-1.webp",
+    alt: "A facilitator laughing with secondary students around a table",
+    // Shifted left of centre so the girl on the left isn't cut in half; centred on
+    // tablet, where the narrower tile would otherwise clip the facilitator instead.
+    position: "object-[30%_center] md:object-center lg:object-[30%_center]",
+  },
+  { src: "/images/about/why-we-care-v2-2.webp", alt: "Students' hands arranging colourful cards on a classroom table" },
+  { src: "/images/about/why-we-care-v2-3.webp", alt: "A teacher talking with students in a classroom" },
+  { src: "/images/about/why-we-care-v2-4.webp", alt: "Secondary students laughing together in class" },
+];
 
 export default function AboutPage() {
   return (
@@ -132,121 +108,84 @@ export default function AboutPage() {
             Give every student on the planet the{" "}
             <em className="text-accent">skills, belief and values</em> to change the world.
           </h2>
-          <div className="mt-8 h-px w-20 bg-white/15" aria-hidden="true" />
-          <p className="mt-6 text-[17px] leading-[1.6] text-white/75">
-            We have partnered with over 350 schools. Small to big. Cross-curriculum. Globally.
-          </p>
         </Container>
       </section>
 
-      <div className="bg-paper py-16 md:py-24">
+      {/* 3. Why we care */}
+      <section className="bg-paper pt-16 pb-16 md:pt-24 md:pb-24">
         <Container>
-          {/* 3. Our story */}
-          <Eyebrow variant="light">HISTORY</Eyebrow>
-          <SectionH2 variant="light" className="mt-4">
-            We&apos;ve come
+          <p className="text-[12px] uppercase tracking-[0.25em] text-accent">WHY WE CARE</p>
+          <h2 className="mt-4 max-w-[1000px] text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+            We care about the parts of education
             <br />
-            <em className="text-accent">so far.</em>
-          </SectionH2>
+            <em className="text-accent">that are hardest to measure</em>
+          </h2>
 
-          <div className="mt-12 space-y-12 border-l border-accent pl-8">
-            {timeline.map((entry) => (
-              <div key={entry.year} className="relative">
-                <span
-                  className="absolute left-0 top-1.5 h-2 w-2 -translate-x-1/2 rounded-full bg-accent"
-                  aria-hidden="true"
-                />
-                <p className="text-[32px] font-light text-ink">{entry.year}</p>
-                {entry.placeholder ? (
-                  <div className="mt-3 max-w-[640px] rounded-2xl border-2 border-dashed border-ink/20 bg-surface p-6">
-                    <p className="text-[18px] italic leading-[1.6] text-muted">
-                      Details to come.
-                    </p>
-                  </div>
-                ) : (
-                  <p className="mt-3 max-w-[640px] text-[18px] leading-[1.6] text-ink/75">
-                    {entry.text}
-                  </p>
-                )}
-              </div>
+          {/* Two equal columns with a centred hairline between them from md. */}
+          <div className="relative mt-8 grid grid-cols-1 gap-6 md:mt-12 md:grid-cols-2 md:gap-16">
+            <div
+              className="absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-ink/12 md:block"
+              aria-hidden="true"
+            />
+            {WHY_WE_CARE_COLUMNS.map((text) => (
+              <p key={text.slice(0, 20)} className="max-w-[520px] text-[18px] leading-[1.7] text-ink/75">
+                {text}
+              </p>
             ))}
           </div>
-
-          {/* 4. Why we exist */}
-          <div className="mt-20 md:mt-28">
-            <SectionH2 variant="light">
-              Education hasn&apos;t kept pace with the world
-              <br />
-              <em className="text-accent">students are entering</em>
-            </SectionH2>
-            <SectionBody variant="light" className="mt-5 max-w-[640px]">
-              Schools want to teach the skills students will actually need,
-              like thinking critically, managing money and working with
-              others, but don&apos;t have the time to build it themselves. So
-              we built it for them: a flexible, ready-to-teach curriculum that
-              fits around what each school already does.
-            </SectionBody>
-          </div>
-
-          {/* 5. Student quote */}
-          <div className="mt-20 text-center md:mt-28">
-            <div className="mx-auto h-px w-16 bg-accent" aria-hidden="true" />
-            <p className="mx-auto mt-8 max-w-3xl text-[22px] font-light italic leading-[1.4] text-ink md:text-[28px]">
-              &ldquo;It definitely helped with team work skills and presenting
-              skills because it was something I had no interest in before, I
-              always avoided it.&rdquo;
-            </p>
-            <p className="mt-6 text-[12px] uppercase tracking-[0.25em] text-ink/55">
-              YEAR 11 STUDENT · THE INTERNSHIP PROGRAMME
-            </p>
-          </div>
-
-          {/* 6. Recognitions */}
-          <div className="mt-20 md:mt-28">
-            <Eyebrow variant="light">RECOGNITIONS</Eyebrow>
-            <SectionH2 variant="light" className="mt-4">
-              A company with
-              <br />
-              <em className="text-accent">credentials.</em>
-            </SectionH2>
-            <SectionBody variant="light" className="mt-5 max-w-[640px]">
-              We&apos;ve been recognised by organisations both inside and
-              outside of the education sector for our forward-thinking
-              approach and creation of unique learning experiences.
-            </SectionBody>
-
-            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              {recognitions.map((name) => (
-                <div
-                  key={name}
-                  className="flex items-center justify-center rounded-2xl border border-ink/10 p-6 text-center"
-                >
-                  <p className="text-[16px] font-normal text-ink">{name}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 7. Giving back */}
-          <div className="mt-20 md:mt-28">
-            <Eyebrow variant="light">CORPORATE RESPONSIBILITY</Eyebrow>
-            <SectionH2 variant="light" className="mt-4">
-              We believe in giving back
-              <br />
-              <em className="text-accent">for education.</em>
-            </SectionH2>
-
-            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-              {givingBack.map(({ title, text }) => (
-                <div key={title} className="rounded-2xl border border-ink/10 p-8">
-                  <p className="text-body-lg text-ink">{title}</p>
-                  <p className="mt-2 text-body text-muted">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </Container>
-      </div>
+
+        {/* Photo strip — edge to edge; the 4px gaps show the paper. 2×2 on mobile. */}
+        <div className="mt-12 grid grid-cols-2 gap-1 md:mt-[72px] md:grid-cols-4">
+          {WHY_WE_CARE_PHOTOS.map((photo) => (
+            <div key={photo.src} className="relative aspect-[4/3] md:aspect-auto md:h-[200px] lg:h-[260px]">
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                loading="lazy"
+                // Served as-is: the WebPs are already small (16–25KB) and low-res, so
+                // re-encoding at the optimiser's default quality would only soften them.
+                unoptimized
+                className={`object-cover ${photo.position ?? "object-center"}`}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Closing statement — centred on purpose, for this line only. */}
+        <Container className="mt-12 text-center md:mt-[72px]">
+          {/* 1000px max so each half fits on one line at 36px (985px / 920px); 32px on tablet. */}
+          <p className="mx-auto max-w-[1000px] text-balance text-[24px] font-light leading-[1.3] tracking-[-0.01em] text-ink md:text-[32px] xl:text-[36px]">
+            <span className="md:block">We want students to leave school not just knowing more</span>{" "}
+            <em className="text-accent md:block">but believing they can do more with what they know</em>
+          </p>
+          <div className="mx-auto mt-6 h-0.5 w-12 bg-accent" aria-hidden="true" />
+        </Container>
+      </section>
+
+      {/* The next section is also on paper, so a hairline separates them. */}
+      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
+
+      {/* 4. Our story */}
+      <OurStorySection />
+
+      {/* Our story and the team section are both on paper, so a hairline separates them. */}
+      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
+
+      {/* 4b. The people behind 8billionideas (team collage). The trust section below is mint, so no divider. */}
+      <TeamSection />
+
+      {/* 5. Trust: mint top part (stats, champion schools) and the ink testimonial band.
+          Mint follows Our story's paper and paper follows the ink band, so no dividers. */}
+      <TrustSection />
+
+      {/* 6. What it's like to work with us — ends with its own ink band. */}
+      <WorkWithUsSection />
+
+      {/* The shared "Book a demonstration" band (rendered by layout.tsx) follows and is also
+          dark, so end with a 1px white-at-10% line drawn over ink between the two. */}
+      <div className="border-t border-white/10 bg-ink" aria-hidden="true" />
     </>
   );
 }

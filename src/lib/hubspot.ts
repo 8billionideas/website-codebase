@@ -13,7 +13,6 @@ export interface DemoRequest {
   company: string;
   jobtitle: string;
   email: string;
-  interested_in?: string;
 }
 
 function readHubspotCookie(): string | undefined {

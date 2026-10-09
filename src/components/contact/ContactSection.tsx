@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { Check } from "lucide-react";
-import Container from "@/components/layout/Container";
+import Image from "next/image";
+import { Check, ChevronDown } from "lucide-react";
 import { HUBSPOT_CONTACT_FORM_ID, isContactFormConfigured, submitHubspotForm } from "@/lib/hubspot";
 import Button from "@/components/ui/Button";
+import { HELP_TOPICS, teamAvatars } from "@/content/contact";
 
 // Confirm these match the internal field names in the HubSpot form.
 const HUBSPOT_FIELDS = {
   firstName: "firstname",
   lastName: "lastname",
   email: "email",
-  region: "region",
-  school: "school_name",
-  role: "jobtitle",
-  heardAbout: "how_did_you_hear_about_us",
+  company: "company",
+  jobTitle: "jobtitle",
+  helpTopic: "help_topic",
   message: "message",
   marketingEmails: "marketing_emails_opt_in",
   newsletter: "newsletter_opt_in",
@@ -23,16 +23,13 @@ const HUBSPOT_FIELDS = {
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 const CONTACT_EMAIL = "hello@8billionideas.com";
 
-const REGIONS = ["Africa", "Americas", "Asia-Pacific", "Europe", "Middle East and North Africa", "Other", "Worldwide"];
-const HEARD_ABOUT = ["Social media", "Word of mouth", "Event", "Google search", "Newsletter", "Email", "Other"];
-
-type Field = "firstName" | "lastName" | "email" | "region" | "school" | "role" | "heardAbout" | "message";
+type Field = "firstName" | "lastName" | "email" | "company" | "jobTitle" | "helpTopic" | "message";
 type Values = Record<Field, string> & { marketingEmails: boolean; newsletter: boolean };
 type Errors = Partial<Record<Field, string>>;
 
-const ORDER: Field[] = ["firstName", "lastName", "email", "region", "school", "role", "heardAbout", "message"];
+const ORDER: Field[] = ["firstName", "lastName", "email", "company", "jobTitle", "helpTopic", "message"];
 const EMPTY: Values = {
-  firstName: "", lastName: "", email: "", region: "", school: "", role: "", heardAbout: "", message: "",
+  firstName: "", lastName: "", email: "", company: "", jobTitle: "", helpTopic: "", message: "",
   marketingEmails: false, newsletter: false,
 };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -45,30 +42,26 @@ function validate(field: Field, value: string): string | undefined {
     case "lastName":
       return v ? undefined : "Please enter your last name";
     case "email":
-      if (!v) return "Please enter your email address";
-      return EMAIL_PATTERN.test(v) ? undefined : "Please enter a valid email address";
-    case "region":
-      return v ? undefined : "Please select your region";
-    case "school":
-      return v ? undefined : "Please enter the name of your school, college or organisation";
-    case "role":
-      return v ? undefined : "Please enter your role";
-    case "heardAbout":
-      return v ? undefined : "Please choose an option";
+      return EMAIL_PATTERN.test(v) ? undefined : "Please enter a valid work email address";
+    case "company":
+      return v ? undefined : "Please enter your school or organisation";
+    case "jobTitle":
+      return v ? undefined : "Please enter your job title";
+    case "helpTopic":
+      return v ? undefined : "Please choose what we can help with";
     case "message":
-      return v ? undefined : "Please tell us a little about what you'd like help with";
+      return v ? undefined : "Please enter a message";
   }
 }
 
 const CONTROL =
-  "w-full rounded-lg border bg-white px-4 text-[16px] text-ink outline-none transition-[border-color,box-shadow] focus:border-accent focus:ring-[3px] focus:ring-accent/20";
+  "w-full rounded-lg border bg-white px-4 text-[16px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink/45 focus:border-accent focus:ring-[3px] focus:ring-accent/20";
 const ERROR_TEXT = "mt-1.5 text-[13px] text-[#B42318]";
 
 function Label({ htmlFor, children }: { htmlFor?: string; children: ReactNode }) {
   return (
     <label htmlFor={htmlFor} className="block text-[15px] font-medium text-ink">
-      {children}
-      <span className="text-accent" aria-hidden="true">*</span>
+      {children} <span className="text-accent" aria-hidden="true">*</span>
     </label>
   );
 }
@@ -98,9 +91,8 @@ export default function ContactSection() {
     setErrors((prev) => ({ ...prev, [field]: error }));
   }
 
-  function describedBy(field: Field, extra?: string) {
-    const ids = [extra, errors[field] ? id(`${field}-error`) : undefined].filter(Boolean);
-    return ids.length ? ids.join(" ") : undefined;
+  function describedBy(field: Field) {
+    return errors[field] ? id(`${field}-error`) : undefined;
   }
 
   function errorText(field: Field) {
@@ -142,10 +134,9 @@ export default function ContactSection() {
         [HUBSPOT_FIELDS.firstName]: firstName,
         [HUBSPOT_FIELDS.lastName]: values.lastName.trim(),
         [HUBSPOT_FIELDS.email]: values.email.trim(),
-        [HUBSPOT_FIELDS.region]: values.region,
-        [HUBSPOT_FIELDS.school]: values.school.trim(),
-        [HUBSPOT_FIELDS.role]: values.role.trim(),
-        [HUBSPOT_FIELDS.heardAbout]: values.heardAbout,
+        [HUBSPOT_FIELDS.company]: values.company.trim(),
+        [HUBSPOT_FIELDS.jobTitle]: values.jobTitle.trim(),
+        [HUBSPOT_FIELDS.helpTopic]: values.helpTopic,
         [HUBSPOT_FIELDS.message]: values.message.trim(),
         [HUBSPOT_FIELDS.marketingEmails]: String(values.marketingEmails),
         [HUBSPOT_FIELDS.newsletter]: String(values.newsletter),
@@ -158,25 +149,24 @@ export default function ContactSection() {
     }
   }
 
-  function textField(field: Field, label: string, options: { type?: string; autoComplete: string; helper?: string }) {
-    const helperId = options.helper ? id(`${field}-helper`) : undefined;
+  function textField(
+    field: Field,
+    label: string,
+    options: { type?: string; autoComplete: string; placeholder: string }
+  ) {
     return (
       <div>
         <Label htmlFor={id(field)}>{label}</Label>
-        {options.helper && (
-          <p id={helperId} className="mt-1 text-[13px] text-ink/55">
-            {options.helper}
-          </p>
-        )}
         <input
           id={id(field)}
           data-field={field}
           name={field}
           type={options.type ?? "text"}
           autoComplete={options.autoComplete}
+          placeholder={options.placeholder}
           required
           aria-invalid={errors[field] ? true : undefined}
-          aria-describedby={describedBy(field, helperId)}
+          aria-describedby={describedBy(field)}
           value={values[field]}
           onChange={(e) => setValue(field, e.target.value)}
           onBlur={(e) => checkField(field, e.currentTarget.value)}
@@ -187,230 +177,198 @@ export default function ContactSection() {
     );
   }
 
+  const avatars = teamAvatars.slice(0, 3);
+
   return (
-    <section id="contact" className="bg-paper py-16 md:py-24">
-      <Container>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[2fr_3fr] lg:gap-16">
-          <div className="text-left lg:sticky lg:top-24 lg:self-start">
-            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">CONTACT US</p>
-            <h1 className="mt-4 text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-              Let&apos;s start
-              <br />
-              <em className="text-accent">a conversation</em>
-            </h1>
-            <p className="mt-5 text-[18px] leading-[1.6] text-ink/70">
-              Whether you have a question, an idea or a challenge you&apos;d like help with, tell us a
-              little about it and a member of our team will get back to you.
-            </p>
-            <p className="mt-8 text-[14px] text-ink/55">Prefer email?</p>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-1 inline-block text-[16px] font-medium text-ink underline decoration-transparent underline-offset-4 transition-colors hover:decoration-ink"
+    <section id="contact" className="bg-paper pb-16 md:pb-24">
+      <div className="mx-auto max-w-[1196px] px-6 md:px-12">
+        {status === "success" ? (
+          <div aria-live="polite" className="flex flex-col items-center py-12 text-center">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent transition-[transform,opacity] duration-300 ease-out starting:scale-50 starting:opacity-0 motion-reduce:transition-none">
+              <Check className="h-7 w-7 text-accent" strokeWidth={1.5} aria-hidden="true" />
+            </span>
+            <h2
+              ref={successHeadingRef}
+              tabIndex={-1}
+              className="mt-6 text-[28px] font-light leading-[1.2] text-ink outline-none"
             >
-              {CONTACT_EMAIL}
-            </a>
+              Thanks, {submittedName}.
+            </h2>
+            <p className="mt-3 text-[16px] leading-[1.6] text-ink/70">
+              We&apos;ve received your message and a member of our team will be in touch soon.
+            </p>
           </div>
+        ) : (
+          <form ref={formRef} noValidate onSubmit={handleSubmit} aria-label="Contact us">
+            <div className="grid grid-cols-1 gap-y-5 md:grid-cols-2 md:gap-x-6">
+              {textField("firstName", "First name", { autoComplete: "given-name", placeholder: "Enter your first name" })}
+              {textField("lastName", "Last name", { autoComplete: "family-name", placeholder: "Enter your last name" })}
+              {textField("email", "Work email", { type: "email", autoComplete: "email", placeholder: "Enter your work email" })}
+              {textField("company", "School / organisation", {
+                autoComplete: "organization",
+                placeholder: "Enter your school or organisation",
+              })}
+              {textField("jobTitle", "Job title", { autoComplete: "organization-title", placeholder: "Enter your job title" })}
 
-          <div className="rounded-2xl border border-ink/10 bg-white p-6 md:p-10 lg:self-start">
-            {status === "success" ? (
-              <div aria-live="polite">
-                <span className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent transition-[transform,opacity] duration-300 ease-out starting:scale-50 starting:opacity-0 motion-reduce:transition-none">
-                  <Check className="h-7 w-7 text-accent" strokeWidth={1.5} aria-hidden="true" />
-                </span>
-                <h3
-                  ref={successHeadingRef}
-                  tabIndex={-1}
-                  className="mt-6 text-[28px] font-light leading-[1.2] text-ink outline-none"
-                >
-                  Thanks, {submittedName}.
-                </h3>
-                <p className="mt-3 text-[16px] leading-[1.6] text-ink/70">
-                  We&apos;ve received your message and a member of our team will be in touch soon.
-                </p>
-              </div>
-            ) : (
-              <form ref={formRef} noValidate onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {textField("firstName", "First name", { autoComplete: "given-name" })}
-                  {textField("lastName", "Last name", { autoComplete: "family-name" })}
-                </div>
-
-                {textField("email", "E-mail address", {
-                  type: "email",
-                  autoComplete: "email",
-                  helper: "Please enter your work email address",
-                })}
-
-                <div>
-                  <Label htmlFor={id("region")}>What region are you located in?</Label>
+              <div>
+                <Label htmlFor={id("helpTopic")}>What can we help with?</Label>
+                <div className="relative mt-2">
                   <select
-                    id={id("region")}
-                    data-field="region"
-                    name="region"
+                    id={id("helpTopic")}
+                    data-field="helpTopic"
+                    name="helpTopic"
                     required
-                    aria-invalid={errors.region ? true : undefined}
-                    aria-describedby={describedBy("region")}
-                    value={values.region}
-                    onChange={(e) => setValue("region", e.target.value)}
-                    onBlur={(e) => checkField("region", e.currentTarget.value)}
-                    className={`mt-2 h-[52px] ${CONTROL} ${borderFor("region")}`}
+                    aria-invalid={errors.helpTopic ? true : undefined}
+                    aria-describedby={describedBy("helpTopic")}
+                    value={values.helpTopic}
+                    onChange={(e) => setValue("helpTopic", e.target.value)}
+                    onBlur={(e) => checkField("helpTopic", e.currentTarget.value)}
+                    className={`h-[52px] cursor-pointer appearance-none pr-11 ${CONTROL} ${borderFor("helpTopic")} ${
+                      values.helpTopic ? "" : "text-ink/45"
+                    }`}
                   >
-                    <option value="">Please Select</option>
-                    {REGIONS.map((region) => (
-                      <option key={region} value={region}>
-                        {region}
+                    <option value="">Please select</option>
+                    {HELP_TOPICS.map((topic) => (
+                      <option key={topic} value={topic} className="text-ink">
+                        {topic}
                       </option>
                     ))}
                   </select>
-                  {errorText("region")}
+                  <ChevronDown
+                    className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-ink/55"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                 </div>
+                {errorText("helpTopic")}
+              </div>
 
-                {textField("school", "What is the name of your school, college or organisation?", {
-                  autoComplete: "organization",
-                })}
-                {textField("role", "And what is your role at said school, college, or organisation?", {
-                  autoComplete: "organization-title",
-                })}
+              <div className="md:col-span-2">
+                <Label htmlFor={id("message")}>Message</Label>
+                <textarea
+                  id={id("message")}
+                  data-field="message"
+                  name="message"
+                  rows={5}
+                  required
+                  placeholder="Tell us how we can help…"
+                  aria-invalid={errors.message ? true : undefined}
+                  aria-describedby={describedBy("message")}
+                  value={values.message}
+                  onChange={(e) => setValue("message", e.target.value)}
+                  onBlur={(e) => checkField("message", e.currentTarget.value)}
+                  className={`mt-2 resize-y py-3 leading-[1.5] ${CONTROL} ${borderFor("message")}`}
+                />
+                {errorText("message")}
+              </div>
+            </div>
 
-                <fieldset
-                  aria-describedby={describedBy("heardAbout")}
-                  onBlur={(e) => {
-                    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) checkField("heardAbout", values.heardAbout);
-                  }}
+            {/* Email consent */}
+            <div className="mt-6 flex flex-col gap-4 text-[14px] leading-[1.6] text-ink/70">
+              <p>
+                8billionideas would like to send you emails about our work with schools. Please tick the boxes below
+                if you&apos;d like to hear from us. This is optional and won&apos;t affect your enquiry.
+              </p>
+              {(
+                [
+                  ["marketingEmails", "I'd like to receive occasional emails from 8billionideas about programmes, events and resources for schools."],
+                  ["newsletter", "I'd like to receive the 8billionideas newsletter by email."],
+                ] as const
+              ).map(([key, text]) => (
+                <label key={key} className="flex cursor-pointer items-start gap-3">
+                  <span className="relative mt-px flex h-5 w-5 shrink-0">
+                    <input
+                      type="checkbox"
+                      name={key}
+                      checked={values[key]}
+                      onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.checked }))}
+                      className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-ink/30 bg-white transition-colors checked:border-accent checked:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40"
+                    />
+                    <Check
+                      className="pointer-events-none absolute inset-0 m-auto hidden h-3.5 w-3.5 text-ink peer-checked:block"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span>{text}</span>
+                </label>
+              ))}
+              <p>
+                You can unsubscribe from our emails at any time using the link in any email or by contacting{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-ink underline underline-offset-2">
+                  {CONTACT_EMAIL}
+                </a>
+                . For more information on how we use your data, please see our{" "}
+                <a
+                  href={PRIVACY_POLICY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-ink underline underline-offset-2"
                 >
-                  <legend className="text-[15px] font-medium text-ink">
-                    How did you hear about us?
-                    <span className="text-accent" aria-hidden="true">*</span>
-                  </legend>
-                  <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
-                    {HEARD_ABOUT.map((option, i) => (
-                      <label key={option} className="flex cursor-pointer items-center gap-3 text-[16px] text-ink">
-                        <input
-                          type="radio"
-                          name="heardAbout"
-                          value={option}
-                          required
-                          data-field={i === 0 ? "heardAbout" : undefined}
-                          checked={values.heardAbout === option}
-                          onChange={() => setValue("heardAbout", option)}
-                          className="h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-full border border-ink/30 bg-white transition-colors checked:border-accent checked:bg-accent checked:shadow-[inset_0_0_0_3px_white] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40"
-                        />
-                        {option}
-                      </label>
+                  Privacy Policy
+                </a>
+                .
+              </p>
+              <p>
+                By clicking submit below, you consent to allow 8billionideas to store and process the personal
+                information submitted above to provide you the content requested.
+              </p>
+            </div>
+
+            {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
+            <div aria-hidden="true" className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
+              <label htmlFor={id("website")}>Website</label>
+              <input ref={honeypotRef} id={id("website")} name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+            </div>
+
+            {status === "error" && (
+              <p role="alert" className="mt-6 rounded-lg bg-[#B42318]/[0.08] px-4 py-3 text-[14px] text-[#B42318]">
+                Something went wrong sending your message. Please try again, or email {CONTACT_EMAIL}.
+              </p>
+            )}
+
+            {/* Submit row: button | divider | (avatars) | reassurance. Stacked on mobile. */}
+            <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:gap-8">
+              <Button
+                type="submit"
+                arrow
+                loading={status === "submitting"}
+                disabled={status === "submitting" || !isContactFormConfigured}
+                aria-describedby={!isContactFormConfigured ? id("not-connected") : undefined}
+                className="w-full md:w-auto"
+              >
+                {status === "submitting" ? "Sending…" : "Send message"}
+              </Button>
+              <span className="hidden h-12 w-px bg-ink/15 md:block" aria-hidden="true" />
+              <div className="flex items-center gap-4">
+                {avatars.length > 0 && (
+                  <div className="flex shrink-0 -space-x-3">
+                    {avatars.map((avatar) => (
+                      <span
+                        key={avatar.src}
+                        className="relative h-11 w-11 overflow-hidden rounded-full border-2 border-white"
+                      >
+                        <Image src={avatar.src} alt={avatar.alt} fill sizes="44px" className="object-cover" />
+                      </span>
                     ))}
                   </div>
-                  {errorText("heardAbout")}
-                </fieldset>
-
-                <div>
-                  <Label htmlFor={id("message")}>
-                    Tell us about some of the challenges you would like us to help you solve. Also
-                    include if you have ideas about year group(s), dates, and whether you&apos;d like
-                    whole-day events or weekly engagements.
-                  </Label>
-                  <textarea
-                    id={id("message")}
-                    data-field="message"
-                    name="message"
-                    rows={6}
-                    required
-                    aria-invalid={errors.message ? true : undefined}
-                    aria-describedby={describedBy("message")}
-                    value={values.message}
-                    onChange={(e) => setValue("message", e.target.value)}
-                    onBlur={(e) => checkField("message", e.currentTarget.value)}
-                    className={`mt-2 resize-y py-3 leading-[1.5] ${CONTROL} ${borderFor("message")}`}
-                  />
-                  {errorText("message")}
-                </div>
-
-                <div className="flex flex-col gap-4 text-[14px] leading-[1.6] text-ink/70">
-                  <p>
-                    8billionideas would like to send you emails about our work with schools. Please tick
-                    the boxes below if you&apos;d like to hear from us. This is optional and won&apos;t
-                    affect your enquiry.
-                  </p>
-                  {(
-                    [
-                      ["marketingEmails", "I'd like to receive occasional emails from 8billionideas about programmes, events and resources for schools."],
-                      ["newsletter", "I'd like to receive the 8billionideas newsletter by email."],
-                    ] as const
-                  ).map(([key, text]) => (
-                    <label key={key} className="flex cursor-pointer items-start gap-3">
-                      <span className="relative mt-px flex h-5 w-5 shrink-0">
-                        <input
-                          type="checkbox"
-                          name={key}
-                          checked={values[key]}
-                          onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.checked }))}
-                          className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-ink/30 bg-white transition-colors checked:border-accent checked:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40"
-                        />
-                        <Check
-                          className="pointer-events-none absolute inset-0 m-auto hidden h-3.5 w-3.5 text-ink peer-checked:block"
-                          strokeWidth={2}
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <span>{text}</span>
-                    </label>
-                  ))}
-                  <p>
-                    You can unsubscribe from our emails at any time using the link in any email or by
-                    contacting{" "}
-                    <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-ink underline underline-offset-2">
-                      {CONTACT_EMAIL}
-                    </a>
-                    . For more information on how we use your data, please see our{" "}
-                    <a
-                      href={PRIVACY_POLICY_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-ink underline underline-offset-2"
-                    >
-                      Privacy Policy
-                    </a>
-                    .
-                  </p>
-                  <p>
-                    By clicking submit below, you consent to allow 8billionideas to store and process the
-                    personal information submitted above to provide you the content requested.
-                  </p>
-                </div>
-
-                {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
-                <div aria-hidden="true" className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
-                  <label htmlFor={id("website")}>Website</label>
-                  <input ref={honeypotRef} id={id("website")} name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
-                </div>
-
-                {status === "error" && (
-                  <p role="alert" className="rounded-lg bg-[#B42318]/[0.08] px-4 py-3 text-[14px] text-[#B42318]">
-                    Something went wrong sending your message. Please try again, or email {CONTACT_EMAIL}.
-                  </p>
                 )}
-
                 <div>
-                  <Button
-                    type="submit"
-                    size="form"
-                    arrow
-                    loading={status === "submitting"}
-                    disabled={status === "submitting" || !isContactFormConfigured}
-                    aria-describedby={!isContactFormConfigured ? id("not-connected") : undefined}
-                  >
-                    {status === "submitting" ? "Sending…" : "Begin your journey with 8billionideas"}
-                  </Button>
-                  {!isContactFormConfigured && (
-                    <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/55">
-                      The contact form isn&apos;t connected yet (review version).
-                    </p>
-                  )}
+                  <p className="text-[16px] text-ink">A real person from our team will get back to you.</p>
+                  <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-ink/55">
+                    USUALLY WITHIN ONE WORKING DAY.
+                  </p>
                 </div>
-              </form>
+              </div>
+            </div>
+            {!isContactFormConfigured && (
+              <p id={id("not-connected")} className="mt-3 text-[13px] text-ink/55">
+                The contact form isn&apos;t connected yet (review version).
+              </p>
             )}
-          </div>
-        </div>
-      </Container>
+          </form>
+        )}
+      </div>
     </section>
   );
 }
