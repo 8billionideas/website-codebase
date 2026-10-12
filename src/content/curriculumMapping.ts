@@ -192,7 +192,7 @@ export const curriculumHero = {
     "Designed to work week to week within the timetable you already have, our curriculum gives you structured learning across the year groups and areas that matter to your school, with every lesson fully built and ready for teachers to deliver.",
   facts: [
     { value: "8", label: "PILLARS" },
-    { value: "12", label: "CORE SKILLS" },
+    { value: "8", label: "CORE SKILLS" },
     { value: "Year 1–13", label: "ONE JOURNEY" },
   ],
   scrollLink: { label: "Explore how it maps to your subjects ↓", href: "#mapping" },

@@ -74,7 +74,7 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
 ## Key facts and data
 
 - The eight pillars, in this order: Entrepreneurship, Careers, Financial Literacy, Wellbeing, Health & Performance, Leadership, Sustainability, Technology. Sustainability and Technology are marked **Coming soon**.
-- Skills framework: **Discover / Develop / Apply**, four skills each (12 in total).
+- Skills: eight transferable skills (Critical Thinking, Creative Thinking, Problem-Solving, Communication, Collaboration, Resilience, Self-Awareness, Decision-Making), shown as a Discovering / Developing / Applying progression across Year 1, 4, 7, 10 and 13.
 - Each pillar has **five 40-60 minute lessons per year group**. Lesson titles don't exist yet; leave them null.
 - Pricing (single source of truth in src/lib/pricing.ts):
   - Critical Curriculum: **£40 per pillar per year group**. Sellable options are **1, 3 or 6 pillars** only. Year groups 1 to 13.

@@ -1,151 +1,137 @@
-import { Compass, TrendingUp, Target, Plus, ArrowRight, type LucideIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
-import { progression } from "@/content/progression";
-import type { ProgressionCategory } from "@/content/progression";
 import LevelModeToggle, { LevelText } from "@/components/shared/LevelModeToggle";
+import { progressionRows, progressionYears, skillsProgressionSection } from "@/content/skills-progression";
 
-const CATEGORY_ICONS: Record<ProgressionCategory["icon"], LucideIcon> = {
-  Compass,
-  TrendingUp,
-  Target,
-};
+// Grid template shared by the label row and the three timeline rows (desktop and the
+// tablet scroller): a row-label column, then five equal columns.
+const GRID = "grid grid-cols-[160px_repeat(5,minmax(0,1fr))]";
+const LAST = progressionYears.length - 1;
 
-function MountainSilhouette() {
+// One timeline row: the line runs through the dots (12px down, the centre of the h-6 dot
+// row), with arrows between columns. The last (Year 13) column's dot, the line beyond it
+// and the closing arrow are accent-green.
+function TimelineRow({ name, steps }: { name: string; steps: readonly string[] }) {
   return (
-    <svg
-      viewBox="0 0 800 100"
-      preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-16 w-full text-accent/10"
-      aria-hidden="true"
-    >
-      <path
-        d="M0 100 L100 55 L180 85 L260 30 L340 90 L420 45 L500 80 L580 20 L660 70 L740 40 L800 65 L800 100 Z"
-        fill="currentColor"
-      />
-    </svg>
+    <div className={GRID}>
+      <div className="sticky left-0 z-10 flex h-6 items-center bg-paper pr-4">
+        <h3 className="text-[22px] font-normal leading-none text-ink">{name}</h3>
+      </div>
+      <div className="relative col-span-5 grid grid-cols-5">
+        {/* Grey line: first dot to last dot. Green line: last dot to the edge. */}
+        <span aria-hidden="true" className="absolute top-3 left-[10%] right-[10%] h-px bg-ink/25" />
+        <span aria-hidden="true" className="absolute top-3 left-[90%] right-3 h-px bg-accent" />
+        <ArrowRight
+          aria-hidden="true"
+          className="absolute top-3 right-0 h-3.5 w-3.5 -translate-y-1/2 text-accent"
+          strokeWidth={1.5}
+        />
+        {steps.map((text, i) => (
+          <div key={text} className="relative flex flex-col items-center px-3 text-center">
+            <div className="flex h-6 items-center">
+              <span
+                aria-hidden="true"
+                className={`relative h-2 w-2 rounded-full ${i === LAST ? "bg-accent" : "bg-ink"}`}
+              />
+            </div>
+            {/* Arrow on the line between this column and the next. */}
+            {i < LAST && (
+              <ArrowRight
+                aria-hidden="true"
+                className="absolute top-3 -right-[7px] h-3.5 w-3.5 -translate-y-1/2 bg-paper text-ink/50"
+                strokeWidth={1.5}
+              />
+            )}
+            <p className="mt-3 max-w-[200px] text-[14px] leading-[1.5] text-ink/65">{text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
+function Timeline() {
+  return (
+    <div>
+      <div className={GRID}>
+        <div className="sticky left-0 z-10 bg-paper" />
+        {progressionYears.map((year) => (
+          <p key={year} className="text-center text-[18px] font-medium text-ink">
+            <LevelText year={year} />
+          </p>
+        ))}
+      </div>
+      <div className="mt-8 flex flex-col gap-10">
+        {progressionRows.map((row) => (
+          <TimelineRow key={row.name} name={row.name} steps={row.steps} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Homepage Section 4: "Skills that grow with students".
 export default function Progression() {
-  const { index, eyebrow, heading, subheading, annotation, stages, categories, bottom } = progression;
+  const { index, eyebrow, headingLine1, headingLine2, intro } = skillsProgressionSection;
 
   return (
-    <section className="relative overflow-hidden py-16 md:py-24">
+    <section className="bg-paper py-16 md:py-24">
       <Container>
-        <div className="relative">
-          <p className="text-caption text-muted">{index}</p>
-          <div className="mt-2 h-8 w-px bg-accent" aria-hidden="true" />
+        <p className="text-caption text-muted">{index}</p>
+        <div className="mt-2 h-8 w-px bg-accent" aria-hidden="true" />
 
-          {/* Heading block on the left, Years/Grades toggle on the right (below the line on mobile). */}
-          <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
-            <div>
-              <p className="text-caption uppercase tracking-[0.2em] text-muted">{eyebrow}</p>
-              <h2 className="mt-3 max-w-2xl text-display text-ink">{heading}</h2>
-              <p className="mt-4 max-w-xl text-body-lg text-muted">{subheading}</p>
+        {/* Heading block on the left, Years/Grades toggle on the right (below the paragraph on mobile). */}
+        <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
+          <div>
+            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
+            <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+              {headingLine1}
+              <br />
+              <em className="text-accent">{headingLine2}</em>
+            </h2>
+            <p className="mt-5 max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+          </div>
+          <LevelModeToggle className="self-start" />
+        </div>
+
+        {/* Desktop: the timeline grid. Tablet: the same grid scrolling inside its own box,
+            with sticky row labels and a fade on the right. */}
+        <div className="relative mt-14 hidden md:block">
+          <div className="[-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto [&::-webkit-scrollbar]:hidden lg:overflow-visible">
+            <div className="min-w-[960px] pb-1 lg:min-w-0">
+              <Timeline />
             </div>
-            <LevelModeToggle className="self-start" />
           </div>
-
-          <p className="absolute right-0 top-0 hidden -rotate-3 text-body italic text-muted md:block">
-            {annotation}
-          </p>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-paper to-transparent lg:hidden"
+          />
         </div>
 
-        {/* Desktop grid — each row (header + 3 categories) is its own
-            independent grid sharing the same column template, so they
-            align visually without fighting over shared auto-placement. */}
-        <div className="hidden md:block">
-          <div className="mt-16 grid grid-cols-[220px_repeat(4,1fr)] gap-x-6">
-            <div />
-            {stages.map(({ year, stage }) => (
-              <p
-                key={stage}
-                className="text-center text-caption uppercase tracking-wide text-muted"
-              >
-                <LevelText year={year} suffix={` / ${stage}`} upper />
-              </p>
-            ))}
-          </div>
-
-          {categories.map((category) => {
-            const Icon = CATEGORY_ICONS[category.icon];
-            return (
-              <div
-                key={category.name}
-                className="mt-8 grid grid-cols-[220px_repeat(4,1fr)] gap-x-6"
-              >
-                <div>
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/15 text-accent">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <p className="mt-3 text-body-lg text-ink">{category.name}</p>
-                </div>
-
-                <div className="relative col-span-4 grid grid-cols-4 gap-x-6">
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-2 right-4 top-2 h-px bg-accent"
-                  />
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -right-1 top-2 h-3 w-3 -translate-y-1/2 text-accent"
-                  />
-
-                  {category.cells.map((cell) => (
-                    <div key={cell.verb} className="relative">
-                      <span className="relative z-10 flex h-4 w-4 items-center justify-center rounded-full border-2 border-accent bg-paper text-accent">
-                        <Plus className="h-2.5 w-2.5" aria-hidden="true" />
-                      </span>
-                      <p className="mt-3 text-body-lg text-ink">{cell.verb}</p>
-                      <p className="mt-1 text-caption text-muted">{cell.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Mobile fallback — simple stacked list, no connecting lines. */}
-        <div className="mt-12 space-y-12 md:hidden">
-          {categories.map((category) => {
-            const Icon = CATEGORY_ICONS[category.icon];
-            return (
-              <div key={category.name}>
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <p className="text-body-lg text-ink">{category.name}</p>
-                </div>
-
-                <div className="mt-6 space-y-6 border-l-2 border-accent/30 pl-5">
-                  {category.cells.map((cell, i) => (
-                    <div key={cell.verb}>
-                      <p className="text-caption uppercase tracking-wide text-accent">
-                        <LevelText year={stages[i].year} suffix={` / ${stages[i].stage}`} upper />
-                      </p>
-                      <p className="mt-1 text-body-lg text-ink">{cell.verb}</p>
-                      <p className="mt-1 text-caption text-muted">{cell.text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom bridge */}
-        <div className="relative mt-20 flex flex-col items-center text-center">
-          <div className="h-10 w-px bg-accent" aria-hidden="true" />
-          <p className="mt-4 text-caption uppercase tracking-[0.2em] text-muted">
-            {bottom.eyebrow}
-          </p>
-          <p className="mt-3 max-w-xl text-h3 text-ink">{bottom.line}</p>
+        {/* Mobile: one vertical timeline per row. */}
+        <div className="mt-12 flex flex-col gap-12 md:hidden">
+          {progressionRows.map((row) => (
+            <div key={row.name}>
+              <h3 className="text-[22px] font-normal text-ink">{row.name}</h3>
+              <ol className="relative mt-5 flex list-none flex-col gap-6 p-0">
+                <span aria-hidden="true" className="absolute top-2 bottom-2 left-1 w-px -translate-x-1/2 bg-ink/25" />
+                {row.steps.map((text, i) => (
+                  <li key={text} className="relative pl-7">
+                    <span
+                      aria-hidden="true"
+                      className={`absolute top-[7px] left-0 h-2 w-2 rounded-full ${i === LAST ? "bg-accent" : "bg-ink"}`}
+                    />
+                    <p className="text-[14px] font-medium text-ink">
+                      <LevelText year={progressionYears[i]} />
+                    </p>
+                    <p className="mt-1 text-[14px] leading-[1.5] text-ink/65">{text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
         </div>
       </Container>
-
-      <MountainSilhouette />
     </section>
   );
 }

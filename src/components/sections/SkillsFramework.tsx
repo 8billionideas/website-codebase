@@ -1,80 +1,62 @@
-import { ArrowRight } from "lucide-react";
+import {
+  Brain,
+  Lightbulb,
+  MessageCircle,
+  Puzzle,
+  Scale,
+  ShieldCheck,
+  User,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import Container from "@/components/layout/Container";
-import { skillsFramework } from "@/content/skillsFramework";
-import type { SkillsFrameworkColumn } from "@/content/skillsFramework";
+import { skills, skillsSection, type SkillIcon } from "@/content/skills";
 
-function SkillPill({ skill }: { skill: string }) {
-  return (
-    <span className="inline-flex items-center justify-center rounded-full border border-accent px-3 py-1.5 text-center text-caption font-normal text-ink">
-      {skill}
-    </span>
-  );
-}
+const ICONS: Record<SkillIcon, LucideIcon> = {
+  Brain,
+  Lightbulb,
+  Puzzle,
+  MessageCircle,
+  Users,
+  ShieldCheck,
+  User,
+  Scale,
+};
 
-function Column({ column }: { column: SkillsFrameworkColumn }) {
-  const firstFour = column.skills.slice(0, 4);
-  const rest = column.skills.slice(4);
-
-  return (
-    <div className="px-6 py-10 md:py-0">
-      <p className="text-caption font-normal text-accent">{column.number}</p>
-      <h3 className="mt-2 text-h3 text-ink">{column.heading}</h3>
-      <p className="mt-5 text-body-lg text-ink">{column.intro}</p>
-
-      <p className="mt-12 text-caption uppercase tracking-wide text-muted">
-        {column.skillsLabel}
-      </p>
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        {firstFour.map((skill) => (
-          <SkillPill key={skill} skill={skill} />
-        ))}
-      </div>
-      {rest.length > 0 && (
-        <div className="mt-3 flex justify-center">
-          {rest.map((skill) => (
-            <SkillPill key={skill} skill={skill} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
+// Homepage Section 3: "Eight transferable skills".
 export default function SkillsFramework() {
-  const { eyebrow, heading, subheading, columns } = skillsFramework;
+  const { eyebrow, headingLine1, headingLine2, intro } = skillsSection;
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="bg-paper py-16 md:py-24">
       <Container>
-        <div className="text-center">
-          <p className="text-caption uppercase tracking-[0.2em] text-muted">
-            {eyebrow}
-          </p>
-          <h2 className="mx-auto mt-3 max-w-2xl text-display text-ink">{heading}</h2>
-          <p className="mx-auto mt-4 max-w-xl text-body-lg text-muted">
-            {subheading}
-          </p>
-        </div>
+        <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
+        <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+          {headingLine1}
+          <br />
+          <em className="text-accent">{headingLine2}</em>
+        </h2>
+        <p className="mt-5 max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
-        <div className="relative mt-16 grid grid-cols-1 divide-y divide-ink/10 md:grid-cols-3 md:divide-x md:divide-y-0">
-          {columns.map((column) => (
-            <Column key={column.number} column={column} />
-          ))}
-
-          {/* Connecting arrows on the two internal dividers — desktop only. */}
-          <span
-            aria-hidden="true"
-            className="absolute left-1/3 top-1/2 hidden h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-accent bg-paper text-accent md:flex"
-          >
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <span
-            aria-hidden="true"
-            className="absolute left-2/3 top-1/2 hidden h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-accent bg-paper text-accent md:flex"
-          >
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </span>
-        </div>
+        <ul className="mt-12 grid list-none auto-rows-fr grid-cols-1 gap-4 p-0 md:grid-cols-2 lg:grid-cols-4">
+          {skills.map((skill) => {
+            const Icon = ICONS[skill.icon];
+            return (
+              <li
+                key={skill.title}
+                className="group flex flex-col rounded-xl bg-ink p-7 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              >
+                <Icon
+                  className="h-7 w-7 text-white transition-colors duration-200 group-hover:text-accent"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <h3 className="mt-4 text-[20px] font-medium leading-[1.3] text-white">{skill.title}</h3>
+                <p className="mt-2 text-[15px] leading-[1.5] text-white/80">{skill.text}</p>
+              </li>
+            );
+          })}
+        </ul>
       </Container>
     </section>
   );
