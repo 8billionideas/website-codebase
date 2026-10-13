@@ -9,6 +9,7 @@ import {
   YEAR_GROUPS_MAX,
   DEFAULT_YEAR_GROUPS,
   DEFAULT_PILLARS,
+  DEFAULT_PRODUCT,
   STUDENTS_MIN,
   STUDENTS_MAX,
   DEFAULT_STUDENTS,
@@ -174,7 +175,7 @@ function PillStepper({
 }
 
 export default function PricingCalculator() {
-  const [product, setProduct] = useState<Product>("both");
+  const [product, setProduct] = useState<Product>(DEFAULT_PRODUCT);
   const [yearGroups, setYearGroups] = useState(DEFAULT_YEAR_GROUPS);
   const [pillars, setPillars] = useState<number>(DEFAULT_PILLARS);
   const [students, setStudents] = useState(DEFAULT_STUDENTS);

@@ -75,12 +75,12 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
 
 - The eight pillars, in this order: Entrepreneurship, Careers, Financial Literacy, Wellbeing, Health & Performance, Leadership, Sustainability, Technology. Sustainability and Technology are marked **Coming soon**.
 - Skills: eight transferable skills (Critical Thinking, Creative Thinking, Problem-Solving, Communication, Collaboration, Resilience, Self-Awareness, Decision-Making), shown as a Discovering / Developing / Applying progression across Year 1, 4, 7, 10 and 13.
-- Each pillar has **five 40-60 minute lessons per year group**. Lesson titles don't exist yet; leave them null.
+- Lesson explorer data comes from the Lesson Explorer developer document (src/content/lesson-explorer.ts): one published programme per year and pillar, standard lesson sequences or grouped overviews; no durations are shown; proposed six-part sequences stay hidden until curriculum sign-off.
 - Pricing (single source of truth in src/lib/pricing.ts):
   - Critical Curriculum: **£40 per pillar per year group**. Sellable options are **1, 3 or 6 pillars** only. Year groups 1 to 13.
   - GCSE fee per student: 10–25 £105 · 26–50 £85 · 51–100 £65 · 101–150 £50 · 151–200 £45 · 200+ £40. Minimum 10 students.
   - Calculator defaults are the minimums: 1 year group, 1 pillar, 10 students.
-- Data files: src/lib/case-studies.ts, src/lib/pricing.ts, src/lib/curriculum-subjects.ts, src/lib/pillar-programmes.ts, src/lib/resources.ts, src/lib/homepage-faqs.ts, plus the testimonials data in src/content/home.ts (home.proof.testimonials and home.proof.bandTestimonial).
+- Data files: src/lib/case-studies.ts, src/lib/pricing.ts, src/lib/curriculum-subjects.ts, src/content/lesson-explorer.ts, src/lib/resources.ts, src/lib/homepage-faqs.ts, plus the testimonials data in src/content/home.ts (home.proof.testimonials and home.proof.bandTestimonial).
 - Case studies order: The Internship (featured), Nord Anglia Education India, Severn Academies, Harrow Sustainability450, Chelsea FC Academy, GEMS World Academy (kept last and lower on the page).
 
 ## Open items (don't resolve these by guessing)

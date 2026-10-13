@@ -38,13 +38,18 @@ export default function SkillsFramework() {
         </h2>
         <p className="mt-5 max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
-        <ul className="mt-12 grid list-none auto-rows-fr grid-cols-1 gap-4 p-0 md:grid-cols-2 lg:grid-cols-4">
+        {/* Each card spans three rows (icon, title, text) on a shared subgrid, so a two-line title
+            in one card moves every description in that row down equally: cards in a row stay the
+            same height and their descriptions start at the same position.
+            At 1024–1279px (narrow 4-column cards) the gap, side padding and text size drop to
+            their minimums (12px, 20px, 14px) to keep descriptions to 3 lines where possible. */}
+        <ul className="mt-12 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 lg:grid-cols-4 lg:max-xl:gap-x-3">
           {skills.map((skill) => {
             const Icon = ICONS[skill.icon];
             return (
               <li
                 key={skill.title}
-                className="group flex flex-col rounded-xl bg-ink p-7 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                className="group row-span-3 grid grid-rows-subgrid gap-0 rounded-xl bg-ink px-6 py-7 lg:max-xl:px-5 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 <Icon
                   className="h-7 w-7 text-white transition-colors duration-200 group-hover:text-accent"
@@ -52,7 +57,7 @@ export default function SkillsFramework() {
                   aria-hidden="true"
                 />
                 <h3 className="mt-4 text-[20px] font-medium leading-[1.3] text-white">{skill.title}</h3>
-                <p className="mt-2 text-[15px] leading-[1.5] text-white/80">{skill.text}</p>
+                <p className="mt-2 text-[15px] leading-[1.5] text-white/80 lg:max-xl:text-[14px]">{skill.text}</p>
               </li>
             );
           })}

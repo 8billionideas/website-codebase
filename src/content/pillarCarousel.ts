@@ -9,6 +9,9 @@ export interface PillarCarouselCard {
   // Optional real photo for the navy box. When set, it replaces the
   // pillar's icon; the supporting line still shows.
   exampleImage?: { src: string; alt: string } | null;
+  // Shows a "Coming soon" pill on the homepage card and marks the pillar's
+  // programme as coming soon on the curriculum page.
+  comingSoon?: boolean;
 }
 
 export const pillarCarousel = {
@@ -95,6 +98,7 @@ export const pillarCarousel = {
     },
     {
       name: "Sustainability",
+      comingSoon: true,
       supportingLine: "Understanding our impact and acting for people and the planet",
       description:
         "Understanding how our choices affect people, resources and the world around us",
@@ -107,6 +111,7 @@ export const pillarCarousel = {
     },
     {
       name: "Technology",
+      comingSoon: true,
       supportingLine: "Using digital tools and AI with confidence and responsibility",
       description:
         "The technology shaping the world around us and the possibilities it is opening up",

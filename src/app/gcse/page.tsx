@@ -8,6 +8,7 @@ import { gcse } from "@/content/gcse";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import PillarQuestionSelector from "@/components/gcse/PillarQuestionSelector";
 import WhyPartner from "@/components/gcse/WhyPartner";
+import CurriculaSection from "@/components/gcse/CurriculaSection";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
@@ -197,6 +198,9 @@ export default function GcsePage() {
           </div>
         </Container>
       </section>
+
+      {/* 2b. Works with the curriculum you already follow */}
+      <CurriculaSection />
 
       {/* 3. Project themes */}
       <section className="relative isolate bg-paper">

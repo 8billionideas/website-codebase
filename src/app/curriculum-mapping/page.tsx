@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Container from "@/components/layout/Container";
-import CurriculumExplorer from "@/components/curriculum/CurriculumExplorer";
+import CurriculumConnections from "@/components/curriculum/CurriculumConnections";
 import CurriculumHero from "@/components/curriculum/CurriculumHero";
 import ImplementationSupportSection from "@/components/curriculum/ImplementationSupportSection";
 import LessonPlatformShowcase from "@/components/curriculum/LessonPlatformShowcase";
-import PillarProgrammeExplorer from "@/components/curriculum/PillarProgrammeExplorer";
+import LessonExplorer from "@/components/curriculum/LessonExplorer";
 import StudentProgressionShowcase from "@/components/curriculum/StudentProgressionShowcase";
-import { Eyebrow } from "@/components/home/SectionHeading";
 import { curriculumMapping } from "@/content/curriculumMapping";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 
@@ -17,42 +16,26 @@ export const metadata: Metadata = {
 };
 
 export default function CurriculumMappingPage() {
-  const { heading, intro, footnote } = curriculumMapping;
+  const { footnote } = curriculumMapping;
 
   return (
     <>
       <CurriculumHero />
 
-      {/* Pillar programme explorer — its own section, above the mapping. */}
+      {/* Lesson explorer — its own section, above the mapping. */}
       <div className="bg-paper py-16 md:py-24">
         <Container>
-          <h2 className="mx-auto max-w-[900px] text-balance text-center text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[44px]">
-            Each pillar is built into a clear sequence of lessons for every year
-            group
-          </h2>
-          <p className="mx-auto mt-5 max-w-[760px] text-center text-[18px] leading-[1.6] text-ink/70">
-            For each year group, every pillar is broken into five 40-60 minute
-            lessons that build on one another and form a complete programme of
-            learning.
-          </p>
-
-          <PillarProgrammeExplorer />
+          <LessonExplorer />
         </Container>
       </div>
 
       <LessonPlatformShowcase />
 
-      <div className="py-16 md:py-24">
+      {/* Curriculum mapping: subject-and-stage explorer. The hero's "Explore how it maps
+          to your subjects" link scrolls to #mapping. */}
+      <section id="mapping" className="bg-paper py-16 md:py-24">
         <Container>
-          <Eyebrow variant="light" className="!text-accent">
-            CURRICULUM MAPPING
-          </Eyebrow>
-          <h2 className="mt-4 max-w-[900px] text-balance text-display text-ink">{heading}</h2>
-          <p className="mt-4 max-w-[720px] text-body-lg text-muted">{intro}</p>
-
-          <div id="mapping">
-            <CurriculumExplorer />
-          </div>
+          <CurriculumConnections />
 
           <p className="mt-12 max-w-2xl text-body text-muted md:mt-16">
             {footnote.pre}
@@ -64,7 +47,7 @@ export default function CurriculumMappingPage() {
             {footnote.post}
           </p>
         </Container>
-      </div>
+      </section>
 
       <StudentProgressionShowcase />
 

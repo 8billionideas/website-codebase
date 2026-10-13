@@ -4,6 +4,8 @@ export const YEAR_GROUPS_MIN = 1;
 export const YEAR_GROUPS_MAX = 13;
 export const DEFAULT_YEAR_GROUPS = 1;
 export const DEFAULT_PILLARS = 1;
+// Calculator product selected on load: "cc" is Critical Curriculum (the others are "gcse" and "both").
+export const DEFAULT_PRODUCT = "cc";
 
 export interface CurriculumPriceBreakdown {
   perYearGroup: number;

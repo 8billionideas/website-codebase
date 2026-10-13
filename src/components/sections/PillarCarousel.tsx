@@ -82,8 +82,54 @@ export default function PillarCarousel() {
         <p className="mx-auto mt-4 max-w-xl text-body-lg text-muted">{subheading}</p>
       </div>
 
-      {/* Carousel — prev/next arrows sit outside the two columns. */}
-      <div className="relative mt-16">
+      {/* Icon row (above the card) — one line always. Below lg it scrolls horizontally
+          (icon beside label); at lg+ it's a static single line spread with
+          justify-between, icon stacked above label since side-by-side
+          doesn't fit all eight labels at 1024px even at minimum sizes. */}
+      <ul
+        ref={rowRef}
+        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-8 flex flex-nowrap items-center gap-4 overflow-x-auto pb-2 [mask-image:linear-gradient(to_right,black_0%,black_92%,transparent_100%)] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-4 lg:overflow-visible lg:pb-0 lg:[mask-image:none] lg:snap-none"
+      >
+        {cards.map((c, i) => {
+          const Icon = PILLAR_ICONS[c.name] ?? Lightbulb;
+          const active = i === index;
+          return (
+            <li
+              key={c.name}
+              ref={(el) => {
+                itemRefs.current[i] = el;
+              }}
+              className="shrink-0 snap-start"
+            >
+              <button
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-current={active}
+                className="flex items-center gap-2 lg:flex-col lg:gap-1"
+              >
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
+                    active ? "bg-accent/20 text-ink" : "text-muted"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span
+                  className={`whitespace-nowrap text-caption font-normal ${
+                    active ? "text-ink" : "text-muted"
+                  }`}
+                >
+                  {c.name}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Carousel — prev/next arrows sit outside the two columns. 24px below the row on
+          mobile, 32px from md (the row has 8px of bottom padding below lg). */}
+      <div className="relative mt-4 md:mt-6 lg:mt-8">
         <button
           type="button"
           onClick={() => go(index - 1)}
@@ -152,6 +198,14 @@ export default function PillarCarousel() {
 
             {/* Min heights match the old "Example project" box, so its size and position hold. */}
             <div className="relative mt-4 flex min-h-[172px] w-full flex-col items-center justify-center rounded-xl bg-ink px-[18px] py-[14px] text-center shadow-lg lg:absolute lg:-bottom-12 lg:-right-9 lg:mt-0 lg:min-h-[149px] lg:w-96">
+              {/* Pinned to the corner so the box keeps its size and the icon and line stay put.
+                  Below lg the box is too narrow to clear the centred icon, so the pill sits on
+                  the top edge instead (in the 16px gap below the photo). */}
+              {card.comingSoon && (
+                <span className="absolute top-0 right-3 -translate-y-1/2 rounded-full border border-accent bg-ink px-3 py-1 text-[12px] font-medium uppercase leading-none tracking-[0.15em] text-accent lg:top-3 lg:translate-y-0">
+                  Coming soon
+                </span>
+              )}
               {card.exampleImage ? (
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
                   <Image
@@ -193,53 +247,10 @@ export default function PillarCarousel() {
         </div>
       </div>
 
-      {/* Icon row — one line always. Below lg it scrolls horizontally
-          (icon beside label); at lg+ it's a static single line spread with
-          justify-between, icon stacked above label since side-by-side
-          doesn't fit all eight labels at 1024px even at minimum sizes. */}
-      <ul
-        ref={rowRef}
-        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-24 flex flex-nowrap items-center gap-4 overflow-x-auto pb-2 [mask-image:linear-gradient(to_right,black_0%,black_92%,transparent_100%)] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-4 lg:overflow-visible lg:pb-0 lg:[mask-image:none] lg:snap-none"
-      >
-        {cards.map((c, i) => {
-          const Icon = PILLAR_ICONS[c.name] ?? Lightbulb;
-          const active = i === index;
-          return (
-            <li
-              key={c.name}
-              ref={(el) => {
-                itemRefs.current[i] = el;
-              }}
-              className="shrink-0 snap-start"
-            >
-              <button
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-current={active}
-                className="flex items-center gap-2 lg:flex-col lg:gap-1"
-              >
-                <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors ${
-                    active ? "bg-accent/20 text-ink" : "text-muted"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                </span>
-                <span
-                  className={`whitespace-nowrap text-caption font-normal ${
-                    active ? "text-ink" : "text-muted"
-                  }`}
-                >
-                  {c.name}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
 
-      {/* Bridge image band — full-bleed, breaking out of the Container. */}
-      <div className="relative left-1/2 mt-16 flex min-h-[320px] w-screen -translate-x-1/2 items-center justify-center overflow-hidden md:h-[320px] lg:h-[420px]">
+      {/* Bridge image band — full-bleed, breaking out of the Container. From lg the navy box
+          hangs 48px below the card, so the extra margin keeps a 64px gap beneath it. */}
+      <div className="relative left-1/2 mt-16 flex min-h-[320px] w-screen -translate-x-1/2 lg:mt-28 items-center justify-center overflow-hidden md:h-[320px] lg:h-[420px]">
         <Image
           src="/images/built-for-life-band.webp"
           alt=""
