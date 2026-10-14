@@ -38,6 +38,15 @@ export interface DemoRequest {
   what_can_we_help_with: string;
 }
 
+// legalConsentOptions as documented for the Forms API v3 submission endpoint.
+export interface HubspotLegalConsentOptions {
+  consent: {
+    consentToProcess: boolean;
+    text: string;
+    communications?: { value: boolean; subscriptionTypeId: number; text: string }[];
+  };
+}
+
 function readHubspotCookie(): string | undefined {
   const match = document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : undefined;
@@ -47,7 +56,8 @@ function readHubspotCookie(): string | undefined {
 // as HubSpot does ("0-2/name" is the company's Name); plain keys are contact properties.
 export async function submitHubspotForm(
   formId: string,
-  values: Record<string, string | undefined>
+  values: Record<string, string | undefined>,
+  legalConsentOptions?: HubspotLegalConsentOptions
 ): Promise<boolean> {
   const fields = Object.entries(values)
     .filter(([, value]) => value)
@@ -63,6 +73,7 @@ export async function submitHubspotForm(
       pageName: document.title,
       ...(hutk ? { hutk } : {}),
     },
+    ...(legalConsentOptions ? { legalConsentOptions } : {}),
   });
   const post = (host: string) =>
     fetch(`${host}/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${formId}`, {

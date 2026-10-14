@@ -42,6 +42,7 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 - Numbers: spell out one to nine, numerals from 10 up. Ages, percentages, money and measurements are always numerals.
 - Approved headline figures: **350+ schools** and **over 1 million students**. Use these everywhere.
 - Always name **OxfordAQA** when the GCSE is mentioned.
+- The only email address shown on the website is hello@8billionideas.com. Never use personal email addresses.
 - The support role is the **Partnership Manager**. Never "project manager". Never promise "24/7".
 - Plain English. No marketing inflation, no unsourced industry statistics.
 

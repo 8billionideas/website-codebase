@@ -7,30 +7,47 @@ import { HUBSPOT_CONTACT_FORM_ID, isContactFormConfigured, submitHubspotForm } f
 import Button from "@/components/ui/Button";
 import { HELP_TOPICS, teamAvatars } from "@/content/contact";
 
-// Confirm these match the internal field names in the HubSpot form.
+// Field names as set up in the HubSpot "Contact us" form ("0-1/…" are contact properties;
+// on this form School / organisation is the contact's "company" property).
 const HUBSPOT_FIELDS = {
-  firstName: "firstname",
-  lastName: "lastname",
-  email: "email",
-  company: "company",
-  jobTitle: "jobtitle",
-  helpTopic: "help_topic",
-  message: "message",
-  marketingEmails: "marketing_emails_opt_in",
-  newsletter: "newsletter_opt_in",
+  firstName: "0-1/firstname",
+  lastName: "0-1/lastname",
+  email: "0-1/email",
+  company: "0-1/company",
+  jobTitle: "0-1/jobtitle",
+  helpTopic: "0-1/what_can_we_help_with",
+  message: "0-1/message",
 } as const;
+
+// "What can we help with?": each option's internal value in the HubSpot form.
+const HELP_TOPIC_VALUES: Record<(typeof HELP_TOPICS)[number], string> = {
+  "Critical Curriculum": "Critical curriculum",
+  "International GCSE": "International GCSE",
+  Both: "Both",
+  "Partnership enquiry": "Partnership enquiry",
+  "Something else": "Something else",
+};
+
+// The HubSpot form's one marketing checkbox (subscription type 7269415). Consent to process is
+// implicit in the HubSpot form (submitting counts as consent), so legalConsentOptions is only
+// sent when the box is ticked.
+const UPDATES_SUBSCRIPTION_TYPE_ID = 7269415;
+const UPDATES_LABEL =
+  "Send me updates from 8billionideas, including programmes, events, resources for schools and our newsletter.";
+const PROCESSING_TEXT =
+  "By clicking submit below, you consent to allow 8billionideas to store and process the personal information submitted above to provide you the content requested.";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 const CONTACT_EMAIL = "hello@8billionideas.com";
 
 type Field = "firstName" | "lastName" | "email" | "company" | "jobTitle" | "helpTopic" | "message";
-type Values = Record<Field, string> & { marketingEmails: boolean; newsletter: boolean };
+type Values = Record<Field, string> & { updates: boolean };
 type Errors = Partial<Record<Field, string>>;
 
 const ORDER: Field[] = ["firstName", "lastName", "email", "company", "jobTitle", "helpTopic", "message"];
 const EMPTY: Values = {
   firstName: "", lastName: "", email: "", company: "", jobTitle: "", helpTopic: "", message: "",
-  marketingEmails: false, newsletter: false,
+  updates: false,
 };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -136,11 +153,17 @@ export default function ContactSection() {
         [HUBSPOT_FIELDS.email]: values.email.trim(),
         [HUBSPOT_FIELDS.company]: values.company.trim(),
         [HUBSPOT_FIELDS.jobTitle]: values.jobTitle.trim(),
-        [HUBSPOT_FIELDS.helpTopic]: values.helpTopic,
+        [HUBSPOT_FIELDS.helpTopic]: HELP_TOPIC_VALUES[values.helpTopic as keyof typeof HELP_TOPIC_VALUES],
         [HUBSPOT_FIELDS.message]: values.message.trim(),
-        [HUBSPOT_FIELDS.marketingEmails]: String(values.marketingEmails),
-        [HUBSPOT_FIELDS.newsletter]: String(values.newsletter),
-      });
+      }, values.updates
+        ? {
+            consent: {
+              consentToProcess: true,
+              text: PROCESSING_TEXT,
+              communications: [{ value: true, subscriptionTypeId: UPDATES_SUBSCRIPTION_TYPE_ID, text: UPDATES_LABEL }],
+            },
+          }
+        : undefined);
       if (!ok) throw new Error("HubSpot rejected the submission");
       setSubmittedName(firstName);
       setStatus("success");
@@ -266,33 +289,26 @@ export default function ContactSection() {
             {/* Email consent */}
             <div className="mt-6 flex flex-col gap-4 text-[14px] leading-[1.6] text-ink/70">
               <p>
-                8billionideas would like to send you emails about our work with schools. Please tick the boxes below
+                8billionideas would like to send you emails about our work with schools. Please tick the box below
                 if you&apos;d like to hear from us. This is optional and won&apos;t affect your enquiry.
               </p>
-              {(
-                [
-                  ["marketingEmails", "I'd like to receive occasional emails from 8billionideas about programmes, events and resources for schools."],
-                  ["newsletter", "I'd like to receive the 8billionideas newsletter by email."],
-                ] as const
-              ).map(([key, text]) => (
-                <label key={key} className="flex cursor-pointer items-start gap-3">
-                  <span className="relative mt-px flex h-5 w-5 shrink-0">
-                    <input
-                      type="checkbox"
-                      name={key}
-                      checked={values[key]}
-                      onChange={(e) => setValues((prev) => ({ ...prev, [key]: e.target.checked }))}
-                      className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-ink/30 bg-white transition-colors checked:border-accent checked:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40"
-                    />
-                    <Check
-                      className="pointer-events-none absolute inset-0 m-auto hidden h-3.5 w-3.5 text-ink peer-checked:block"
-                      strokeWidth={2}
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span>{text}</span>
-                </label>
-              ))}
+              <label className="flex cursor-pointer items-start gap-3">
+                <span className="relative mt-px flex h-5 w-5 shrink-0">
+                  <input
+                    type="checkbox"
+                    name="updates"
+                    checked={values.updates}
+                    onChange={(e) => setValues((prev) => ({ ...prev, updates: e.target.checked }))}
+                    className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-ink/30 bg-white transition-colors checked:border-accent checked:bg-accent focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40"
+                  />
+                  <Check
+                    className="pointer-events-none absolute inset-0 m-auto hidden h-3.5 w-3.5 text-ink peer-checked:block"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                </span>
+                <span>{UPDATES_LABEL}</span>
+              </label>
               <p>
                 You can unsubscribe from our emails at any time using the link in any email or by contacting{" "}
                 <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-ink underline underline-offset-2">
