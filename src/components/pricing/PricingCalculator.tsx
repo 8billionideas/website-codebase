@@ -17,7 +17,8 @@ import {
   getGcseTier,
   formatMoney,
 } from "@/lib/pricing";
-import DemoTrigger from "@/components/demo/DemoTrigger";
+import Button from "@/components/ui/Button";
+import QuoteRequestModal, { type QuoteSelection } from "@/components/pricing/QuoteRequestModal";
 
 
 type Product = "cc" | "gcse" | "both";
@@ -181,6 +182,17 @@ export default function PricingCalculator() {
   const [students, setStudents] = useState(DEFAULT_STUDENTS);
   const radioGroupName = useId();
 
+  // Quote pop-up: a snapshot of the selection when it opens, and a new key per opening so
+  // it always starts fresh at step 1.
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [quoteSession, setQuoteSession] = useState(0);
+  const [quoteSelection, setQuoteSelection] = useState<QuoteSelection | null>(null);
+  const quoteButtonRef = useRef<HTMLButtonElement | null>(null);
+  const productFieldsetRef = useRef<HTMLFieldSetElement>(null);
+  // Where focus goes when the pop-up closes: the quote button, or the calculator's product
+  // choice after "Change selection".
+  const quoteReturnTo = useRef<"button" | "calculator">("button");
+
   const showCC = product === "cc" || product === "both";
   const showGcse = product === "gcse" || product === "both";
 
@@ -194,6 +206,18 @@ export default function PricingCalculator() {
       : product === "gcse"
         ? ["students"]
         : ["yearGroups", "pillars", "students"];
+
+  function openQuote(event: React.MouseEvent<HTMLButtonElement>) {
+    quoteButtonRef.current = event.currentTarget;
+    setQuoteSelection({
+      product: product === "cc" ? "Critical Curriculum" : product === "gcse" ? "International GCSE" : "Both",
+      cc: showCC ? { yearGroups, pillars, perYearGroup, total: ccTotal } : undefined,
+      gcse: showGcse ? { students, fee: gcseTier.fee, total: gcseTotal } : undefined,
+    });
+    quoteReturnTo.current = "button";
+    setQuoteSession((n) => n + 1);
+    setQuoteOpen(true);
+  }
 
   function renderStep(kind: StepKind, number: number) {
     switch (kind) {
@@ -290,7 +314,7 @@ export default function PricingCalculator() {
           </p>
 
           {/* Product selector */}
-          <fieldset className="mt-10">
+          <fieldset ref={productFieldsetRef} className="mt-10">
             <legend className="text-[12px] uppercase tracking-[0.2em] text-ink/60">
               WHAT ARE YOU LOOKING TO BRING INTO YOUR SCHOOL?
             </legend>
@@ -419,11 +443,29 @@ export default function PricingCalculator() {
             tailored quote based on your school&apos;s specific needs.
           </p>
 
-          <DemoTrigger appearance="button" className="mt-6 w-full">
+          <Button aria-haspopup="dialog" onClick={openQuote} arrow className="mt-6 w-full">
             Request a tailored quote
-          </DemoTrigger>
+          </Button>
         </div>
       </div>
+
+      {quoteSelection && (
+        <QuoteRequestModal
+          key={quoteSession}
+          open={quoteOpen}
+          selection={quoteSelection}
+          onClose={() => setQuoteOpen(false)}
+          onChangeSelection={() => {
+            quoteReturnTo.current = "calculator";
+            setQuoteOpen(false);
+          }}
+          returnFocusTo={() =>
+            quoteReturnTo.current === "calculator"
+              ? productFieldsetRef.current?.querySelector<HTMLInputElement>("input:checked") ?? null
+              : quoteButtonRef.current
+          }
+        />
+      )}
     </div>
   );
 }

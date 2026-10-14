@@ -247,9 +247,11 @@ export default function Navbar() {
     // Own stacking context above page content (hero layers use z-10), below modals (z-50).
     <header className="relative z-40 border-b border-surface bg-paper">
       <nav className="mx-auto flex max-w-[75rem] items-center justify-between px-6 py-5 md:px-12">
-        <Link href="/" className="shrink-0" onClick={closeMobile}>
-          {/* The nav is always solid paper, so it always uses the light-background logo. */}
-          <Logo className="h-9 w-auto md:h-[52px]" />
+        {/* The nav is always solid paper, so it always uses the light-background logo. The link
+            keeps the old logo's box height (36px, 52px from md) so the nav height is unchanged;
+            the SVG inside matches the old logo's visible size. */}
+        <Link href="/" className="flex h-9 shrink-0 items-center md:h-[52px]" onClick={closeMobile}>
+          <Logo className="h-5 w-auto md:h-[30px]" />
         </Link>
 
         {/* Desktop nav — hidden below xl, where it's replaced by the mobile menu. */}

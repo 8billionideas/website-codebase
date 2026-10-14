@@ -67,8 +67,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 xl:grid-cols-[25%_minmax(0,1fr)_auto] xl:gap-8">
           {/* Brand */}
           <div>
-            <Link href="/" className={`inline-block ${FOCUS_RING}`}>
-              <Logo background="dark" preload={false} className="h-10 w-auto" />
+            {/* Same 40px box as the old logo, so the spacing below is unchanged. */}
+            <Link href="/" className={`inline-flex h-10 items-center ${FOCUS_RING}`}>
+              <Logo variant="dark" className="h-[23px] w-auto" />
             </Link>
             <p className="mt-5 max-w-[300px] text-[16px] leading-[1.6] text-white/75">
               We give every student on the planet the skills and belief to change the world.

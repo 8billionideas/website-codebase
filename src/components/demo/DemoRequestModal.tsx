@@ -1,20 +1,30 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import { isHubspotConfigured, submitDemoRequest } from "@/lib/hubspot";
 import Button from "@/components/ui/Button";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
-type FieldName = "firstname" | "lastname" | "company" | "jobtitle" | "email";
+type FieldName = "firstname" | "lastname" | "company" | "jobtitle" | "email" | "what_can_we_help_with";
 type Values = Record<FieldName, string>;
 type Errors = Partial<Record<FieldName, string>>;
 
-const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "" };
+const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "", what_can_we_help_with: "" };
 // Display order, also used to focus the first invalid field on submit.
-const ORDER: FieldName[] = ["firstname", "lastname", "email", "company", "jobtitle"];
+const ORDER: FieldName[] = ["firstname", "lastname", "email", "company", "jobtitle", "what_can_we_help_with"];
+
+// "What can we help with?" (required in the HubSpot form). Each value is the option's exact
+// internal value in the HubSpot form definition; the label is what's shown here.
+const HELP_OPTIONS = [
+  { label: "Critical Curriculum", value: "Critical curriculum" },
+  { label: "International GCSE", value: "International GCSE" },
+  { label: "Both", value: "Both" },
+  { label: "Partnership enquiry", value: "Partnership enquiry" },
+  { label: "Something else", value: "Something else" },
+];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function validate(name: FieldName, value: string): string | undefined {
@@ -31,6 +41,8 @@ function validate(name: FieldName, value: string): string | undefined {
     case "email":
       if (!v) return "Please enter your work email address";
       return EMAIL_PATTERN.test(v) ? undefined : "Please enter a valid email address";
+    case "what_can_we_help_with":
+      return v ? undefined : "Please choose what we can help with";
   }
 }
 
@@ -95,7 +107,7 @@ export default function DemoRequestModal({
     }
   }
 
-  function handleBlur(event: FocusEvent<HTMLInputElement>) {
+  function handleBlur(event: FocusEvent<HTMLInputElement | HTMLSelectElement>) {
     const name = event.currentTarget.name as FieldName;
     const error = validate(name, event.currentTarget.value);
     setErrors((prev) => ({ ...prev, [name]: error }));
@@ -130,6 +142,7 @@ export default function DemoRequestModal({
         company: values.company.trim(),
         jobtitle: values.jobtitle.trim(),
         email: values.email.trim(),
+        what_can_we_help_with: values.what_can_we_help_with,
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       setSubmittedName(firstName);
@@ -238,6 +251,45 @@ export default function DemoRequestModal({
             <div className="grid grid-cols-1 gap-x-3 gap-y-4 sm:grid-cols-2">
               {field("company", "School / organisation", { autoComplete: "organization", placeholder: "School name" })}
               {field("jobtitle", "Job title", { autoComplete: "organization-title", placeholder: "Your role" })}
+            </div>
+            <div>
+              <label htmlFor={id("what_can_we_help_with")} className="block text-[14px] font-medium text-ink/80">
+                What can we help with?
+              </label>
+              <div className="relative mt-2">
+                <select
+                  id={id("what_can_we_help_with")}
+                  name="what_can_we_help_with"
+                  required
+                  aria-invalid={errors.what_can_we_help_with ? true : undefined}
+                  aria-describedby={errors.what_can_we_help_with ? id("what_can_we_help_with-error") : undefined}
+                  value={values.what_can_we_help_with}
+                  onChange={(e) => update("what_can_we_help_with", e.target.value)}
+                  onBlur={handleBlur}
+                  className={`${INPUT} cursor-pointer appearance-none pr-11 ${
+                    values.what_can_we_help_with ? "" : "text-ink/45"
+                  } ${errors.what_can_we_help_with ? "border-[#B42318]" : "border-ink/15"}`}
+                >
+                  <option value="" disabled>
+                    Please select
+                  </option>
+                  {HELP_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value} className="text-ink">
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-ink/60"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+              </div>
+              {errors.what_can_we_help_with && (
+                <p id={id("what_can_we_help_with-error")} className="mt-1.5 text-[13px] text-[#B42318]">
+                  {errors.what_can_we_help_with}
+                </p>
+              )}
             </div>
 
             {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}

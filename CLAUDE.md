@@ -53,7 +53,8 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 - Heading pattern: Poppins 300, final phrase in **italic accent-green**, text-wrap: balance.
 - Eyebrows: 12px, uppercase, letter-spacing 0.25em.
 - All button-style CTAs use the shared **Button** component (src/components/ui/Button.tsx; DemoTrigger with appearance="button" for demo CTAs): green with ink text, a white hover with a thin border and shadow. Inline text links are not buttons. (White on green fails contrast, so button text is always ink.)
-- Use the on-dark logo (white wordmark, `<Logo background="dark" />`) on dark backgrounds; the site is locked to the light colour scheme.
+- The logo is the shared Logo component (public/images/logo.svg source). Use variant 'light' on light backgrounds (navy wordmark #16234C) and 'dark' on dark backgrounds (white wordmark). The dots are always #26C794. The favicon uses the dot mark only.
+- The site is locked to the light colour scheme.
 - **No floating boxes.** Any section with a background colour or image runs full width, edge to edge, with no rounded corners. Content stays inside the normal container.
 - **Hero and section text is always left-aligned**, with its left edge lined up with the nav logo. When adding a background image, do not let the layout centre the text.
 - Image heroes: full-width next/image with priority, an ink gradient on the left for dark images (or paper for light images), and a stronger even overlay on mobile. Text must pass WCAG AA contrast.
