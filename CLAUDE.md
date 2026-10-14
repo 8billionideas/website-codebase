@@ -82,6 +82,7 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
   - Critical Curriculum: **£40 per pillar per year group**. Sellable options are **1, 3 or 6 pillars** only. Year groups 1 to 13.
   - GCSE fee per student: 10–25 £105 · 26–50 £85 · 51–100 £65 · 101–150 £50 · 151–200 £45 · 200+ £40. Minimum 10 students.
   - Calculator defaults are the minimums: 1 year group, 1 pillar, 10 students.
+- HubSpot: the portal and form IDs live in src/lib/hubspot.ts as public defaults (they're shown in HubSpot's embed code, so safe to commit), with the NEXT_PUBLIC_HUBSPOT_* environment variables as optional overrides. The demo pop-up and /contact form post through the shared Forms API helper there; the quote form ID is still null (not connected).
 - Data files: src/lib/case-studies.ts, src/lib/pricing.ts, src/lib/curriculum-subjects.ts, src/content/lesson-explorer.ts, src/lib/resources.ts, src/lib/homepage-faqs.ts, plus the testimonials data in src/content/home.ts (home.proof.testimonials and home.proof.bandTestimonial).
 - Case studies order: The Internship (featured), Nord Anglia Education India, Severn Academies, Harrow Sustainability450, Chelsea FC Academy, GEMS World Academy (kept last and lower on the page).
 

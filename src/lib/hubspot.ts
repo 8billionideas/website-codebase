@@ -1,11 +1,24 @@
-// HubSpot Forms API config. Values come from the environment (see .env.example);
-// never hardcode real IDs here.
-export const HUBSPOT_PORTAL_ID = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID ?? "";
-// Data-hosting region of the HubSpot account ("eu1" for 8billionideas).
-export const HUBSPOT_REGION = process.env.NEXT_PUBLIC_HUBSPOT_REGION ?? "";
-export const HUBSPOT_DEMO_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_DEMO_FORM_ID ?? "";
-export const HUBSPOT_CONTACT_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_CONTACT_FORM_ID ?? "";
-export const HUBSPOT_QUOTE_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_QUOTE_FORM_ID ?? "";
+// HubSpot Forms API config.
+// These HubSpot IDs are public (shown in HubSpot's embed code), so they're safe to commit.
+// Environment variables override them (see .env.example).
+const HUBSPOT_DEFAULTS = {
+  portalId: "6337342",
+  // Data-hosting region of the HubSpot account.
+  region: "eu1",
+  demoFormId: "50392331-59e5-418f-90b3-5637649a6fa6",
+  contactFormId: "5a358bf0-8a69-4999-8046-b1decabb8d8d",
+  // Not created yet: the quote pop-up stays "not connected" until it is.
+  quoteFormId: null as string | null,
+};
+
+// NEXT_PUBLIC_ variables are inlined at build time, so each is read by its full name.
+export const HUBSPOT_PORTAL_ID = process.env.NEXT_PUBLIC_HUBSPOT_PORTAL_ID || HUBSPOT_DEFAULTS.portalId;
+export const HUBSPOT_REGION = process.env.NEXT_PUBLIC_HUBSPOT_REGION || HUBSPOT_DEFAULTS.region;
+export const HUBSPOT_DEMO_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_DEMO_FORM_ID || HUBSPOT_DEFAULTS.demoFormId;
+export const HUBSPOT_CONTACT_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_CONTACT_FORM_ID || HUBSPOT_DEFAULTS.contactFormId;
+export const HUBSPOT_QUOTE_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_QUOTE_FORM_ID || HUBSPOT_DEFAULTS.quoteFormId || "";
 
 export const isHubspotConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_DEMO_FORM_ID);
 export const isContactFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CONTACT_FORM_ID);
