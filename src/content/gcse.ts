@@ -1,12 +1,3 @@
-export interface GcseProjectCard {
-  label: string;
-  title: string;
-  line: string;
-  taughtHours: number;
-  guidedHours: number;
-  outcomes: string[];
-}
-
 export interface GcsePillarTile {
   name: string;
   question: string;
@@ -17,12 +8,6 @@ export interface GcseIconPoint {
   title: string;
 }
 
-export interface GcseIconTextPoint {
-  icon: string;
-  title: string;
-  description: string;
-}
-
 export interface GcseQuote {
   quote: string;
   name: string;
@@ -31,54 +16,209 @@ export interface GcseQuote {
 
 export const gcse = {
   hero: {
-    eyebrow: "THE QUALIFICATION",
-    headingLine1: "OxfordAQA International GCSE",
-    headingLine2: "Global Skills Projects",
+    eyebrow: "OXFORDAQA INTERNATIONAL GCSE GLOBAL SKILLS PROJECTS",
+    headingLine1: "Turn real-world learning into",
+    headingLine2: "a recognised qualification",
     subline:
-      "A real qualification built on real projects, not exams — developed with OxfordAQA, delivered by 8billionideas.",
+      "Developed by OxfordAQA and brought to life in classrooms with our teaching and learning support, giving schools the lessons, platform and guidance they need to deliver the qualification from start to finish.",
+    points: [
+      { number: "01", title: "Non-examined", line: "A different way for students to demonstrate what they can do." },
+      {
+        number: "02",
+        title: "Works alongside different curricula",
+        line: "Designed to fit into international schools, not just British curriculum settings.",
+      },
+      {
+        number: "03",
+        title: "Everything you need to deliver it",
+        line: "Lessons, resources, platform and ongoing support from our team.",
+      },
+    ],
     // Set to a date string (e.g. "September 2027") to show a small pill
     // above the H1. Leave null to render nothing.
     launchDate: null as string | null,
   },
 
-  whatItIs: {
-    eyebrow: "HOW IT FITS",
-    headingLines: ["A GCSE that sits", "alongside your"],
-    headingEmphasis: "core subjects",
-    paragraphs: [
-      "Our International GCSE in Global Skills Projects is designed to work alongside the subjects you already offer. It fits into the timetable schools already run, giving students a structured space to develop real-world skills through project-based learning.",
-      "It complements core classroom learning in subjects like Maths, English, Science and Languages – not instead of them – helping students make connections, apply their knowledge and see the bigger picture.",
+  // 02: which year groups the qualification can sit in.
+  curriculumFit: {
+    eyebrow: "FLEXIBLE BY DESIGN",
+    headingLine1: "Works with the curriculum",
+    headingLine2: "you already follow",
+    intro:
+      "Whether you follow a British, IB, American, Indian or another international curriculum, the qualification can fit alongside what you already teach, with the flexibility to introduce it at the point that makes the most sense for your school and your students.",
+    curricula: [
+      "British curriculum",
+      "IB curriculum",
+      "American curriculum",
+      "Indian curriculum",
+      "Other international curricula",
     ],
-    image: {
-      src: "/images/gcse/how-it-fits.webp",
-      alt: "A student's desk with Maths, English, Science and Languages books and a timetable showing Global Skills Projects lessons alongside them",
+    routesHeading: "Choose where it fits",
+    foundation: {
+      label: "FOUNDATION ROUTE",
+      text: "Build the foundations in Year 7 before students begin the qualification in Year 8 and complete it by the end of Year 9.",
+      from: { years: "Year 7", name: "Foundation year" },
+      to: { years: "Years 8–9", name: "International GCSE Global Skills Projects" },
     },
+    routes: [
+      {
+        label: "ACCELERATED ROUTE",
+        years: "Year 9",
+        name: "Accelerated programme",
+        text: "An accelerated option for schools that want students to complete the qualification within Year 9.",
+      },
+      {
+        label: "TRADITIONAL ROUTE",
+        years: "Years 10–11",
+        name: "International GCSE Global Skills Projects",
+        text: "Deliver the qualification across Years 10 and 11 alongside the traditional GCSE years.",
+      },
+    ],
+    closingLead: "However your school is structured,",
+    closingRest: " we'll help you work out where the qualification fits best.",
   },
 
-  howItWorks: {
-    eyebrow: "HOW IT WORKS",
-    headingLine1: "Two projects,",
-    headingLine2: "two years",
-    // Hours and outcomes are easy to update here once checked against the
-    // OxfordAQA specification.
-    cards: [
+  // 03: how the qualification is assessed.
+  qualification: {
+    eyebrow: "HOW THE QUALIFICATION WORKS",
+    headingLine1: "Students learn through practical projects",
+    headingLine2: "rather than written exams",
+    intro:
+      "The OxfordAQA International GCSE Global Skills Projects qualification is assessed through two projects rather than a traditional written exam. Students explore real-world topics, research their ideas, work independently and collaboratively, and demonstrate what they've learned through practical work.",
+    projects: [
       {
-        label: "FIRST YEAR",
-        title: "Individual project",
-        line: "Each student explores a topic linked to one or two of our eight pillars.",
-        taughtHours: 35,
-        guidedHours: 35,
-        outcomes: ["Journal", "Presentation", "Written report"],
+        label: "INDIVIDUAL PROJECT",
+        weighting: "60%",
+        text: "Students choose a topic to investigate, carry out research and develop an individual project that demonstrates their understanding, ideas and ability to work independently.",
       },
       {
-        label: "SECOND YEAR",
-        title: "Group project",
-        line: "Students work together on a project linked to one of the United Nations Sustainable Development Goals.",
-        taughtHours: 25,
-        guidedHours: 25,
-        outcomes: ["Journal", "Written report"],
+        label: "GROUP SUSTAINABILITY ACTION PROJECT",
+        weighting: "40%",
+        text: "Students work together to explore a sustainability issue, plan a response and put their ideas into action through a collaborative project.",
       },
-    ] as GcseProjectCard[],
+    ],
+    columns: [
+      {
+        icon: "FileText",
+        title: "No written examination",
+        text: "Students are assessed through their project work, giving them the opportunity to demonstrate their learning in a different way.",
+      },
+      {
+        icon: "Route",
+        title: "What students do throughout the qualification",
+        // Shown as one line, with the arrows in accent-green.
+        steps: ["Research", "Plan", "Create", "Present", "Reflect"],
+      },
+      {
+        icon: "Lightbulb",
+        title: "How our curriculum supports project exploration",
+        text: "Our eight learning pillars introduce students to a range of topics and ideas, helping them explore their interests and identify possible directions for their projects.",
+      },
+    ],
+  },
+
+  // 04: what 8billionideas has already prepared.
+  readyToDeliver: {
+    eyebrow: "READY TO DELIVER",
+    headingLine1: "You don't have to build a",
+    headingLine2: "new course from scratch",
+    intro:
+      "Introducing a new qualification can mean planning lessons, creating resources and working out how everything fits together. As OxfordAQA's teaching and learning partner, we've already developed the teaching materials and learning structure to help your school deliver the qualification without having to build the course itself.",
+    reassurance: "You can focus on teaching and supporting your students, rather than developing the course yourself.",
+    listHeading: "What we've already prepared for your school",
+    items: [
+      { number: "01", title: "Ready-to-teach lessons", line: "Clear objectives, teaching materials and activities, all prepared for you." },
+      { number: "02", title: "A structured learning journey", line: "Planned learning that guides students through both projects." },
+      { number: "03", title: "Resources for teachers and students", line: "Videos, activities and materials to support teaching and learning." },
+      { number: "04", title: "Guidance throughout the projects", line: "Practical resources to support project work from start to finish." },
+    ],
+  },
+
+  // 07: how a school gets set up.
+  gettingStarted: {
+    eyebrow: "GETTING STARTED",
+    headingLine1: "Everything is in place to help",
+    headingLine2: "your school get started",
+    intro:
+      "You don't need to recruit a specialist teacher or work everything out yourself. We'll help your school get set up, show teachers and students how to use the platform, and provide ongoing support throughout delivery.",
+    stepsHeading: "How we help you get started",
+    steps: [
+      {
+        number: "01",
+        title: "Share your student information",
+        text: "Your school provides the details we need to prepare teacher and student access to the platform.",
+      },
+      {
+        number: "02",
+        title: "We set up your platform",
+        text: "We create the accounts and prepare access to the lessons, resources and qualification materials.",
+      },
+      {
+        number: "03",
+        title: "We show your team how it works",
+        text: "Teachers and students are introduced to the platform so they know where to find everything and how to get started.",
+      },
+      {
+        number: "04",
+        title: "Your Partnership Manager supports delivery",
+        text: "You'll have a dedicated point of contact to help with implementation, answer questions and keep everything moving.",
+      },
+      {
+        number: "05",
+        title: "Ongoing guidance and support",
+        text: "We'll continue supporting your school throughout delivery, including key checkpoints and guidance when needed.",
+      },
+    ],
+    reassurances: [
+      {
+        icon: "Users",
+        title: "You don't need a specialist teacher",
+        text: "The lessons, resources and teaching structure are already prepared, so your existing teaching team can be supported to deliver the qualification without building a new specialist department.",
+      },
+      {
+        icon: "FileText",
+        title: "Need help with centre registration?",
+        text: "We can also guide schools through the OxfordAQA centre-registration process where required.",
+      },
+    ],
+  },
+
+  // 09: why schools choose the qualification.
+  whySchoolsChoose: {
+    eyebrow: "WHY SCHOOLS CHOOSE IT",
+    headingLine1: "Give students another way to learn",
+    headingLine2: "and achieve a recognised qualification",
+    intro:
+      "Not every student learns or demonstrates their abilities in the same way. This qualification gives schools another option alongside their existing subjects, combining practical, project-based learning with a recognised International GCSE.",
+    offersHeading: "What this offers your school",
+    featured: {
+      title: "A recognised qualification for practical learning",
+      text: "Students can work towards an International GCSE through research and projects, rather than treating this type of learning as an extracurricular activity.",
+    },
+    benefits: [
+      {
+        icon: "FileText",
+        title: "A different approach to assessment",
+        text: "With no written examination, students have the opportunity to demonstrate their understanding through independent and collaborative project work.",
+      },
+      {
+        icon: "Users",
+        title: "Develop skills alongside academic subjects",
+        text: "Give students opportunities to practise research, communication, collaboration and problem-solving while continuing with their existing curriculum.",
+      },
+      {
+        icon: "CalendarDays",
+        title: "More flexibility in your curriculum",
+        text: "Introduce project-based learning at a point that suits your school, including the option to complete the qualification before the traditional GCSE years.",
+      },
+      {
+        icon: "Star",
+        title: "Something different to offer students and parents",
+        text: "Broaden your school's qualification offering with an additional pathway that connects classroom learning to real-world topics and challenges.",
+      },
+    ],
+    closing:
+      "Give students another opportunity to demonstrate what they can do, while building on the curriculum your school already offers.",
   },
 
   projectThemes: {
@@ -166,36 +306,6 @@ export const gcse = {
 
   partnership: {
     eyebrow: "THE PARTNERSHIP",
-  },
-
-  whyUs: {
-    eyebrow: "WHY 8BILLIONIDEAS",
-    headingLine1: "Why partner",
-    headingLine2: "with us?",
-    points: [
-      {
-        icon: "Rocket",
-        title: "Implementation",
-        description:
-          "A dedicated Partnership Manager and a one-stop digital platform for delivery and guidance.",
-      },
-      {
-        icon: "BookOpen",
-        title: "Experience",
-        description:
-          "Full access to all our lessons and educational content for students and teachers.",
-      },
-      {
-        icon: "Users",
-        title: "Community",
-        description:
-          "Mentorship opportunities and a global network of forward-thinking schools.",
-      },
-    ] as GcseIconTextPoint[],
-    image: {
-      src: "/images/gcse/why-partner.webp",
-      alt: "A partnership manager talking through materials with two teachers around a table",
-    },
   },
 
   quotesLabel: "WHAT OUR PARTNERS SAY",

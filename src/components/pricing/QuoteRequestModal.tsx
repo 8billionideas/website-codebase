@@ -1,17 +1,35 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent, type ReactNode } from "react";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import Button from "@/components/ui/Button";
-import { quoteAddOns } from "@/content/quote-addons";
 import { HUBSPOT_QUOTE_FORM_ID, isQuoteFormConfigured, submitHubspotForm } from "@/lib/hubspot";
-import { formatMoney } from "@/lib/pricing";
+import {
+  ADD_ON_QUANTITY_MAX,
+  ADD_ON_QUANTITY_MIN,
+  LIVE_EXPERIENCE_GROUPS,
+  QUOTE_ADD_ONS,
+  addOnCost,
+  addOnDetails,
+  addOnLineLabel,
+  addOnsTotal,
+  formatMoney,
+  getAddOn,
+  getLiveGroup,
+  quoteTotal,
+  type AddOnId,
+  type AddOnOptions,
+  type LiveGroupId,
+  type QuoteAddOn,
+  type SelectedAddOn,
+} from "@/lib/pricing";
 
 // Confirm these match the internal field names in the HubSpot quote form.
 // quote_add_ons is sent as the selected add-on titles separated by semicolons (HubSpot's
 // multi-checkbox format), so the form's option values should match the titles exactly.
-// Prices are sent as whole pounds with no symbol (e.g. "720").
+// quote_add_on_details is a readable line of each add-on and its cost. Prices and totals are
+// sent as whole pounds with no symbol (e.g. "720").
 const HUBSPOT_FIELDS = {
   firstname: "firstname",
   lastname: "lastname",
@@ -26,6 +44,9 @@ const HUBSPOT_FIELDS = {
   ccPrice: "quote_cc_price",
   gcsePrice: "quote_gcse_price",
   addOns: "quote_add_ons",
+  addOnDetails: "quote_add_on_details",
+  addOnsTotal: "quote_add_ons_total",
+  total: "quote_total",
 } as const;
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
@@ -79,13 +100,126 @@ function productLabel(selection: QuoteSelection) {
   return selection.product === "Both" ? "Critical Curriculum and International GCSE" : selection.product;
 }
 
-// "Critical Curriculum · 3 year groups · 6 pillars · 2 add-ons"
-function recapLine(selection: QuoteSelection, addOnCount: number) {
+// "Critical Curriculum · 3 year groups · 6 pillars · 2 add-ons · Estimated total £3,595"
+function recapLine(selection: QuoteSelection, addOnCount: number, total: number) {
   const parts = [productLabel(selection)];
   if (selection.cc) parts.push(plural(selection.cc.yearGroups, "year group", "year groups"), plural(selection.cc.pillars, "pillar", "pillars"));
   if (selection.gcse) parts.push(plural(selection.gcse.students, "student", "students"));
   parts.push(addOnCount ? plural(addOnCount, "add-on", "add-ons") : "no add-ons");
+  parts.push(`Estimated total ${formatMoney(total)}`);
   return parts.join(" · ");
+}
+
+// − [n] + stepper for add-on quantities (days, assemblies), 1–10.
+function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (next: number) => void }) {
+  const labelId = useId();
+  const button =
+    "flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent aria-disabled:cursor-not-allowed aria-disabled:opacity-35 aria-disabled:hover:bg-transparent motion-reduce:transition-none";
+  const atMin = value <= ADD_ON_QUANTITY_MIN;
+  const atMax = value >= ADD_ON_QUANTITY_MAX;
+  return (
+    <div>
+      <p id={labelId} className="text-[13px] font-medium leading-[1.4] text-ink">
+        {label}
+      </p>
+      {/* aria-disabled (not disabled) at the limits, so focus stays on the button. */}
+      <div role="group" aria-labelledby={labelId} className="mt-2 inline-flex items-center rounded-full border border-ink/15 bg-white p-0.5">
+        <button
+          type="button"
+          aria-label={`Decrease ${label.toLowerCase()}`}
+          aria-disabled={atMin || undefined}
+          onClick={() => !atMin && onChange(value - 1)}
+          className={button}
+        >
+          <Minus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        </button>
+        <output aria-live="polite" className="w-10 text-center text-[15px] font-medium tabular-nums text-ink">
+          {value}
+        </output>
+        <button
+          type="button"
+          aria-label={`Increase ${label.toLowerCase()}`}
+          aria-disabled={atMax || undefined}
+          onClick={() => !atMax && onChange(value + 1)}
+          className={button}
+        >
+          <Plus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// A selectable add-on: the header row (checkbox, title, description, price) toggles it; when
+// ticked, any options (children) slide open below. Options are kept if it's unticked.
+function AddOnCard({
+  addOn,
+  checked,
+  onToggle,
+  descId,
+  children,
+}: {
+  addOn: QuoteAddOn;
+  checked: boolean;
+  onToggle: () => void;
+  descId: string;
+  children?: ReactNode;
+}) {
+  const price = addOn.pricing === "group-days" ? `from ${formatMoney(addOn.price)}` : formatMoney(addOn.price);
+  return (
+    <div
+      className={`rounded-[10px] border transition-colors motion-reduce:transition-none ${
+        checked ? "border-accent bg-accent/[0.06]" : "border-ink/10 bg-white hover:border-ink/25"
+      }`}
+    >
+      <label className="flex cursor-pointer items-start gap-3 px-4 py-3.5">
+        <input
+          type="checkbox"
+          name="addOns"
+          value={addOn.id}
+          checked={checked}
+          onChange={onToggle}
+          aria-describedby={descId}
+          className="peer sr-only"
+        />
+        <span
+          aria-hidden="true"
+          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-2 motion-reduce:transition-none ${
+            checked ? "border-accent bg-accent" : "border-ink/30 bg-white"
+          }`}
+        >
+          {checked && <Check className="h-3.5 w-3.5 text-ink" strokeWidth={2.5} />}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[15px] font-medium leading-[1.35] text-ink">{addOn.title}</span>
+          <span id={descId} className="mt-0.5 block text-[13px] leading-[1.5] text-ink/65">
+            {addOn.description}
+          </span>
+          {/* Below 640px the price sits under the description, leaving the text room to breathe. */}
+          <span className="mt-1.5 block sm:hidden">
+            <span className="text-[15px] font-medium text-ink">{price}</span>{" "}
+            <span className="text-[12px] text-ink/60">{addOn.unit}</span>
+          </span>
+        </span>
+        <span className="hidden shrink-0 text-right sm:block">
+          <span className="block whitespace-nowrap text-[15px] font-medium leading-[1.35] text-ink">{price}</span>
+          <span className="block whitespace-nowrap text-[12px] leading-[1.5] text-ink/60">{addOn.unit}</span>
+        </span>
+      </label>
+      {children && (
+        <div
+          className={`grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none ${
+            checked ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          {/* Collapsed options are inert, so they can't be tabbed to. */}
+          <div className="overflow-hidden" inert={!checked}>
+            <div className="mx-4 flex flex-col gap-4 border-t border-accent/25 pt-4 pb-4">{children}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function SummaryCard({ title, rows, total }: { title: string; rows: [string, string][]; total: number }) {
@@ -141,7 +275,10 @@ export default function QuoteRequestModal({
   const id = (name: string) => `${uid}-${name}`;
 
   const [step, setStep] = useState<1 | 2>(1);
-  const [addOns, setAddOns] = useState<string[]>([]);
+  const [ticked, setTicked] = useState<AddOnId[]>([]);
+  const [liveGroup, setLiveGroup] = useState<LiveGroupId>("50");
+  const [liveDays, setLiveDays] = useState(1);
+  const [assemblies, setAssemblies] = useState(1);
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "success">("idle");
@@ -151,7 +288,18 @@ export default function QuoteRequestModal({
   const formRef = useRef<HTMLFormElement>(null);
   const movedStep = useRef(false);
 
-  const selectedAddOns = quoteAddOns.filter((a) => addOns.includes(a.id));
+  const optionsFor = (addOnId: AddOnId): AddOnOptions =>
+    addOnId === "live-experience"
+      ? { groupId: liveGroup, days: liveDays }
+      : addOnId === "assembly"
+        ? { quantity: assemblies }
+        : {};
+  // Ticked add-ons with their current options, in list order.
+  const selectedAddOns: SelectedAddOn[] = QUOTE_ADD_ONS.filter((a) => ticked.includes(a.id)).map((a) => ({
+    id: a.id,
+    options: optionsFor(a.id),
+  }));
+  const total = quoteTotal(selection, selectedAddOns);
 
   useEffect(() => {
     if (open && !isQuoteFormConfigured) {
@@ -171,8 +319,8 @@ export default function QuoteRequestModal({
     setStep(next);
   }
 
-  function toggleAddOn(addOnId: string) {
-    setAddOns((prev) => (prev.includes(addOnId) ? prev.filter((x) => x !== addOnId) : [...prev, addOnId]));
+  function toggleAddOn(addOnId: AddOnId) {
+    setTicked((prev) => (prev.includes(addOnId) ? prev.filter((x) => x !== addOnId) : [...prev, addOnId]));
   }
 
   function update(name: keyof Values, value: string) {
@@ -227,7 +375,10 @@ export default function QuoteRequestModal({
         [HUBSPOT_FIELDS.ccPrice]: cc ? String(cc.total) : undefined,
         [HUBSPOT_FIELDS.students]: gcse ? String(gcse.students) : undefined,
         [HUBSPOT_FIELDS.gcsePrice]: gcse ? String(gcse.total) : undefined,
-        [HUBSPOT_FIELDS.addOns]: selectedAddOns.map((a) => a.title).join(";"),
+        [HUBSPOT_FIELDS.addOns]: selectedAddOns.map((a) => getAddOn(a.id).title).join(";"),
+        [HUBSPOT_FIELDS.addOnDetails]: addOnDetails(selectedAddOns),
+        [HUBSPOT_FIELDS.addOnsTotal]: String(addOnsTotal(selectedAddOns)),
+        [HUBSPOT_FIELDS.total]: String(total),
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       setSubmittedName(firstName);
@@ -293,6 +444,13 @@ export default function QuoteRequestModal({
     </div>
   );
 
+  // Rows for the estimated total (step 1) and the success recap.
+  const totalRows: [string, string][] = [
+    ...(selection.cc ? [["Critical Curriculum", `${formatMoney(selection.cc.total)} / year`] as [string, string]] : []),
+    ...(selection.gcse ? [["International GCSE", `${formatMoney(selection.gcse.total)} / year`] as [string, string]] : []),
+    ...selectedAddOns.map((a): [string, string] => [addOnLineLabel(a.id, a.options), formatMoney(addOnCost(a.id, a.options))]),
+  ];
+
   const success = status === "success";
   const headingId = id(success ? "success-heading" : `step-${step}-heading`);
 
@@ -319,23 +477,19 @@ export default function QuoteRequestModal({
 
           <div className="mt-6 rounded-xl border border-ink/10 bg-white p-5 text-[15px] leading-[1.5]">
             <p className="text-[12px] uppercase tracking-[0.15em] text-ink/55">Your request</p>
-            <ul className="mt-3 list-none space-y-1.5 p-0">
-              {selection.cc && (
-                <li className="flex justify-between gap-4">
-                  <span className="text-ink/70">Critical Curriculum</span>
-                  <span className="font-medium text-ink">{formatMoney(selection.cc.total)} / year</span>
-                </li>
-              )}
-              {selection.gcse && (
-                <li className="flex justify-between gap-4">
-                  <span className="text-ink/70">International GCSE</span>
-                  <span className="font-medium text-ink">{formatMoney(selection.gcse.total)} / year</span>
-                </li>
-              )}
-            </ul>
-            <p className="mt-3 border-t border-ink/10 pt-3 text-ink/70">
-              {selectedAddOns.length ? `Add-ons: ${selectedAddOns.map((a) => a.title).join(", ")}` : "No add-ons"}
-            </p>
+            <dl className="mt-3 space-y-1.5">
+              {totalRows.map(([label, value]) => (
+                <div key={label} className="flex justify-between gap-4">
+                  <dt className="text-ink/70">{label}</dt>
+                  <dd className="shrink-0 font-medium text-ink">{value}</dd>
+                </div>
+              ))}
+            </dl>
+            {!selectedAddOns.length && <p className="mt-1.5 text-ink/70">No add-ons</p>}
+            <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-ink/10 pt-3">
+              <span className="font-medium text-ink">Estimated total</span>
+              <span className="text-[18px] font-medium text-ink">{formatMoney(total)}</span>
+            </div>
           </div>
 
           <Button onClick={onClose} className="mt-8">
@@ -363,44 +517,92 @@ export default function QuoteRequestModal({
               <fieldset className="mt-8" aria-describedby={id("addons-help")}>
                 <legend className="text-[17px] font-medium leading-[1.3] text-ink">Optional add-ons</legend>
                 <p id={id("addons-help")} className="mt-1 text-[14px] leading-[1.5] text-ink/60">
-                  Tick any extras you&apos;d like included. We&apos;ll add pricing for these to your quote.
+                  Tick any extras you&apos;d like included. Prices are shown below and added to your estimated total.
                 </p>
                 <div className="mt-4 flex flex-col gap-2">
-                  {quoteAddOns.map((addOn) => {
-                    const checked = addOns.includes(addOn.id);
-                    return (
-                      <label
+                  {QUOTE_ADD_ONS.map((addOn) => {
+                    const checked = ticked.includes(addOn.id);
+                    const card = (children?: ReactNode) => (
+                      <AddOnCard
                         key={addOn.id}
-                        className="flex cursor-pointer items-start gap-3 rounded-[10px] border border-ink/10 bg-white px-4 py-3.5 transition-colors hover:border-ink/25 has-[:checked]:border-accent has-[:checked]:bg-accent/[0.06] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-paper motion-reduce:transition-none"
+                        addOn={addOn}
+                        checked={checked}
+                        onToggle={() => toggleAddOn(addOn.id)}
+                        descId={id(`${addOn.id}-desc`)}
                       >
-                        <input
-                          type="checkbox"
-                          name="addOns"
-                          value={addOn.id}
-                          checked={checked}
-                          onChange={() => toggleAddOn(addOn.id)}
-                          aria-describedby={id(`${addOn.id}-desc`)}
-                          className="sr-only"
-                        />
-                        <span
-                          aria-hidden="true"
-                          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border transition-colors motion-reduce:transition-none ${
-                            checked ? "border-accent bg-accent" : "border-ink/30 bg-white"
-                          }`}
-                        >
-                          {checked && <Check className="h-3.5 w-3.5 text-ink" strokeWidth={2.5} />}
-                        </span>
-                        <span>
-                          <span className="block text-[15px] font-medium leading-[1.35] text-ink">{addOn.title}</span>
-                          <span id={id(`${addOn.id}-desc`)} className="mt-0.5 block text-[13px] leading-[1.5] text-ink/65">
-                            {addOn.description}
-                          </span>
-                        </span>
-                      </label>
+                        {children}
+                      </AddOnCard>
                     );
+                    if (addOn.id === "live-experience") {
+                      const group = getLiveGroup(liveGroup);
+                      return card(
+                        <>
+                          <fieldset>
+                            <legend className="text-[13px] font-medium leading-[1.4] text-ink">Group size</legend>
+                            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                              {LIVE_EXPERIENCE_GROUPS.map((g) => (
+                                <label
+                                  key={g.id}
+                                  className="flex cursor-pointer flex-col items-center rounded-full border border-ink/15 bg-white px-3 py-2 text-center text-ink transition-colors hover:border-ink/35 has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2 motion-reduce:transition-none"
+                                >
+                                  <input
+                                    type="radio"
+                                    name={id("live-group")}
+                                    value={g.id}
+                                    checked={liveGroup === g.id}
+                                    onChange={() => setLiveGroup(g.id)}
+                                    className="sr-only"
+                                  />
+                                  <span className="text-[14px] font-medium leading-[1.3]">{g.shortLabel}</span>
+                                  <span className="text-[12px] leading-[1.4] opacity-75">{formatMoney(g.pricePerDay)} / day</span>
+                                </label>
+                              ))}
+                            </div>
+                          </fieldset>
+                          <Stepper label="Number of days" value={liveDays} onChange={setLiveDays} />
+                          <p className="text-[13px] leading-[1.5] text-ink/60">
+                            Need more than 200 students? We&apos;ll include larger groups in your quote.
+                          </p>
+                          <p className="text-right text-[14px] font-medium text-ink">
+                            {plural(liveDays, "day", "days")} × {formatMoney(group.pricePerDay)} ={" "}
+                            {formatMoney(addOnCost("live-experience", { groupId: liveGroup, days: liveDays }))}
+                          </p>
+                        </>
+                      );
+                    }
+                    if (addOn.id === "assembly") {
+                      return card(
+                        <>
+                          <Stepper label="Number of assemblies" value={assemblies} onChange={setAssemblies} />
+                          <p className="text-right text-[14px] font-medium text-ink">
+                            {assemblies} × {formatMoney(addOn.price)} = {formatMoney(addOnCost("assembly", { quantity: assemblies }))}
+                          </p>
+                        </>
+                      );
+                    }
+                    return card();
                   })}
                 </div>
               </fieldset>
+
+              {/* Estimated total: the subscriptions plus each ticked add-on, updating live. */}
+              <div className="mt-8 rounded-xl border border-ink/10 bg-white p-5">
+                <dl className="space-y-2 text-[15px] leading-[1.4]">
+                  {totalRows.map(([label, value]) => (
+                    <div key={label} className="flex items-baseline justify-between gap-4">
+                      <dt className="text-ink/70">{label}</dt>
+                      <dd className="shrink-0 text-ink">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-ink/10 pt-3">
+                  <span className="text-[17px] font-medium text-ink">Estimated total</span>
+                  <span aria-live="polite" aria-atomic="true" className="text-[22px] font-medium leading-[1.2] text-ink">
+                    {formatMoney(total)}
+                  </span>
+                </div>
+                <p className="mt-2 text-[12px] leading-[1.5] text-ink/55">Your final quote will confirm any VAT or travel costs.</p>
+              </div>
 
               <Button type="button" size="form" arrow onClick={() => goTo(2)} className="mt-8">
                 Next
@@ -455,7 +657,7 @@ export default function QuoteRequestModal({
                 )}
 
                 <div className="mt-1">
-                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, selectedAddOns.length)}</p>
+                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, selectedAddOns.length, total)}</p>
                   <Button
                     type="submit"
                     size="form"

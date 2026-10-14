@@ -1,14 +1,16 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Fragment } from "react";
 import { BookOpen, TrendingUp, LayoutGrid, type LucideIcon } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { Eyebrow } from "@/components/home/SectionHeading";
 import { gcse } from "@/content/gcse";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import PillarQuestionSelector from "@/components/gcse/PillarQuestionSelector";
-import WhyPartner from "@/components/gcse/WhyPartner";
-import CurriculaSection from "@/components/gcse/CurriculaSection";
+import GettingStarted from "@/components/gcse/GettingStarted";
+import WhySchoolsChooseIt from "@/components/gcse/WhySchoolsChooseIt";
+import CurriculumFitSection from "@/components/gcse/CurriculumFitSection";
+import HowQualificationWorks from "@/components/gcse/HowQualificationWorks";
+import ReadyToDeliver from "@/components/gcse/ReadyToDeliver";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
@@ -33,14 +35,14 @@ function RequestDemoButton({ className = "" }: { className?: string }) {
 }
 
 export default function GcsePage() {
-  const { hero, whatItIs, howItWorks, projectThemes, platform } = gcse;
+  const { hero, projectThemes, platform } = gcse;
   const orderedPillars = [...projectThemes.pillars].sort(
     (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
   );
 
   return (
     <>
-      {/* Hero */}
+      {/* 01. Hero */}
       <section className="relative flex min-h-[540px] items-center overflow-hidden bg-ink md:min-h-[600px]">
         <Image
           src="/images/gcse-hero.webp"
@@ -94,115 +96,123 @@ export default function GcsePage() {
           <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">
             {hero.subline}
           </p>
-          <div className="mt-8">
+          {/* Reassurance points: a row from md (kept within the darker left side of the image),
+              stacked on mobile. */}
+          <ul className="mt-10 grid max-w-[760px] list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
+            {hero.points.map((point) => (
+              <li key={point.number}>
+                <p className="text-[14px] leading-[1.4] text-accent">{point.number}</p>
+                <p className="mt-1 text-[16px] font-medium leading-[1.35] text-white">{point.title}</p>
+                <p className="mt-1 text-[14px] leading-[1.5] text-white/75">{point.line}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-10">
             <RequestDemoButton />
           </div>
         </Container>
       </section>
 
-      {/* 1. How it fits */}
-      <section className="relative isolate overflow-hidden bg-paper xl:flex xl:min-h-[640px] xl:items-center">
-        <Image
-          src={whatItIs.image.src}
-          alt={whatItIs.image.alt}
-          fill
-          loading="lazy"
-          sizes="100vw"
-          className="hidden object-cover object-[right_top] mix-blend-multiply xl:block"
-        />
+      {/* 02. Curriculum fit */}
+      <CurriculumFitSection />
+
+      {/* Thin divider between the two light sections. */}
+      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
+
+      {/* 03. How the qualification works */}
+      <HowQualificationWorks />
+
+      {/* 04. Ready to deliver */}
+      <ReadyToDeliver />
+
+      {/* SECTION 05: quote / white break, awaiting approved quote */}
+      {/* Until then, a thin divider separates the two dark sections (04 and 06). */}
+      <div className="h-px w-full bg-ink" aria-hidden="true">
+        <div className="h-full bg-white/10" />
+      </div>
+
+      {/* 06. The platform */}
+      {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
+      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
+        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
+            navy edges blend into the band, and the mask softens the lit desk reflection. */}
+        <div
+          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
+          }}
+        >
+          <Image
+            src={platform.image.src}
+            alt={platform.image.alt}
+            fill
+            loading="lazy"
+            sizes="78vw"
+            className="object-contain object-right"
+          />
+        </div>
         <div
           className="absolute inset-0 hidden xl:block"
           style={{
             background:
-              "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 35%, rgba(255,253,250,0) 55%)",
+              "linear-gradient(90deg, rgba(22,33,61,0.9) 0%, rgba(22,33,61,0.6) 35%, rgba(22,33,61,0) 55%)",
           }}
           aria-hidden="true"
         />
         <Container className="relative z-10 w-full py-16 md:py-24">
-          <div className="max-w-[600px] text-left">
-            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{whatItIs.eyebrow}</p>
-            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-              {whatItIs.headingLines.map((line) => (
-                <Fragment key={line}>
-                  {line}
-                  <br />
-                </Fragment>
-              ))}
-              <em className="text-accent">{whatItIs.headingEmphasis}</em>
+          <div className="max-w-[620px] text-left">
+            <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{platform.eyebrow}</p>
+            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px]">
+              {platform.headingLine1}
+              <br />
+              <em className="text-accent">{platform.headingLine2}</em>
             </h2>
-            <div className="mt-8 max-w-[560px] space-y-5">
-              {whatItIs.paragraphs.map((paragraph, i) => (
-                <p key={i} className="text-[18px] leading-[1.6] text-ink/75">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <p className="mt-5 text-[18px] leading-[1.6] text-white/80">{platform.body}</p>
+
+            <ul className="mt-10 grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
+              {platform.points.map((point) => {
+                const Icon = PLATFORM_ICONS[point.icon];
+                return (
+                  <li key={point.title} className="flex items-start gap-3">
+                    <Icon
+                      className="h-7 w-7 shrink-0 text-accent"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <span className="text-[16px] leading-[1.5] text-white/90">{point.title}</span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {platform.showPlatformVideo && (
+              <div className="mt-10">
+                <DemoTrigger appearance="button" arrow={false}>
+                  See the platform
+                </DemoTrigger>
+                <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />
+              </div>
+            )}
           </div>
         </Container>
-        <div className="relative aspect-[4/3] w-full xl:hidden">
+        <div className="relative aspect-video w-full xl:hidden">
           <Image
-            src={whatItIs.image.src}
-            alt={whatItIs.image.alt}
+            src={platform.image.src}
+            alt={platform.image.alt}
             fill
             loading="lazy"
             sizes="100vw"
-            className="object-cover object-[right_top] mix-blend-multiply"
+            className="object-cover object-right"
           />
         </div>
       </section>
 
-      {/* 2. How it works */}
-      {/* Full-width hairlines above and below separate it from the light sections either side. */}
-      <section className="border-y border-ink/[0.08] bg-paper py-16 lg:py-24">
-        <Container>
-          <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{howItWorks.eyebrow}</p>
-          <h2 className="mt-4 text-[40px] font-light leading-[1.05] tracking-[-0.01em] text-ink md:text-[64px]">
-            {howItWorks.headingLine1}
-            <br />
-            <em className="text-accent">{howItWorks.headingLine2}</em>
-          </h2>
+      {/* 07. Getting started */}
+      <GettingStarted />
 
-          <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {howItWorks.cards.map((card) => (
-              <div
-                key={card.label}
-                className="flex h-full flex-col rounded-2xl border border-ink/[0.08] bg-white p-8 shadow-[0_4px_20px_rgba(22,33,61,0.06)] lg:p-12"
-              >
-                <p className="text-[13px] font-medium uppercase tracking-[0.2em] text-accent">
-                  {card.label}
-                </p>
-                <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink lg:text-[36px]">
-                  {card.title}
-                </h3>
-                <p className="mt-4 max-w-[560px] text-[18px] leading-[1.6] text-ink/70">{card.line}</p>
-                <p className="mt-4 text-[16px] leading-[1.6] text-ink/75">
-                  {card.taughtHours} taught learning hours + {card.guidedHours} guided
-                  learning hours
-                </p>
+      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
 
-                <div className="my-6 h-px w-full bg-ink/10" aria-hidden="true" />
-
-                <p className="text-[12px] uppercase tracking-[0.2em] text-ink/55">Key outcomes</p>
-                <ul className="mt-4 flex list-none flex-wrap gap-[10px] p-0">
-                  {card.outcomes.map((outcome) => (
-                    <li
-                      key={outcome}
-                      className="rounded-full bg-accent/[0.12] px-5 py-2 text-[15px] font-normal text-ink"
-                    >
-                      {outcome}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 2b. Works with the curriculum you already follow */}
-      <CurriculaSection />
-
-      {/* 3. Project themes */}
+      {/* 08. Project themes */}
       <section className="relative isolate bg-paper">
         {/* Height = text + 56px, or the brief image (capped at 430px) if that's taller, so the
             pills sit just below the text without running into the document. */}
@@ -299,84 +309,10 @@ export default function GcsePage() {
         </div>
       </section>
 
-      {/* 4. The platform */}
-      {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
-      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
-        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
-            navy edges blend into the band, and the mask softens the lit desk reflection. */}
-        <div
-          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
-          style={{
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
-          }}
-        >
-          <Image
-            src={platform.image.src}
-            alt={platform.image.alt}
-            fill
-            loading="lazy"
-            sizes="78vw"
-            className="object-contain object-right"
-          />
-        </div>
-        <div
-          className="absolute inset-0 hidden xl:block"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(22,33,61,0.9) 0%, rgba(22,33,61,0.6) 35%, rgba(22,33,61,0) 55%)",
-          }}
-          aria-hidden="true"
-        />
-        <Container className="relative z-10 w-full py-16 md:py-24">
-          <div className="max-w-[620px] text-left">
-            <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{platform.eyebrow}</p>
-            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px]">
-              {platform.headingLine1}
-              <br />
-              <em className="text-accent">{platform.headingLine2}</em>
-            </h2>
-            <p className="mt-5 text-[18px] leading-[1.6] text-white/80">{platform.body}</p>
+      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
 
-            <ul className="mt-10 grid list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
-              {platform.points.map((point) => {
-                const Icon = PLATFORM_ICONS[point.icon];
-                return (
-                  <li key={point.title} className="flex items-start gap-3">
-                    <Icon
-                      className="h-7 w-7 shrink-0 text-accent"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                    <span className="text-[16px] leading-[1.5] text-white/90">{point.title}</span>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {platform.showPlatformVideo && (
-              <div className="mt-10">
-                <DemoTrigger appearance="button" arrow={false}>
-                  See the platform
-                </DemoTrigger>
-                <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />
-              </div>
-            )}
-          </div>
-        </Container>
-        <div className="relative aspect-video w-full xl:hidden">
-          <Image
-            src={platform.image.src}
-            alt={platform.image.alt}
-            fill
-            loading="lazy"
-            sizes="100vw"
-            className="object-cover object-right"
-          />
-        </div>
-      </section>
-
-      {/* 5. Why partner with us */}
-      <WhyPartner />
+      {/* 09. Why schools choose it */}
+      <WhySchoolsChooseIt />
     </>
   );
 }
