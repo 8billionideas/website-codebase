@@ -213,8 +213,8 @@ export const gcse = {
 
   projectThemes: {
     eyebrow: "PROJECT THEMES",
-    headingLine1: "Real questions,",
-    headingLine2: "real-world challenges",
+    headingLine1: "Explore the topics students can investigate",
+    headingLine2: "through their projects",
     firstYearHeading: "First year: the eight pillars",
     firstYearLine:
       "Individual projects explore one or two of the eight pillars. Example questions:",
@@ -259,7 +259,7 @@ export const gcse = {
       "Group projects work towards one of the United Nations Sustainable Development Goals, applying what students have learned to a shared, real-world challenge.",
 
     intro:
-      "Students explore meaningful questions through projects that help them apply what they learn to the world around them.",
+      "Students can explore a wide range of real-world topics, from sustainability and technology to entrepreneurship and wellbeing. These themes offer inspiration for students to develop their own questions, investigate issues that interest them and shape their projects.",
     firstYearEyebrow: "FIRST YEAR · INDIVIDUAL PROJECT",
     questionLabel: "Research question",
     secondYear: {
