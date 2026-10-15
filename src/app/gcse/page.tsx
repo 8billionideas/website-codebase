@@ -1,6 +1,5 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import Container from "@/components/layout/Container";
 import { Eyebrow } from "@/components/home/SectionHeading";
 import { gcse, SHOW_GCSE_QUOTE } from "@/content/gcse";
@@ -129,35 +128,22 @@ export default function GcsePage() {
 
       {/* 06. The platform */}
       {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
-      <section className="@container relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
-        {/* The dashboard mock-up (1672×941). Its laptop and panel fill x 25.7–92.6% and
-            y 14.4–89% of the image; around them is a lit dark-blue background (#000a1b to
-            #061f44 at the edges, with a desk reflection below), so all four edges fade out
-            inside that margin and no rectangle shows against the band (#051739).
-            From xl the device starts 40px after the 620px text column and ends 24px from the
-            screen edge (at most 640px wide), vertically centred. */}
+      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
+        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
+            navy edges blend into the band, and the mask softens the lit desk reflection. */}
         <div
-          className="absolute top-1/2 hidden aspect-[1672/941] -translate-y-1/2 xl:block"
-          style={
-            {
-              "--device-left": "calc(max(0px, (100cqw - 75rem) / 2) + 3rem + 660px)",
-              "--image-width": "calc(min(640px, 100cqw - var(--device-left) - 24px) / 0.6698)",
-              width: "var(--image-width)",
-              left: "calc(var(--device-left) - var(--image-width) * 0.2566)",
-              maskImage:
-                "linear-gradient(to right, transparent 0%, black 22%, black 94%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 13%, black 88%, transparent 100%)",
-              maskComposite: "intersect",
-              WebkitMaskComposite: "source-in",
-            } as CSSProperties
-          }
+          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
+          style={{
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
+          }}
         >
           <Image
             src={platform.image.src}
             alt={platform.image.alt}
             fill
             loading="lazy"
-            sizes="(min-width: 1280px) 960px, 100vw"
-            className="object-contain"
+            sizes="78vw"
+            className="object-contain object-right"
           />
         </div>
         <div
@@ -198,27 +184,15 @@ export default function GcsePage() {
             )}
           </div>
         </Container>
-        {/* Below xl: under the text at full width. The image is drawn at 125% and centred on
-            the device (so it fills about 84% of the width), with the same soft edge fades. */}
-        <div
-          className="relative aspect-[100/66] w-full overflow-hidden xl:hidden"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 7%, black 93%, transparent 100%)",
-            maskComposite: "intersect",
-            WebkitMaskComposite: "source-in",
-          }}
-        >
-          <div className="absolute aspect-[1672/941] w-[125%]" style={{ left: "-23.9%", top: "-5.1%" }}>
-            <Image
-              src={platform.image.src}
-              alt={platform.image.alt}
-              fill
-              loading="lazy"
-              sizes="125vw"
-              className="object-contain"
-            />
-          </div>
+        <div className="relative aspect-video w-full xl:hidden">
+          <Image
+            src={platform.image.src}
+            alt={platform.image.alt}
+            fill
+            loading="lazy"
+            sizes="100vw"
+            className="object-cover object-right"
+          />
         </div>
       </section>
 

@@ -306,8 +306,8 @@ export const gcse = {
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,
     image: {
-      src: "/images/gcse/platform-dashboard.webp",
-      alt: "The 8billionideas platform on a laptop, showing a student progression dashboard with key skills progress and a lesson list",
+      src: "/images/gcse/platform.webp",
+      alt: "The 8billionideas platform on a laptop, showing the International GCSE Global Skills Project course and its lessons",
     },
   },
 
