@@ -18,9 +18,17 @@ test("add-ons are the four priced extras, in order", () => {
   );
 });
 
-test("fixed-price add-ons", () => {
+test("CPD and Online Experience are their price × quantity (default 1)", () => {
   assert.equal(addOnCost("cpd"), 1975);
   assert.equal(addOnCost("online-experience"), 995);
+  assert.equal(addOnCost("cpd", { quantity: 2 }), 3950);
+  assert.equal(addOnCost("online-experience", { quantity: 3 }), 2985);
+  assert.equal(addOnCost("cpd", { quantity: 11 }), 19750);
+});
+
+test("CPD and Online Experience are priced each", () => {
+  assert.equal(QUOTE_ADD_ONS.find((a) => a.id === "cpd").unit, "each");
+  assert.equal(QUOTE_ADD_ONS.find((a) => a.id === "online-experience").unit, "each");
 });
 
 test("Live Experience is the group's price per day × days", () => {
@@ -50,6 +58,17 @@ test("estimated total: Critical Curriculum + CPD + Live Experience", () => {
   assert.equal(quoteTotal({ cc }, addOns), 3595);
 });
 
+test("estimated total: Critical Curriculum (1 year group, 1 pillar) + CPD × 2 + Online Experience × 1", () => {
+  const cc = calculateCurriculumPrice(1, 1);
+  assert.equal(cc.total, 40);
+  const addOns = [
+    { id: "cpd", options: { quantity: 2 } },
+    { id: "online-experience", options: { quantity: 1 } },
+  ];
+  assert.equal(addOnsTotal(addOns), 4945);
+  assert.equal(quoteTotal({ cc }, addOns), 4985);
+});
+
 test("estimated total with every option changed", () => {
   const addOns = [
     { id: "cpd" },
@@ -63,7 +82,9 @@ test("estimated total with every option changed", () => {
 });
 
 test("summary labels and HubSpot details line", () => {
-  assert.equal(addOnLineLabel("cpd"), "CPD");
+  assert.equal(addOnLineLabel("cpd"), "CPD × 1");
+  assert.equal(addOnLineLabel("cpd", { quantity: 2 }), "CPD × 2");
+  assert.equal(addOnLineLabel("online-experience", { quantity: 3 }), "Online Experience × 3");
   assert.equal(addOnLineLabel("live-experience", { groupId: "100", days: 2 }), "Live Experience · up to 100 students · 2 days");
   assert.equal(addOnLineLabel("live-experience", { groupId: "50", days: 1 }), "Live Experience · up to 50 students · 1 day");
   assert.equal(addOnLineLabel("assembly", { quantity: 2 }), "Assembly × 2");
@@ -73,6 +94,15 @@ test("summary labels and HubSpot details line", () => {
       { id: "live-experience", options: { groupId: "100", days: 2 } },
       { id: "assembly", options: { quantity: 2 } },
     ]),
-    "CPD £1,975; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900"
+    "CPD × 1 £1,975; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900"
+  );
+  assert.equal(
+    addOnDetails([
+      { id: "cpd", options: { quantity: 2 } },
+      { id: "online-experience", options: { quantity: 1 } },
+      { id: "live-experience", options: { groupId: "100", days: 2 } },
+      { id: "assembly", options: { quantity: 2 } },
+    ]),
+    "CPD × 2 £3,950; Online Experience × 1 £995; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900"
   );
 });

@@ -9,6 +9,18 @@ export interface GcseQuote {
   role: string;
 }
 
+export interface GcseFeaturedQuote {
+  text: string;
+  name: string;
+  role: string;
+  isPlaceholder: boolean;
+}
+
+// PLACEHOLDER quote: replace with an approved quote and attribution before launch, or set SHOW_GCSE_QUOTE to false.
+// When false, section 05 (the quote break) isn't rendered and the thin divider between
+// "Ready to deliver" and the platform section returns.
+export const SHOW_GCSE_QUOTE = true;
+
 export const gcse = {
   hero: {
     eyebrow: "OXFORDAQA INTERNATIONAL GCSE GLOBAL SKILLS PROJECTS",
@@ -200,11 +212,8 @@ export const gcse = {
 
   projectThemes: {
     eyebrow: "PROJECT THEMES",
-    headingLine1: "Explore the topics students can investigate",
-    headingLine2: "through their projects",
-    firstYearHeading: "First year: the eight pillars",
-    firstYearLine:
-      "Individual projects explore one or two of the eight pillars. Example questions:",
+    headingLine1: "Explore the topics students can",
+    headingLine2: "investigate through their projects",
     pillars: [
       {
         name: "Entrepreneurship",
@@ -241,26 +250,42 @@ export const gcse = {
         question: "What role will artificial intelligence play in the future of education?",
       },
     ] as GcsePillarTile[],
-    secondYearHeading: "Second year: a United Nations goal",
-    secondYearLine:
-      "Group projects work towards one of the United Nations Sustainable Development Goals, applying what students have learned to a shared, real-world challenge.",
-
     intro:
       "Students can explore a wide range of real-world topics, from sustainability and technology to entrepreneurship and wellbeing. These themes offer inspiration for students to develop their own questions, investigate issues that interest them and shape their projects.",
-    firstYearEyebrow: "FIRST YEAR · INDIVIDUAL PROJECT",
-    questionLabel: "Research question",
-    secondYear: {
-      eyebrow: "SECOND YEAR",
-      title: "Group project",
-      subtitle: "United Nations Sustainable Development Goal",
-      line: "Students work together on a shared, real-world challenge, applying what they have learned to a broader global issue.",
+    individual: {
+      eyebrow: "INDIVIDUAL PROJECT · 60%",
+      title: "Individual Project",
+      line: "Students choose a topic that interests them and develop their own research question to investigate.",
+      questionHeading: "Explore an example research question",
+      questionLabel: "RESEARCH QUESTION",
+      image: {
+        src: "/images/gcse/project-individual-photo.webp",
+        position: "70% center",
+        alt: "A student writing notes beside a laptop while researching a project",
+      },
     },
-    image: {
-      src: "/images/gcse/project-themes.webp",
-      alt: "A Global Skills Project brief for Entrepreneurship lying on a desk, showing its research question and project details",
+    group: {
+      eyebrow: "GROUP PROJECT · 40%",
+      title: "Group Sustainability Action Project",
+      line: "Students work together on a shared sustainability challenge, using the UN Sustainable Development Goals to help shape their project.",
+      focusLabel: "PROJECT FOCUS",
+      focus: "A collaborative project based on a real-world sustainability issue.",
+      image: {
+        src: "/images/gcse/project-group-photo.webp",
+        // The crop is wider than the 3/2 frame; anchored right of centre so the boy stays in.
+        position: "85% center",
+        alt: "Two students working together on a garden project outdoors",
+      },
     },
-    globeImage: "/images/gcse/sdg-globe.webp",
   },
+
+  // PLACEHOLDER quote: replace with an approved quote and attribution before launch, or set SHOW_GCSE_QUOTE to false.
+  quote: {
+    text: "The Global Skills Projects qualification gives our students a fantastic opportunity to explore real-world challenges, develop their independent thinking and work collaboratively, while gaining a recognised qualification that complements their academic studies.",
+    name: "[Customer Name]",
+    role: "[Job Title], [School Name]",
+    isPlaceholder: true,
+  } as GcseFeaturedQuote,
 
   platform: {
     eyebrow: "THE PLATFORM",
@@ -281,8 +306,8 @@ export const gcse = {
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,
     image: {
-      src: "/images/gcse/platform.webp",
-      alt: "The 8billionideas platform on a laptop, showing the International GCSE Global Skills Project course and its lessons",
+      src: "/images/gcse/platform-dashboard.webp",
+      alt: "The 8billionideas platform on a laptop, showing a student progression dashboard with key skills progress and a lesson list",
     },
   },
 

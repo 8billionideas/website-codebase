@@ -110,7 +110,18 @@ function recapLine(selection: QuoteSelection, addOnCount: number, total: number)
   return parts.join(" · ");
 }
 
-// − [n] + stepper for add-on quantities (days, assemblies), 1–10.
+// Add-ons priced per item, with their stepper labels.
+type QuantityAddOnId = "cpd" | "online-experience" | "assembly";
+const QUANTITY_LABELS: Record<QuantityAddOnId, string> = {
+  cpd: "Number of CPD sessions",
+  "online-experience": "Number of online experiences",
+  assembly: "Number of assemblies",
+};
+
+// "Number of CPD sessions" → "number of CPD sessions" (keeps acronyms intact in button labels).
+const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
+
+// − [n] + stepper for add-on quantities (days, sessions, experiences, assemblies), 1–10.
 function Stepper({ label, value, onChange }: { label: string; value: number; onChange: (next: number) => void }) {
   const labelId = useId();
   const button =
@@ -126,7 +137,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
       <div role="group" aria-labelledby={labelId} className="mt-2 inline-flex items-center rounded-full border border-ink/15 bg-white p-0.5">
         <button
           type="button"
-          aria-label={`Decrease ${label.toLowerCase()}`}
+          aria-label={`Decrease ${lowerFirst(label)}`}
           aria-disabled={atMin || undefined}
           onClick={() => !atMin && onChange(value - 1)}
           className={button}
@@ -138,7 +149,7 @@ function Stepper({ label, value, onChange }: { label: string; value: number; onC
         </output>
         <button
           type="button"
-          aria-label={`Increase ${label.toLowerCase()}`}
+          aria-label={`Increase ${lowerFirst(label)}`}
           aria-disabled={atMax || undefined}
           onClick={() => !atMax && onChange(value + 1)}
           className={button}
@@ -278,7 +289,12 @@ export default function QuoteRequestModal({
   const [ticked, setTicked] = useState<AddOnId[]>([]);
   const [liveGroup, setLiveGroup] = useState<LiveGroupId>("50");
   const [liveDays, setLiveDays] = useState(1);
-  const [assemblies, setAssemblies] = useState(1);
+  // Quantity for each "quantity" add-on (kept if the add-on is unticked and ticked again).
+  const [quantities, setQuantities] = useState<Record<QuantityAddOnId, number>>({
+    cpd: 1,
+    "online-experience": 1,
+    assembly: 1,
+  });
   const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "success">("idle");
@@ -291,8 +307,8 @@ export default function QuoteRequestModal({
   const optionsFor = (addOnId: AddOnId): AddOnOptions =>
     addOnId === "live-experience"
       ? { groupId: liveGroup, days: liveDays }
-      : addOnId === "assembly"
-        ? { quantity: assemblies }
+      : addOnId in quantities
+        ? { quantity: quantities[addOnId as QuantityAddOnId] }
         : {};
   // Ticked add-ons with their current options, in list order.
   const selectedAddOns: SelectedAddOn[] = QUOTE_ADD_ONS.filter((a) => ticked.includes(a.id)).map((a) => ({
@@ -570,12 +586,18 @@ export default function QuoteRequestModal({
                         </>
                       );
                     }
-                    if (addOn.id === "assembly") {
+                    if (addOn.pricing === "quantity" && addOn.id in QUANTITY_LABELS) {
+                      const qid = addOn.id as QuantityAddOnId;
+                      const quantity = quantities[qid];
                       return card(
                         <>
-                          <Stepper label="Number of assemblies" value={assemblies} onChange={setAssemblies} />
+                          <Stepper
+                            label={QUANTITY_LABELS[qid]}
+                            value={quantity}
+                            onChange={(next) => setQuantities((q) => ({ ...q, [qid]: next }))}
+                          />
                           <p className="text-right text-[14px] font-medium text-ink">
-                            {assemblies} × {formatMoney(addOn.price)} = {formatMoney(addOnCost("assembly", { quantity: assemblies }))}
+                            {quantity} × {formatMoney(addOn.price)} = {formatMoney(addOnCost(qid, { quantity }))}
                           </p>
                         </>
                       );

@@ -34,17 +34,22 @@ export default function CurriculumFitSection() {
         <div className="mt-6 rounded-[10px] bg-ink p-6 md:p-8">
           <p className="text-[12px] uppercase tracking-[0.25em] text-white">{foundation.label}</p>
           <p className="mt-3 max-w-[700px] text-[17px] leading-[1.6] text-white/85">{foundation.text}</p>
-          <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <div className="rounded-md bg-white/15 px-8 py-5">
+          {/* Desktop/tablet (md+): two equal tiles fill the card's inner width, with the arrow
+              centred in a fixed 56px column between them; both tiles share the row's height.
+              Mobile: stacked at full width, the arrow pointing down. */}
+          <div className="mt-6 flex flex-col items-stretch gap-3 md:flex-row md:gap-0">
+            <div className="flex flex-col justify-center rounded-md bg-white/15 px-8 py-[22px] md:flex-1 md:basis-0">
               <p className="text-[28px] font-normal leading-[1.2] text-white">{foundation.from.years}</p>
               <p className="mt-1 text-[15px] leading-[1.4] text-white/80">{foundation.from.name}</p>
             </div>
-            <ArrowRight
-              className="h-6 w-6 shrink-0 self-center rotate-90 text-white sm:rotate-0"
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
-            <div className="rounded-md bg-white px-8 py-5">
+            <div className="flex shrink-0 items-center justify-center md:w-14">
+              <ArrowRight
+                className="h-6 w-6 rotate-90 text-white md:rotate-0"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            </div>
+            <div className="flex flex-col justify-center rounded-md bg-white px-8 py-[22px] md:flex-1 md:basis-0">
               <p className="text-[28px] font-normal leading-[1.2] text-ink">{foundation.to.years}</p>
               <p className="mt-1 text-[15px] leading-[1.4] text-ink/75">{foundation.to.name}</p>
             </div>

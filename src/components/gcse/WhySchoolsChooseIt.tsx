@@ -24,7 +24,7 @@ export default function WhySchoolsChooseIt() {
         {/* From 1024px: the featured card (about 38%) spans two rows beside a 2×2 grid.
             768–1023px: featured full width on top, then the 2×2. Below 768px: stacked. */}
         <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[38fr_31fr_31fr] lg:grid-rows-2">
-          <div className="flex flex-col justify-end rounded-[10px] bg-ink p-8 md:col-span-2 md:p-10 lg:col-span-1 lg:row-span-2">
+          <div className="flex flex-col justify-center rounded-[10px] bg-ink p-8 md:col-span-2 md:p-10 lg:col-span-1 lg:row-span-2">
             <GraduationCap className="h-12 w-12 text-white" strokeWidth={1.5} aria-hidden="true" />
             <h4 className="mt-6 text-[26px] font-normal leading-[1.25] text-white md:text-[28px]">{featured.title}</h4>
             <p className="mt-3 text-[17px] leading-[1.6] text-white/85">{featured.text}</p>

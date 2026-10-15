@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, FileText, Users, type LucideIcon } from "lucide-react";
+import { FileText, Users, type LucideIcon } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { gcse } from "@/content/gcse";
 
@@ -21,31 +21,36 @@ export default function GettingStarted() {
 
         <h3 className="mt-12 text-[26px] font-light leading-[1.2] text-ink md:text-[32px]">{stepsHeading}</h3>
 
-        {/* From 1280px: one row of five with arrows in the gaps. 768–1279px: two columns, the
-            last box spanning both, no arrows. Below 768px: stacked with downward arrows. */}
-        <ol className="mt-6 flex list-none flex-col p-0 md:grid md:grid-cols-2 md:gap-4 xl:flex xl:flex-row xl:gap-8">
-          {steps.map((step, i) => {
-            const last = i === steps.length - 1;
-            return (
-              <li key={step.number} className={`relative flex flex-col xl:flex-1 ${last ? "md:col-span-2" : ""}`}>
-                <div className="flex-1 rounded-lg bg-ink p-6">
-                  <p className="text-[14px] font-medium leading-[1.4] text-white">{step.number}</p>
-                  <p className="mt-2 text-[20px] font-normal leading-[1.25] text-white">{step.title}</p>
-                  <p className="mt-2 text-[14px] leading-[1.55] text-white/85">{step.text}</p>
-                </div>
-                {!last && (
-                  <>
-                    <ArrowDown className="mx-auto my-2 h-5 w-5 text-ink md:hidden" strokeWidth={1.5} aria-hidden="true" />
-                    <ArrowRight
-                      className="absolute top-1/2 -right-[26px] hidden h-5 w-5 -translate-y-1/2 text-ink xl:block"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  </>
-                )}
-              </li>
-            );
-          })}
+        {/* One ink strip, styled like the Lesson explorer's lesson strip on /curriculum-mapping.
+            From lg: five equal columns in a row, separated by thin dividers with a small arrow on
+            each. Below lg: a vertical list with a small downward arrow on each divider. */}
+        <ol className="mt-6 list-none divide-y divide-white/15 rounded-xl bg-ink p-0 lg:flex lg:divide-y-0">
+          {steps.map((step, i) => (
+            <li
+              key={step.number}
+              className={`relative flex flex-col px-5 py-6 lg:flex-1 lg:basis-0 ${
+                i > 0 ? "lg:border-l lg:border-white/15" : ""
+              }`}
+            >
+              {i > 0 && (
+                <>
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1/2 left-0 hidden h-0 w-0 -translate-y-1/2 border-y-[6px] border-l-[7px] border-y-transparent border-l-white lg:block"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-0 left-1/2 h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[7px] border-x-transparent border-t-white lg:hidden"
+                  />
+                </>
+              )}
+              <p className="flex items-baseline gap-3 lg:block">
+                <span className="shrink-0 text-[14px] font-medium leading-[1.4] text-white/70">{step.number}</span>
+                <span className="text-[18px] font-normal leading-[1.25] text-white lg:mt-2 lg:block">{step.title}</span>
+              </p>
+              <p className="mt-2 text-[14px] leading-[1.5] text-white/85">{step.text}</p>
+            </li>
+          ))}
         </ol>
 
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">

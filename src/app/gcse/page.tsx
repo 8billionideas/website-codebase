@@ -1,15 +1,16 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Container from "@/components/layout/Container";
 import { Eyebrow } from "@/components/home/SectionHeading";
-import { gcse } from "@/content/gcse";
-import { PILLARS, type PillarName } from "@/content/curriculumMapping";
-import PillarQuestionSelector from "@/components/gcse/PillarQuestionSelector";
+import { gcse, SHOW_GCSE_QUOTE } from "@/content/gcse";
 import GettingStarted from "@/components/gcse/GettingStarted";
 import WhySchoolsChooseIt from "@/components/gcse/WhySchoolsChooseIt";
 import CurriculumFitSection from "@/components/gcse/CurriculumFitSection";
 import HowQualificationWorks from "@/components/gcse/HowQualificationWorks";
 import ReadyToDeliver from "@/components/gcse/ReadyToDeliver";
+import ProjectThemes from "@/components/gcse/ProjectThemes";
+import QuoteBreak from "@/components/gcse/QuoteBreak";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export const metadata: Metadata = {
@@ -28,10 +29,7 @@ function RequestDemoButton({ className = "" }: { className?: string }) {
 }
 
 export default function GcsePage() {
-  const { hero, projectThemes, platform } = gcse;
-  const orderedPillars = [...projectThemes.pillars].sort(
-    (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
-  );
+  const { hero, platform } = gcse;
 
   return (
     <>
@@ -113,133 +111,53 @@ export default function GcsePage() {
       {/* 03. How the qualification works */}
       <HowQualificationWorks />
 
-      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
-
-      {/* Project themes */}
-      <section className="relative isolate bg-paper">
-        {/* Height = text + 56px, or the brief image (capped at 430px) if that's taller, so the
-            pills sit just below the text without running into the document. */}
-        <div className="relative xl:min-h-[min(28.97vw,430px)]">
-          {/* Contained in a right-hand box (not cover) so the brief stays clear of the text;
-              the mask fades its cut edges into the paper. */}
-          <div
-            className="absolute top-0 right-0 hidden aspect-[2057/764] max-h-[430px] w-[78%] mix-blend-multiply xl:block"
-            style={{
-              maskImage:
-                "linear-gradient(to bottom, black 62%, transparent 100%), linear-gradient(to right, transparent 0%, black 14%)",
-              maskComposite: "intersect",
-              WebkitMaskComposite: "source-in",
-            }}
-          >
-            <Image
-              src={projectThemes.image.src}
-              alt={projectThemes.image.alt}
-              fill
-              loading="lazy"
-              sizes="78vw"
-              className="object-cover object-[right_top]"
-            />
-          </div>
-          <div
-            className="absolute inset-0 hidden xl:block"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.8) 35%, rgba(255,253,250,0) 55%)",
-            }}
-            aria-hidden="true"
-          />
-          <Container className="relative z-10 pt-16 md:pt-24 xl:pb-14">
-            <div className="max-w-[640px] text-left">
-              <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{projectThemes.eyebrow}</p>
-              <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-                {projectThemes.headingLine1}
-                <br />
-                <em className="text-accent">{projectThemes.headingLine2}</em>
-              </h2>
-              <p className="mt-5 max-w-[540px] text-[18px] leading-[1.6] text-ink/70">{projectThemes.intro}</p>
-            </div>
-          </Container>
-          <div className="relative mt-8 aspect-[4/3] w-full mix-blend-multiply md:mt-14 xl:hidden">
-            <Image
-              src={projectThemes.image.src}
-              alt={projectThemes.image.alt}
-              fill
-              loading="lazy"
-              sizes="100vw"
-              className="object-cover object-[right_top]"
-            />
-          </div>
-        </div>
-
-        <Container className="relative z-10 mt-8 md:mt-14 xl:mt-0">
-          <PillarQuestionSelector
-            pillars={orderedPillars}
-            eyebrow={projectThemes.firstYearEyebrow}
-            label={projectThemes.questionLabel}
-          />
-        </Container>
-
-        {/* Second year band. Background is the globe image's own mint so there is no seam. */}
-        <div className="relative isolate mt-16 flex items-center overflow-hidden bg-[#F0F5F1] py-16 xl:min-h-[360px] xl:py-0">
-          {/* The source crops the globe flat at its top edge; the mask fades that edge into the mint. */}
-          <div
-            className="absolute inset-0 opacity-30 xl:opacity-100"
-            style={{ maskImage: "linear-gradient(to bottom, transparent 12%, black 45%)" }}
-            aria-hidden="true"
-          >
-            <Image
-              src={projectThemes.globeImage}
-              alt=""
-              aria-hidden="true"
-              fill
-              loading="lazy"
-              sizes="100vw"
-              className="object-cover object-right xl:object-contain xl:object-[right_bottom]"
-            />
-          </div>
-          <Container className="relative z-10 w-full">
-            <div className="max-w-[560px] text-left xl:py-16">
-              <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">{projectThemes.secondYear.eyebrow}</p>
-              <h3 className="mt-4 text-[34px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[44px]">
-                {projectThemes.secondYear.title}
-              </h3>
-              <p className="mt-2 text-[22px] font-light italic leading-[1.3] text-[#1A9E74] md:text-[28px]">
-                {projectThemes.secondYear.subtitle}
-              </p>
-              <p className="mt-5 text-[18px] leading-[1.6] text-ink/70">{projectThemes.secondYear.line}</p>
-            </div>
-          </Container>
-        </div>
-      </section>
-
+      {/* Project themes: a navy header band (so no divider above) and two project rows. */}
+      <ProjectThemes />
 
       {/* 04. Ready to deliver */}
       <ReadyToDeliver />
 
-      {/* SECTION 05: quote / white break, awaiting approved quote */}
-      {/* Until then, a thin divider separates the two dark sections (04 and 06). */}
-      <div className="h-px w-full bg-ink" aria-hidden="true">
-        <div className="h-full bg-white/10" />
-      </div>
+      {/* SECTION 05: quote break (PLACEHOLDER quote, see SHOW_GCSE_QUOTE in src/content/gcse.ts).
+          When it's switched off, a thin divider separates the two dark sections (04 and 06). */}
+      {SHOW_GCSE_QUOTE ? (
+        <QuoteBreak />
+      ) : (
+        <div className="h-px w-full bg-ink" aria-hidden="true">
+          <div className="h-full bg-white/10" />
+        </div>
+      )}
 
       {/* 06. The platform */}
       {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
-      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
-        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
-            navy edges blend into the band, and the mask softens the lit desk reflection. */}
+      <section className="@container relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
+        {/* The dashboard mock-up (1672×941). Its laptop and panel fill x 25.7–92.6% and
+            y 14.4–89% of the image; around them is a lit dark-blue background (#000a1b to
+            #061f44 at the edges, with a desk reflection below), so all four edges fade out
+            inside that margin and no rectangle shows against the band (#051739).
+            From xl the device starts 40px after the 620px text column and ends 24px from the
+            screen edge (at most 640px wide), vertically centred. */}
         <div
-          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
-          style={{
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
-          }}
+          className="absolute top-1/2 hidden aspect-[1672/941] -translate-y-1/2 xl:block"
+          style={
+            {
+              "--device-left": "calc(max(0px, (100cqw - 75rem) / 2) + 3rem + 660px)",
+              "--image-width": "calc(min(640px, 100cqw - var(--device-left) - 24px) / 0.6698)",
+              width: "var(--image-width)",
+              left: "calc(var(--device-left) - var(--image-width) * 0.2566)",
+              maskImage:
+                "linear-gradient(to right, transparent 0%, black 22%, black 94%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 13%, black 88%, transparent 100%)",
+              maskComposite: "intersect",
+              WebkitMaskComposite: "source-in",
+            } as CSSProperties
+          }
         >
           <Image
             src={platform.image.src}
             alt={platform.image.alt}
             fill
             loading="lazy"
-            sizes="78vw"
-            className="object-contain object-right"
+            sizes="(min-width: 1280px) 960px, 100vw"
+            className="object-contain"
           />
         </div>
         <div
@@ -280,15 +198,27 @@ export default function GcsePage() {
             )}
           </div>
         </Container>
-        <div className="relative aspect-video w-full xl:hidden">
-          <Image
-            src={platform.image.src}
-            alt={platform.image.alt}
-            fill
-            loading="lazy"
-            sizes="100vw"
-            className="object-cover object-right"
-          />
+        {/* Below xl: under the text at full width. The image is drawn at 125% and centred on
+            the device (so it fills about 84% of the width), with the same soft edge fades. */}
+        <div
+          className="relative aspect-[100/66] w-full overflow-hidden xl:hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 7%, black 93%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+          }}
+        >
+          <div className="absolute aspect-[1672/941] w-[125%]" style={{ left: "-23.9%", top: "-5.1%" }}>
+            <Image
+              src={platform.image.src}
+              alt={platform.image.alt}
+              fill
+              loading="lazy"
+              sizes="125vw"
+              className="object-contain"
+            />
+          </div>
         </div>
       </section>
 

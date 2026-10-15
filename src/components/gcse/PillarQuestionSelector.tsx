@@ -5,11 +5,9 @@ import type { GcsePillarTile } from "@/content/gcse";
 
 export default function PillarQuestionSelector({
   pillars,
-  eyebrow,
   label,
 }: {
   pillars: GcsePillarTile[];
-  eyebrow: string;
   label: string;
 }) {
   const [active, setActive] = useState(0);
@@ -28,7 +26,7 @@ export default function PillarQuestionSelector({
     tab?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
 
-  // Below xl the row scrolls sideways; fade the right edge only while there's more to see.
+  // Below lg the row scrolls sideways; fade the right edge only while there's more to see.
   useEffect(() => {
     const el = listRef.current;
     if (!el) return;
@@ -61,18 +59,24 @@ export default function PillarQuestionSelector({
 
   return (
     <div>
-      {/* One line always: fits from xl (about 1015px of pills in a 1104px row); below that
-          it scrolls sideways with snap, a hidden scrollbar and a fade on the right. */}
+      {/* Desktop (lg+): the pills wrap, with a forced 4 + 4 split from xl. Below lg, one line that scrolls sideways with
+          snap, a hidden scrollbar and a fade on the right. */}
       <div className="relative">
         <div
           ref={listRef}
           role="tablist"
           aria-label="Pillars"
-          className="[-ms-overflow-style:none] [scrollbar-width:none] -mx-6 flex snap-x snap-mandatory flex-nowrap gap-2 overflow-x-auto px-6 pb-2 [&::-webkit-scrollbar]:hidden md:-mx-12 md:px-12 xl:mx-0 xl:snap-none xl:overflow-visible xl:px-0 xl:pb-0"
+          className="[-ms-overflow-style:none] [scrollbar-width:none] -mx-6 flex snap-x snap-mandatory flex-nowrap gap-2 overflow-x-auto px-6 pb-2 [&::-webkit-scrollbar]:hidden md:-mx-12 md:px-12 lg:mx-0 lg:snap-none lg:flex-wrap lg:gap-y-2.5 lg:overflow-visible xl:gap-y-0 lg:px-0 lg:pb-0"
         >
           {pillars.map((pillar, i) => {
             const selected = i === active;
-            return (
+            return [
+              // Forces the 4 + 4 split from xl. It forms its own (empty) flex line, so there the
+              // rows have no row gap and the second row's pills carry the spacing instead.
+              // At 1024–1279px the pills just wrap to fit the narrower column.
+              i === 4 && (
+                <span key="row-break" aria-hidden="true" className="hidden basis-full xl:block" />
+              ),
               <button
                 key={pillar.name}
                 ref={(el) => {
@@ -86,20 +90,20 @@ export default function PillarQuestionSelector({
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActive(i)}
                 onKeyDown={(e) => handleKeyDown(e, i)}
-                className={`shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
+                className={`shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] transition-colors lg:px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${i >= 4 ? "xl:mt-2.5" : ""} ${
                   selected
-                    ? "border border-transparent bg-accent/[0.18] font-medium"
-                    : "border border-ink/12 bg-white font-normal hover:border-ink/25"
+                    ? "border border-ink bg-ink font-normal text-white"
+                    : "border border-ink/15 bg-white font-normal text-ink hover:border-ink/30"
                 }`}
               >
                 {pillar.name}
-              </button>
-            );
+              </button>,
+            ];
           })}
         </div>
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute top-0 -right-6 bottom-2 w-12 bg-gradient-to-l from-paper to-transparent transition-opacity duration-200 md:-right-12 xl:hidden ${
+          className={`pointer-events-none absolute top-0 -right-6 bottom-2 w-12 bg-gradient-to-l from-paper to-transparent transition-opacity duration-200 md:-right-12 lg:hidden ${
             canScrollRight ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -109,21 +113,18 @@ export default function PillarQuestionSelector({
         id={panelId}
         role="tabpanel"
         aria-labelledby={tabId(active)}
-        className="mt-8"
+        className="mt-6"
       >
-        <p className="text-[12px] uppercase tracking-[0.2em] text-accent">
-          {eyebrow}
-        </p>
-        <p className="mt-3 text-[14px] text-ink/55">{label}</p>
+        <p className="text-[12px] uppercase tracking-[0.2em] text-ink/55">{label}</p>
         {/* Every question sits in the same grid cell so the tallest one sets the height. */}
-        <div className="mt-3 grid max-w-[820px]" aria-live="polite">
+        <div className="mt-3 grid" aria-live="polite">
           {pillars.map((pillar, i) => {
             const selected = i === active;
             return (
               <p
                 key={pillar.name}
                 aria-hidden={!selected}
-                className={`col-start-1 row-start-1 text-[22px] font-light italic leading-[1.35] text-ink transition-[opacity,visibility] duration-300 motion-reduce:transition-none lg:text-[30px] ${
+                className={`col-start-1 row-start-1 text-[22px] font-normal leading-[1.35] text-ink transition-[opacity,visibility] duration-300 motion-reduce:transition-none ${
                   selected ? "visible opacity-100" : "invisible opacity-0"
                 }`}
               >

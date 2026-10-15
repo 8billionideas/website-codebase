@@ -109,18 +109,18 @@ export const QUOTE_ADD_ONS: QuoteAddOn[] = [
     title: "CPD",
     shortTitle: "CPD",
     description: "Practical training that helps staff feel confident using the platform and delivering the learning.",
-    pricing: "fixed",
+    pricing: "quantity",
     price: 1975,
-    unit: "per year",
+    unit: "each",
   },
   {
     id: "online-experience",
     title: "Online Experience",
     shortTitle: "Online Experience",
     description: "Interactive online sessions for your students, led by the 8billionideas team.",
-    pricing: "fixed",
+    pricing: "quantity",
     price: 995,
-    unit: "per year",
+    unit: "each",
   },
   {
     id: "live-experience",
@@ -145,7 +145,7 @@ export const QUOTE_ADD_ONS: QuoteAddOn[] = [
 export interface AddOnOptions {
   groupId?: LiveGroupId; // Live Experience
   days?: number; // Live Experience
-  quantity?: number; // Assembly
+  quantity?: number; // CPD, Online Experience and Assembly
 }
 
 export interface SelectedAddOn {
@@ -194,7 +194,7 @@ export function quoteTotal(selection: QuoteSubscriptions, addOns: SelectedAddOn[
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-// Summary row label: "CPD", "Live Experience · up to 100 students · 2 days", "Assembly × 2".
+// Summary row label: "CPD × 2", "Live Experience · up to 100 students · 2 days", "Assembly × 2".
 export function addOnLineLabel(id: AddOnId, options: AddOnOptions = {}): string {
   const a = getAddOn(id);
   if (a.pricing === "group-days") {
@@ -204,7 +204,7 @@ export function addOnLineLabel(id: AddOnId, options: AddOnOptions = {}): string 
   return a.shortTitle;
 }
 
-// Readable detail for HubSpot: "CPD £1,975; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900".
+// Readable detail for HubSpot: "CPD × 2 £3,950; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900".
 export function addOnDetails(addOns: SelectedAddOn[]): string {
   return addOns
     .map(({ id, options = {} }) => {

@@ -7,8 +7,9 @@ import {
   type TeamQuote,
 } from "@/content/about-team";
 
-// A photo "print": 10px white border, soft shadow, slight tilt. On hover it straightens a
-// little and lifts (skipped with prefers-reduced-motion). The tilt comes in as --r.
+// A photo "print": 10px white border, soft shadow, slight tilt. On hover it comes to the
+// front, straightens a little and lifts (motion skipped with prefers-reduced-motion). The
+// tilt comes in as --r; the collage's stacking order comes in as --z, so hover can raise it.
 function Print({
   photo,
   sizes,
@@ -26,7 +27,7 @@ function Print({
 }) {
   return (
     <figure
-      className={`m-0 bg-white p-2.5 [--r:0deg] shadow-[0_12px_32px_rgba(22,33,61,0.15)] [transform:rotate(var(--r))] transition-transform duration-300 ease-out hover:z-30 hover:[transform:rotate(calc(var(--r)*0.4))_scale(1.02)] motion-reduce:transition-none motion-reduce:hover:[transform:rotate(var(--r))] ${className}`}
+      className={`m-0 bg-white p-2.5 [--r:0deg] shadow-[0_12px_32px_rgba(22,33,61,0.15)] [transform:rotate(var(--r))] z-[var(--z)] transition-transform duration-300 ease-out hover:z-30 hover:[transform:rotate(calc(var(--r)*0.4))_scale(1.02)] motion-reduce:transition-none motion-reduce:hover:[transform:rotate(var(--r))] ${className}`}
       style={
         {
           ...(rotate === undefined ? {} : { "--r": `${rotate}deg` }),
@@ -141,14 +142,18 @@ function Swoosh({
   );
 }
 
-// Desktop collage: positions are % of the container (left/width of its width, top of its
-// height); heights follow each frame's 4/3 ratio. Only the radio photo overlaps another
-// (the group photo's bottom-right corner, below everyone's faces).
+// Desktop collage: one overlapping cluster. Positions are % of the container (left/width of
+// its width, top of its height); heights follow each frame's 4/3 ratio. Every frame,
+// including its border and tilt, stays inside the container. Each overlap sits clear of
+// everyone's faces: the school visit over the group photo's top-right (beside the tallest
+// man), the laughing photo over the school visit's lower edge (below his chin) and the
+// radio photo over the group photo's bottom-right (below the faces) and the laughing
+// photo's left edge (beside the first face).
 const COLLAGE = {
-  group: { left: "2%", top: "6%", width: "54%", rotate: -2, z: 10 },
-  radio: { left: "49%", top: "52%", width: "20%", rotate: 2, z: 20 },
-  schoolVisit: { left: "58%", top: "0%", width: "24%", rotate: 1.5, z: 10 },
-  laughing: { left: "76%", top: "58%", width: "22%", rotate: 2.5, z: 10 },
+  group: { left: "1%", top: "13%", width: "54%", rotate: -2, z: 1 },
+  schoolVisit: { left: "50.5%", top: "6.5%", width: "32%", rotate: 2, z: 2 },
+  laughing: { left: "67.5%", top: "38%", width: "32%", rotate: -1.5, z: 3 },
+  radio: { left: "40%", top: "50.5%", width: "30%", rotate: 2.5, z: 4 },
 } as const;
 
 function place({
@@ -162,7 +167,7 @@ function place({
   width: string;
   z: number;
 }): CSSProperties {
-  return { left, top, width, zIndex: z };
+  return { left, top, width, "--z": z } as CSSProperties;
 }
 
 export default function TeamSection() {
@@ -193,62 +198,66 @@ export default function TeamSection() {
       </div>
 
       <div className="mx-auto mt-14 max-w-[1400px] px-6 md:px-12">
-        {/* Desktop (lg+): the collage. */}
-        <div className="relative hidden aspect-[16/8.5] lg:block">
-          <Print
-            photo={group}
-            sizes="(min-width: 1400px) 700px, 54vw"
-            rotate={COLLAGE.group.rotate}
-            className="absolute"
-            style={place(COLLAGE.group)}
-          />
-          <Print
-            photo={schoolVisit}
-            sizes="(min-width: 1400px) 320px, 24vw"
-            rotate={COLLAGE.schoolVisit.rotate}
-            className="absolute"
-            style={place(COLLAGE.schoolVisit)}
-          />
-          <Print
-            photo={radio}
-            sizes="(min-width: 1400px) 260px, 20vw"
-            rotate={COLLAGE.radio.rotate}
-            className="absolute"
-            style={place(COLLAGE.radio)}
-          />
-          <Print
-            photo={laughing}
-            sizes="(min-width: 1400px) 290px, 22vw"
-            rotate={COLLAGE.laughing.rotate}
-            className="absolute"
-            style={place(COLLAGE.laughing)}
-          />
-
-          {teamQuotes.nearGroup && (
-            <QuoteCard
-              quote={teamQuotes.nearGroup}
-              className="absolute z-20 rotate-[-1.5deg]"
-              style={{ left: "30%", top: "84%", width: "22%" }}
+        {/* Desktop (lg+): the collage, up to 1100px wide at a fixed 16/8.5 ratio. The bottom
+            padding leaves room for the frames' shadows. */}
+        <div className="hidden pb-10 lg:block">
+          <div className="relative mx-auto aspect-[16/8.5] w-full max-w-[1100px] overflow-visible">
+            <Print
+              photo={group}
+              sizes="(min-width: 1196px) 594px, 50vw"
+              rotate={COLLAGE.group.rotate}
+              className="absolute"
+              style={place(COLLAGE.group)}
             />
-          )}
-          {teamQuotes.betweenRight && (
-            <QuoteCard
-              quote={teamQuotes.betweenRight}
-              className="absolute z-20 rotate-[1.5deg]"
-              style={{ left: "74%", top: "28%", width: "24%" }}
+            <Print
+              photo={schoolVisit}
+              sizes="(min-width: 1196px) 352px, 30vw"
+              rotate={COLLAGE.schoolVisit.rotate}
+              className="absolute"
+              style={place(COLLAGE.schoolVisit)}
             />
-          )}
+            <Print
+              photo={radio}
+              sizes="(min-width: 1196px) 330px, 28vw"
+              rotate={COLLAGE.radio.rotate}
+              className="absolute"
+              style={place(COLLAGE.radio)}
+            />
+            <Print
+              photo={laughing}
+              sizes="(min-width: 1196px) 352px, 30vw"
+              rotate={COLLAGE.laughing.rotate}
+              className="absolute"
+              style={place(COLLAGE.laughing)}
+            />
 
-          <Sparkle className="w-10" style={{ left: "-0.5%", top: "-3%" }} />
-          <Sparkle
-            className="w-9 rotate-12"
-            style={{ left: "84%", top: "6%" }}
-          />
-          <Sparkle
-            className="w-9 -rotate-12"
-            style={{ left: "45%", top: "84%" }}
-          />
-          <Swoosh className="w-20" style={{ left: "89%", top: "92%" }} />
+            {teamQuotes.nearGroup && (
+              <QuoteCard
+                quote={teamQuotes.nearGroup}
+                className="absolute z-20 rotate-[-1.5deg]"
+                style={{ left: "30%", top: "84%", width: "22%" }}
+              />
+            )}
+            {teamQuotes.betweenRight && (
+              <QuoteCard
+                quote={teamQuotes.betweenRight}
+                className="absolute z-20 rotate-[1.5deg]"
+                style={{ left: "74%", top: "28%", width: "24%" }}
+              />
+            )}
+
+            {/* Doodles sit just outside the cluster's outer corners. */}
+            <Sparkle className="w-10" style={{ left: "-2.5%", top: "5%" }} />
+            <Sparkle
+              className="w-9 rotate-12"
+              style={{ left: "84%", top: "0%" }}
+            />
+            <Sparkle
+              className="w-9 -rotate-12"
+              style={{ left: "-1.5%", top: "92%" }}
+            />
+            <Swoosh className="w-20" style={{ left: "90%", top: "87%" }} />
+          </div>
         </div>
 
         {/* Tablet (md–lg): group on top, the other three in a row, slight tilts, no overlaps.

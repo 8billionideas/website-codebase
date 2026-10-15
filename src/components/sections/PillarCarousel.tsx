@@ -17,8 +17,10 @@ import {
   ChevronRight,
   type LucideIcon,
 } from "lucide-react";
-import { pillarCarousel } from "@/content/pillarCarousel";
+import { pillarCarousel, type PillarCarouselCard } from "@/content/pillarCarousel";
 import { home } from "@/content/home";
+import { useLevelMode } from "@/lib/level-mode";
+import { formatLevelUpper, type LevelMode } from "@/lib/year-grade";
 
 const { bandTestimonial } = home.proof;
 
@@ -47,12 +49,55 @@ const EXAMPLE_PROJECT_ICONS: Record<string, LucideIcon> = {
   Technology: Cpu,
 };
 
+// The navy box's content for one pillar: its example lesson (left-aligned), or, for pillars
+// without one, the centred icon and supporting line.
+function BoxContent({ card, mode }: { card: PillarCarouselCard; mode: LevelMode }) {
+  const Icon = EXAMPLE_PROJECT_ICONS[card.name] ?? Lightbulb;
+  const lesson = card.exampleLesson;
+
+  if (lesson) {
+    return (
+      <div className="text-left">
+        <p className="flex items-center gap-2.5">
+          <Icon className="h-5 w-5 shrink-0 text-accent" strokeWidth={1.5} aria-hidden="true" />
+          <span className="text-[12px] uppercase leading-[1.4] tracking-[0.2em] text-accent">
+            {formatLevelUpper(lesson.year, mode)} · Example lesson
+          </span>
+        </p>
+        <p className="mt-3 text-[18px] font-medium leading-[1.3] text-white">{lesson.title}</p>
+        <p className="mt-2 text-[14px] leading-[1.5] text-white/80">{lesson.description}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center text-center">
+      {card.exampleImage ? (
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
+          <Image
+            src={card.exampleImage.src}
+            alt={card.exampleImage.alt}
+            fill
+            sizes="56px"
+            className="object-cover"
+          />
+        </div>
+      ) : (
+        <Icon className="h-14 w-14 shrink-0 text-accent" strokeWidth={1.5} aria-hidden="true" />
+      )}
+      <p className="mt-4 max-w-[320px] text-[16px] font-normal leading-[1.5] text-white/85">
+        {card.supportingLine}
+      </p>
+    </div>
+  );
+}
+
 export default function PillarCarousel() {
   const { eyebrow, heading, subheading, cards } = pillarCarousel;
   const [index, setIndex] = useState(0);
   const card = cards[index];
   const total = cards.length;
-  const ExampleIcon = EXAMPLE_PROJECT_ICONS[card.name] ?? Lightbulb;
+  const [mode] = useLevelMode();
   const rowRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
@@ -196,32 +241,30 @@ export default function PillarCarousel() {
               )}
             </div>
 
-            {/* Min heights match the old "Example project" box, so its size and position hold. */}
-            <div className="relative mt-4 flex min-h-[172px] w-full flex-col items-center justify-center rounded-xl bg-ink px-[18px] py-[14px] text-center shadow-lg lg:absolute lg:-bottom-12 lg:-right-9 lg:mt-0 lg:min-h-[149px] lg:w-96">
-              {/* Pinned to the corner so the box keeps its size and the icon and line stay put.
-                  Below lg the box is too narrow to clear the centred icon, so the pill sits on
-                  the top edge instead (in the 16px gap below the photo). */}
+            {/* Every pillar's content sits in the same grid cell, so the tallest sets the box's
+                height and it doesn't jump between cards; only the active one is visible. From lg
+                the box is anchored to the card's bottom-right and grows upwards over the photo. */}
+            <div className="relative mt-4 w-full rounded-xl bg-ink p-6 shadow-lg lg:absolute lg:-bottom-12 lg:-right-9 lg:mt-0 lg:w-[420px]">
+              {/* Pinned to the corner. Below lg the pill sits on the top edge instead (in the
+                  16px gap below the photo). */}
               {card.comingSoon && (
                 <span className="absolute top-0 right-3 -translate-y-1/2 rounded-full border border-accent bg-ink px-3 py-1 text-[12px] font-medium uppercase leading-none tracking-[0.15em] text-accent lg:top-3 lg:translate-y-0">
                   Coming soon
                 </span>
               )}
-              {card.exampleImage ? (
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg">
-                  <Image
-                    src={card.exampleImage.src}
-                    alt={card.exampleImage.alt}
-                    fill
-                    sizes="56px"
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <ExampleIcon className="h-14 w-14 shrink-0 text-accent" strokeWidth={1.5} aria-hidden="true" />
-              )}
-              <p className="mt-4 max-w-[320px] text-[16px] font-normal leading-[1.5] text-white/85">
-                {card.supportingLine}
-              </p>
+              <div className="grid">
+                {cards.map((c, i) => (
+                  <div
+                    key={c.name}
+                    aria-hidden={i !== index}
+                    className={`col-start-1 row-start-1 ${c.exampleLesson ? "self-start" : "self-center"} ${
+                      i === index ? "visible" : "invisible"
+                    }`}
+                  >
+                    <BoxContent card={c} mode={mode} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
