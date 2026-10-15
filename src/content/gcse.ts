@@ -16,19 +16,6 @@ export const gcse = {
     headingLine2: "a recognised qualification",
     subline:
       "Give your students the opportunity to work towards an International GCSE through practical projects that explore real-world topics and challenges. Developed by OxfordAQA and supported by 8billionideas as its teaching and learning partner, the qualification comes with a structured learning experience, ready-to-teach resources and a dedicated platform to help your school deliver it.",
-    points: [
-      { number: "01", title: "Non-examined", line: "A different way for students to demonstrate what they can do." },
-      {
-        number: "02",
-        title: "Works alongside different curricula",
-        line: "Designed to fit into international schools, not just British curriculum settings.",
-      },
-      {
-        number: "03",
-        title: "Everything you need to deliver it",
-        line: "Lessons, resources, platform and ongoing support from our team.",
-      },
-    ],
     // Set to a date string (e.g. "September 2027") to show a small pill
     // above the H1. Leave null to render nothing.
     launchDate: null as string | null,

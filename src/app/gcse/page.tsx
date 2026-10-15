@@ -57,10 +57,19 @@ export default function GcsePage() {
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 hidden lg:block"
+          className="absolute inset-0 hidden xl:block"
           style={{
             background:
               "linear-gradient(90deg, rgba(22,33,61,0.95) 0%, rgba(22,33,61,0.8) 35%, rgba(22,33,61,0.3) 60%, rgba(22,33,61,0) 80%)",
+          }}
+          aria-hidden="true"
+        />
+        {/* 1024–1279px: the text covers more of the photo, so the fade reaches a little further. */}
+        <div
+          className="absolute inset-0 hidden lg:block xl:hidden"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(22,33,61,0.95) 0%, rgba(22,33,61,0.85) 40%, rgba(22,33,61,0.5) 65%, rgba(22,33,61,0) 85%)",
           }}
           aria-hidden="true"
         />
@@ -89,18 +98,7 @@ export default function GcsePage() {
           <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">
             {hero.subline}
           </p>
-          {/* Reassurance points: a row from md (kept within the darker left side of the image),
-              stacked on mobile. */}
-          <ul className="mt-10 grid max-w-[760px] list-none grid-cols-1 gap-6 p-0 md:grid-cols-3">
-            {hero.points.map((point) => (
-              <li key={point.number}>
-                <p className="text-[14px] leading-[1.4] text-accent">{point.number}</p>
-                <p className="mt-1 text-[16px] font-medium leading-[1.35] text-white">{point.title}</p>
-                <p className="mt-1 text-[14px] leading-[1.5] text-white/75">{point.line}</p>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-10">
+          <div className="mt-8">
             <RequestDemoButton />
           </div>
         </Container>
