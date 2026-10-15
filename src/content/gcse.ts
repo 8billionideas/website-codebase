@@ -3,11 +3,6 @@ export interface GcsePillarTile {
   question: string;
 }
 
-export interface GcseIconPoint {
-  icon: string;
-  title: string;
-}
-
 export interface GcseQuote {
   quote: string;
   name: string;
@@ -20,7 +15,7 @@ export const gcse = {
     headingLine1: "Turn real-world learning into",
     headingLine2: "a recognised qualification",
     subline:
-      "Developed by OxfordAQA and brought to life in classrooms with our teaching and learning support, giving schools the lessons, platform and guidance they need to deliver the qualification from start to finish.",
+      "Give your students the opportunity to work towards an International GCSE through practical projects that explore real-world topics and challenges. Developed by OxfordAQA and supported by 8billionideas as its teaching and learning partner, the qualification comes with a structured learning experience, ready-to-teach resources and a dedicated platform to help your school deliver it.",
     points: [
       { number: "01", title: "Non-examined", line: "A different way for students to demonstrate what they can do." },
       {
@@ -81,8 +76,8 @@ export const gcse = {
   // 03: how the qualification is assessed.
   qualification: {
     eyebrow: "HOW THE QUALIFICATION WORKS",
-    headingLine1: "Students learn through practical projects",
-    headingLine2: "rather than written exams",
+    headingLine1: "Students demonstrate their learning",
+    headingLine2: "through independent and group projects",
     intro:
       "The OxfordAQA International GCSE Global Skills Projects qualification is assessed through two projects rather than a traditional written exam. Students explore real-world topics, research their ideas, work independently and collaboratively, and demonstrate what they've learned through practical work.",
     projects: [
@@ -108,11 +103,6 @@ export const gcse = {
         title: "What students do throughout the qualification",
         // Shown as one line, with the arrows in accent-green.
         steps: ["Research", "Plan", "Create", "Present", "Reflect"],
-      },
-      {
-        icon: "Lightbulb",
-        title: "How our curriculum supports project exploration",
-        text: "Our eight learning pillars introduce students to a range of topics and ideas, helping them explore their interests and identify possible directions for their projects.",
       },
     ],
   },
@@ -140,7 +130,7 @@ export const gcse = {
     headingLine1: "Everything is in place to help",
     headingLine2: "your school get started",
     intro:
-      "You don't need to recruit a specialist teacher or work everything out yourself. We'll help your school get set up, show teachers and students how to use the platform, and provide ongoing support throughout delivery.",
+      "Introducing the qualification doesn't have to mean a complicated setup process. We'll help your school get everything ready, introduce your teachers and students to the platform, and provide support throughout delivery.",
     stepsHeading: "How we help you get started",
     steps: [
       {
@@ -289,12 +279,17 @@ export const gcse = {
     eyebrow: "THE PLATFORM",
     headingLine1: "Run the whole qualification",
     headingLine2: "in one place",
-    body: "Plan and deliver every lesson, and follow each student's progress through their projects, all on one platform.",
-    points: [
-      { icon: "BookOpen", title: "Every lesson ready to teach" },
-      { icon: "TrendingUp", title: "Follow each project as it develops" },
-      { icon: "LayoutGrid", title: "Lessons, resources and progress together" },
-    ] as GcseIconPoint[],
+    body: "Teachers and students have their own access to the 8billionideas platform, bringing lessons, resources and project work together in one place. Teachers can manage learning and follow student progress, while students can access their materials, complete activities and keep track of their next steps.",
+    audiences: [
+      {
+        title: "For teachers",
+        text: "Access teaching materials, guide students through their projects and see how their work is progressing.",
+      },
+      {
+        title: "For students",
+        text: "Find lessons and project activities, complete work and see what to focus on next.",
+      },
+    ],
     // Set to true once a real platform video is ready. While false, no
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,

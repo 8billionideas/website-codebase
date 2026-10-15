@@ -1,13 +1,14 @@
 "use client";
 
 import { useId, useRef } from "react";
-import { ArrowRight, Presentation, UserRound, type LucideIcon } from "lucide-react";
+import { ArrowRight, Presentation, ShieldCheck, UserRound, type LucideIcon } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
-import { STUDENT_LOGIN_URL, TEACHER_LOGIN_URL } from "@/lib/config";
+import { ADMIN_LOGIN_URL, STUDENT_LOGIN_URL, TEACHER_LOGIN_URL } from "@/lib/config";
 
 const OPTIONS: { label: string; href: string; icon: LucideIcon }[] = [
-  { label: "Teacher", href: TEACHER_LOGIN_URL, icon: Presentation },
   { label: "Student", href: STUDENT_LOGIN_URL, icon: UserRound },
+  { label: "Teacher", href: TEACHER_LOGIN_URL, icon: Presentation },
+  { label: "Admin", href: ADMIN_LOGIN_URL, icon: ShieldCheck },
 ];
 
 export default function LoginModal({

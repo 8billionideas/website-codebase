@@ -1,9 +1,9 @@
-import { FileText, Lightbulb, Route, type LucideIcon } from "lucide-react";
+import { FileText, Route, type LucideIcon } from "lucide-react";
 import { Fragment } from "react";
 import Container from "@/components/layout/Container";
 import { gcse } from "@/content/gcse";
 
-const ICONS: Record<string, LucideIcon> = { FileText, Route, Lightbulb };
+const ICONS: Record<string, LucideIcon> = { FileText, Route };
 
 // /gcse 03: how the qualification is assessed – two weighted projects, no written exam.
 export default function HowQualificationWorks() {
@@ -30,8 +30,8 @@ export default function HowQualificationWorks() {
           ))}
         </div>
 
-        {/* Three columns with thin dividers from md; stacked below. */}
-        <ul className="mt-12 grid list-none grid-cols-1 gap-10 p-0 md:grid-cols-3 md:gap-0 md:divide-x md:divide-ink/[0.12]">
+        {/* Two equal columns with a thin divider from md; stacked below. */}
+        <ul className="mt-12 grid list-none grid-cols-1 gap-10 p-0 md:grid-cols-2 md:gap-0 md:divide-x md:divide-ink/[0.12]">
           {columns.map((column) => {
             const Icon = ICONS[column.icon];
             return (
