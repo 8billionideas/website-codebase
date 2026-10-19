@@ -7,9 +7,10 @@ export interface FaqItem {
 
 export const home = {
   hero: {
-    headline: "Strengthen future-focused learning in a way that fits your school",
+    headlineLine1: "Working alongside schools to",
+    headlineLine2: "shape the future of learning",
     subhead:
-      "A flexible, week-to-week curriculum that works around what you already teach, helping students develop the future-focused skills that can be harder to cover through the traditional curriculum, with ready-to-teach lessons that fit your timetable and build progressively towards a recognised GCSE qualification.",
+      "We’ve always believed that future-focused skills should be an important part of every student’s education. It’s a belief that’s shaped everything we’ve built, from our flexible, week-to-week curriculum that works around what you already teach, to the opportunities we create for students to develop skills for the world ahead, building towards the opportunity to achieve an internationally recognised GCSE qualification in Global Skills.",
     primaryCta: { label: "Explore the GCSE", href: "/gcse" } as CtaLink,
     secondaryCta: {
       label: "Explore the Critical Curriculum",

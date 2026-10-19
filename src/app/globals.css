@@ -104,3 +104,27 @@ body {
     transform: translateX(-50%);
   }
 }
+
+/* /about "Our story" chapters: a gentle fade-up as each scrolls into view. Pure CSS
+   (scroll-driven), so it only runs where supported and the text is never left hidden;
+   skipped entirely with prefers-reduced-motion. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .story-reveal {
+      animation: story-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 200px;
+    }
+  }
+}
+
+@keyframes story-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -124,7 +124,7 @@ export default function PillarCarousel() {
           {eyebrow}
         </p>
         <h2 className="mx-auto mt-3 max-w-2xl text-display text-ink">{heading}</h2>
-        <p className="mx-auto mt-4 max-w-xl text-body-lg text-muted">{subheading}</p>
+        <p className="mx-auto mt-4 max-w-[760px] text-body-lg text-muted">{subheading}</p>
       </div>
 
       {/* Icon row (above the card) — one line always. Below lg it scrolls horizontally

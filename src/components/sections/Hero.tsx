@@ -5,7 +5,7 @@ import { home } from "@/content/home";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 
 export default function Hero() {
-  const { headline, subhead } = home.hero;
+  const { headlineLine1, headlineLine2, subhead } = home.hero;
 
   return (
     <section className="relative flex min-h-[560px] items-center overflow-hidden md:min-h-[640px]">
@@ -24,16 +24,27 @@ export default function Hero() {
         aria-hidden="true"
       />
       <div
-        className="absolute inset-0 hidden lg:block"
+        className="absolute inset-0 hidden xl:block"
         style={{
           background:
             "linear-gradient(90deg, rgba(22,33,61,0.95) 0%, rgba(22,33,61,0.85) 35%, rgba(22,33,61,0.35) 60%, rgba(22,33,61,0) 80%)",
         }}
         aria-hidden="true"
       />
+      {/* 1024–1279px: the paragraph covers more of the photo, so the fade reaches further. */}
+      <div
+        className="absolute inset-0 hidden lg:block xl:hidden"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(22,33,61,0.95) 0%, rgba(22,33,61,0.88) 50%, rgba(22,33,61,0.6) 70%, rgba(22,33,61,0) 92%)",
+        }}
+        aria-hidden="true"
+      />
       <Container className="relative z-10 w-full py-16 text-left md:py-20">
         <h1 className="max-w-[620px] text-display font-light text-white text-balance">
-          {headline}
+          {headlineLine1}
+          <br />
+          <em className="text-accent">{headlineLine2}</em>
         </h1>
         <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">{subhead}</p>
         <div className="mt-8">

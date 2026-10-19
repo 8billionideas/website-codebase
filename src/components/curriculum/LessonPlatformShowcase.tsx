@@ -1,38 +1,35 @@
 import Image from "next/image";
 import Container from "@/components/layout/Container";
 
-// Sampled from the image's dark navy corners (average of several samples),
-// so the band background matches the image with no visible seam. Distinct
-// enough from ink #16213D (more saturated, less grey) that we use the
-// exact sampled colour rather than substituting the ink token.
-const BAND_BACKGROUND = "#041639";
+// Sampled from the laptop image's dark-blue left edge (#041739), so the band and the image
+// meet with no visible seam.
+const BAND_BACKGROUND = "#041739";
 
 // Matches Container's own side inset (mx-auto max-w-[75rem] + md:px-12)
 // exactly, so the text column's left edge lines up with the nav logo even
 // though this section bleeds full-width past the Container.
 const CONTAINER_SIDE_INSET = "calc(48px + max(0px, (100vw - 1200px) / 2))";
 
-// The dashboard mock-up (1672×941; "SkillsForSuccess" removed). Its laptop and floating panel
-// fill x 25.66–92.64% and y 14.35–89% of the image; around them is a lit dark-blue background
-// (#000a1b to #061f44 at the edges), so all four edges fade out inside that margin and no
-// rectangle shows against the band. The previous image (lesson-platform.webp) is kept.
-const IMAGE_SRC = "/images/curriculum/student-progression-dashboard.webp";
+// The blue laptop image (1862×845, lesson-platform-laptop). Its left side is empty dark blue;
+// the laptop starts at 46.3% of its width. The previous images (lesson-platform.webp and
+// student-progression-dashboard.webp) are kept.
+const IMAGE_SRC = "/images/curriculum/lesson-platform-laptop.webp";
+const IMAGE_RATIO = 1862 / 845;
+const ALT_TEXT =
+  "The 8billionideas platform on a laptop, showing course details and a lesson list for the International GCSE Global Skills Project";
+
+// Desktop: the image is the band's background, anchored right, as wide as the screen where the
+// laptop then clears the 440px text column by at least 48px (1280px and up), and otherwise
+// narrowed just enough that it does (1024–1279px). Its edges are colour-matched to the band and
+// softly faded, so no rectangle shows where the band is taller than the image.
+const TEXT_RIGHT = `(${CONTAINER_SIDE_INSET} + 440px)`;
+const IMAGE_WIDTH = `min(100vw, (100vw - ${TEXT_RIGHT} - 48px) / 0.537)`;
 const IMAGE_FADE = {
   maskImage:
-    "linear-gradient(to right, transparent 0%, black 22%, black 94%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 13%, black 88%, transparent 100%)",
+    "linear-gradient(to right, transparent 0%, black 12%), linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
   maskComposite: "intersect",
   WebkitMaskComposite: "source-in",
 } as const;
-
-// Desktop: the device (laptop and panel) is right-aligned with the page container, at most
-// 560px wide (39vw), and always at least 64px clear of the 440px text column. Its height is
-// 0.6273 × its width. Vertically centred in the band, so against the text column.
-const DEVICE_WIDTH = `min(560px, 39vw, 100vw - 2 * ${CONTAINER_SIDE_INSET} - 440px - 64px)`;
-const DEVICE_LEFT = `calc(100vw - ${CONTAINER_SIDE_INSET} - ${DEVICE_WIDTH})`;
-const IMAGE_WIDTH = `calc(${DEVICE_WIDTH} / 0.6698)`;
-
-const ALT_TEXT =
-  "The 8billionideas platform on a laptop, showing a student progression dashboard with key skills progress and a lesson list";
 
 const HEADING = (
   <>
@@ -51,15 +48,27 @@ export default function LessonPlatformShowcase() {
       className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden"
       style={{ backgroundColor: BAND_BACKGROUND }}
     >
-      {/* Desktop (1024px+): text in a column aligned with the nav logo, the image absolutely
-          positioned to its right. */}
+      {/* Desktop (1024px+): the image behind, the text on the left, aligned with the nav logo.
+          The band is at least as tall as the image, with 96px around the text. */}
       <div
-        className="relative hidden lg:grid lg:grid-cols-[1fr_1.4fr] lg:items-center"
+        className="pointer-events-none absolute top-1/2 right-0 hidden -translate-y-1/2 lg:block"
+        style={{ width: `calc(${IMAGE_WIDTH})`, aspectRatio: `${IMAGE_RATIO}`, ...IMAGE_FADE }}
+      >
+        <Image
+          src={IMAGE_SRC}
+          alt={ALT_TEXT}
+          fill
+          loading="lazy"
+          sizes="100vw"
+          className="object-cover object-[right_center]"
+        />
+      </div>
+      <div
+        className="relative hidden lg:flex lg:items-center"
         style={{
           paddingLeft: CONTAINER_SIDE_INSET,
           paddingRight: CONTAINER_SIDE_INSET,
-          // 96px above and below whichever is taller: the text or the device.
-          minHeight: `calc(${DEVICE_WIDTH} * 0.6273 + 192px)`,
+          minHeight: `calc(${IMAGE_WIDTH} / ${IMAGE_RATIO})`,
         }}
       >
         <div className="relative z-10 max-w-[440px] py-24">
@@ -68,41 +77,30 @@ export default function LessonPlatformShowcase() {
           </h2>
           <p className="mt-6 max-w-[480px] text-[18px] leading-[1.6] text-white/80">{BODY}</p>
         </div>
-        {/* Spacer — reserves the right-hand share of the row so the text
-            column above sizes itself against the image's share, even
-            though the image itself is a separate, full-bleed element. */}
-        <div aria-hidden="true" />
       </div>
 
-      <div
-        className="pointer-events-none absolute top-1/2 hidden aspect-[1672/941] lg:block"
-        style={{
-          width: IMAGE_WIDTH,
-          left: `calc(${DEVICE_LEFT} - ${IMAGE_WIDTH} * 0.2566)`,
-          // Centre the device (not the whole image) vertically.
-          transform: "translateY(-51.68%)",
-          ...IMAGE_FADE,
-        }}
-      >
-        <Image src={IMAGE_SRC} alt={ALT_TEXT} fill loading="lazy" sizes="(min-width: 1024px) 60vw, 100vw" className="object-contain" />
-      </div>
-
-      {/* Tablet and mobile: stacked, image full width below the text. */}
+      {/* Tablet and mobile: the text, then the image at full width (16/10, anchored right so
+          the laptop shows). */}
       <div className="lg:hidden">
-        <Container className="py-14 md:py-20">
+        <Container className="pt-14 md:pt-20">
           <h2 className="max-w-[560px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-white md:text-[36px]">
             {HEADING}
           </h2>
           <p className="mt-5 max-w-[480px] text-[18px] leading-[1.6] text-white/80">{BODY}</p>
-
-          {/* The image is drawn at 125% and centred on the device (so it fills about 84% of
-              the width), with the same soft edge fades; capped at 480px and centred. */}
-          <div className="relative mx-auto mt-10 aspect-[100/66] w-full max-w-[480px] overflow-hidden" style={IMAGE_FADE}>
-            <div className="absolute aspect-[1672/941] w-[125%]" style={{ left: "-23.9%", top: "-5.1%" }}>
-              <Image src={IMAGE_SRC} alt={ALT_TEXT} fill loading="lazy" sizes="(min-width: 480px) 600px, 125vw" className="object-contain" />
-            </div>
-          </div>
         </Container>
+        <div
+          className="relative mt-6 aspect-[16/10] w-full"
+          style={{ maskImage: "linear-gradient(to bottom, transparent 0%, black 15%)" }}
+        >
+          <Image
+            src={IMAGE_SRC}
+            alt={ALT_TEXT}
+            fill
+            loading="lazy"
+            sizes="100vw"
+            className="object-cover object-[right_center]"
+          />
+        </div>
       </div>
     </section>
   );

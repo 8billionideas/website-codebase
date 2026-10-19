@@ -2,9 +2,13 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { aboutStory } from "@/content/about-story";
 
-// Section 4 on /about. Desktop: four columns joined by one line with a dot per
-// column. Tablet: 2×2, each column with its own short line. Mobile: a vertical
-// timeline with the line down the left.
+// Section 4 on /about: the story in six chapters.
+// Desktop (lg+): each chapter is two columns, the photo (40%, 4/3) and the text (60%), with a
+// 56px gap, alternating sides (01, 03, 05 photo left; 02, 04 photo right). The photo is sticky
+// (120px from the top) while its own chapter's text scrolls past. Below lg: stacked, photo first
+// (16/10), not sticky. A chapter without a photo spans the full width with a short green line
+// above its label. Chapters fade up gently as they scroll into view (.story-reveal in
+// globals.css: CSS only, skipped where unsupported and with prefers-reduced-motion).
 export default function OurStorySection() {
   return (
     <section className="bg-paper pt-16 pb-16 md:pt-24 md:pb-24">
@@ -16,57 +20,59 @@ export default function OurStorySection() {
           <br />
           <em className="text-accent">could do more</em>
         </h2>
-        <p className="mt-4 text-[18px] leading-[1.6] text-ink/70">
-          A few moments from the journey so far and the mission that has stayed the same.
-        </p>
 
-        <ol className="relative mt-10 flex list-none flex-col gap-10 p-0 md:mt-16 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-12 lg:grid-cols-4 lg:gap-8">
-          {/* Mobile: the vertical line, centred on the dots. */}
-          <span
-            aria-hidden="true"
-            className="absolute top-0 bottom-0 left-1 w-px -translate-x-1/2 bg-ink/15 md:hidden"
-          />
-          {aboutStory.map((entry) => (
-            <li key={entry.year} className="group relative pl-7 md:pl-0">
-              {entry.image ? (
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[4px] shadow-[0_4px_14px_rgba(22,33,61,0.10)]">
-                  <Image
-                    src={entry.image.src}
-                    alt={entry.image.alt}
-                    fill
-                    loading="lazy"
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover"
-                  />
+        <div className="mt-12 flex flex-col gap-16 md:mt-16 md:gap-20">
+          {aboutStory.map((chapter, i) => {
+            const imageRight = i % 2 === 1;
+            return (
+              <article
+                key={chapter.number}
+                className={`story-reveal ${
+                  chapter.image
+                    ? `lg:grid lg:items-start lg:gap-14 ${imageRight ? "lg:grid-cols-[3fr_2fr]" : "lg:grid-cols-[2fr_3fr]"}`
+                    : ""
+                }`}
+              >
+                {chapter.image && (
+                  <div
+                    className={`relative mb-8 aspect-[16/10] w-full overflow-hidden rounded-xl lg:sticky lg:top-[120px] lg:mb-0 lg:aspect-[4/3] ${
+                      imageRight ? "lg:order-2" : ""
+                    }`}
+                  >
+                    <Image
+                      src={chapter.image.src}
+                      alt={chapter.image.alt}
+                      fill
+                      loading="lazy"
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                      className="object-cover"
+                      style={{ objectPosition: chapter.image.position }}
+                    />
+                  </div>
+                )}
+                <div className="text-left">
+                  {!chapter.image && <span aria-hidden="true" className="mb-6 block h-0.5 w-12 bg-accent" />}
+                  <p className="text-[12px] uppercase tracking-[0.25em] text-accent">
+                    {chapter.number} · {chapter.label}
+                  </p>
+                  <h3 className="mt-3 text-[26px] font-light leading-[1.25] tracking-[-0.01em] text-ink md:text-[36px]">
+                    {chapter.headline}
+                  </h3>
+                  <div className="mt-6 space-y-5">
+                    {chapter.paragraphs.map((paragraph) => (
+                      <p key={paragraph.slice(0, 40)} className="text-[18px] leading-[1.75] text-ink/75">
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              ) : (
-                <div aria-hidden="true" className="aspect-[4/3] rounded-[4px] bg-ink" />
-              )}
-
-              {/* Tablet and desktop: the line with this column's dot at its left edge (the line sits
-                  4px into this 8px row, so mt-5 puts it 24px below the image). On desktop the line
-                  runs on through the gap, so the four segments read as one line. */}
-              <div aria-hidden="true" className="relative mt-5 hidden h-2 md:block">
-                <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-ink/15 lg:w-[calc(100%+2rem)] lg:group-last:w-full" />
-                <span className="absolute top-0 left-0 h-2 w-2 rounded-full bg-accent" />
-              </div>
-
-              <div className="relative mt-4">
-                {/* Mobile: this entry's dot on the vertical line, level with the year. */}
-                <span
-                  aria-hidden="true"
-                  className="absolute top-[13px] -left-7 h-2 w-2 rounded-full bg-accent md:hidden"
-                />
-                <p className="text-[32px] font-light leading-[1.1] text-ink/30 md:text-[44px]">{entry.year}</p>
-                <h3 className="mt-2 text-[22px] font-normal leading-[1.3] text-ink">{entry.title}</h3>
-                <p className="mt-2 max-w-[280px] text-[16px] leading-[1.6] text-ink/65">{entry.text}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+              </article>
+            );
+          })}
+        </div>
 
         {/* Closing line — centred on purpose, for this line only. */}
-        <p className="mx-auto mt-12 max-w-[900px] text-balance text-center text-[24px] font-light leading-[1.3] tracking-[-0.01em] text-ink md:mt-[72px] md:text-[36px]">
+        <p className="mx-auto mt-16 max-w-[900px] text-balance text-center text-[24px] font-light leading-[1.3] tracking-[-0.01em] text-ink md:mt-24 md:text-[36px]">
           <span className="block">We&apos;ve changed a lot since 2021.</span>
           <span className="block">
             What we&apos;re trying to{" "}

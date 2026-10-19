@@ -28,7 +28,7 @@ export const pillarCarousel = {
   eyebrow: "THE CURRICULUM",
   heading: "A progressive learning journey across eight key areas",
   subheading:
-    "Each area is taught through structured, age-appropriate learning that develops as students move through each year group.",
+    "Each area includes lessons designed to support students aged 4–18, helping them develop critical skills that grow with them throughout their education. With everything ready to teach and the freedom to choose how lessons fit into the school week, we make it easier for schools to bring future-focused learning into their timetable in a way that works for their teachers and students.",
   cards: [
     {
       name: "Entrepreneurship",

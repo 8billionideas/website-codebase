@@ -24,19 +24,32 @@ const WHY_WE_CARE_COLUMNS = [
   "Those things can be harder to teach, harder to timetable and harder to measure, which means they can too easily be treated as extras. We've never believed they are. For us, they are a fundamental part of what education should give every young person.",
 ];
 
-// Cropped from the "Collaborative Classroom Moments" strip (originals kept as .png).
-// The previous set (why-we-care-1 to -4) is kept in public/images/about as a backup.
+// The previous sets (why-we-care-1 to -4 and why-we-care-v2-1 to -4) are kept in
+// public/images/about as backups. position: object-position classes chosen so each presenter
+// stays in frame at every tile shape (wide on desktop, 4/3 on mobile, near-square on tablet).
 const WHY_WE_CARE_PHOTOS: { src: string; alt: string; position?: string }[] = [
   {
-    src: "/images/about/why-we-care-v2-1.webp",
-    alt: "A facilitator laughing with secondary students around a table",
-    // Shifted left of centre so the girl on the left isn't cut in half; centred on
-    // tablet, where the narrower tile would otherwise clip the facilitator instead.
-    position: "object-[30%_center] md:object-center lg:object-[30%_center]",
+    src: "/images/about/why-we-care-v3-1.webp",
+    alt: "A member of the 8billionideas team leading a lesson with young students sitting on the classroom floor",
+    position: "object-[38%_center]",
   },
-  { src: "/images/about/why-we-care-v2-2.webp", alt: "Students' hands arranging colourful cards on a classroom table" },
-  { src: "/images/about/why-we-care-v2-3.webp", alt: "A teacher talking with students in a classroom" },
-  { src: "/images/about/why-we-care-v2-4.webp", alt: "Secondary students laughing together in class" },
+  {
+    // Portrait: the presenter is low on the left, below the slide.
+    src: "/images/about/why-we-care-v3-2.webp",
+    alt: "A member of the 8billionideas team presenting on stage at a school event",
+    position: "object-[20%_75%]",
+  },
+  {
+    // Portrait: the presenter stands on the right, head at about 20% from the top.
+    src: "/images/about/why-we-care-v3-3.webp",
+    alt: "A member of the 8billionideas team presenting the Tech Toolkit to a class",
+    position: "object-[70%_30%]",
+  },
+  {
+    src: "/images/about/why-we-care-v3-4.webp",
+    alt: "8billionideas founder David Harkin speaking to secondary students in a school theatre",
+    position: "object-[25%_center]",
+  },
 ];
 
 export default function AboutPage() {
@@ -101,10 +114,11 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Mission band (ink) */}
-      <section className="bg-ink py-14 md:py-20">
+      <section className="bg-ink py-14 md:py-20 lg:py-28">
         <Container>
-          <p className="text-[12px] uppercase tracking-[0.25em] text-accent">OUR MISSION</p>
-          <h2 className="mt-5 max-w-[1100px] text-balance text-[32px] font-light leading-[1.2] tracking-[-0.01em] text-white md:text-[52px]">
+          {/* Centred on purpose, for this band only. */}
+          <p className="text-center text-[12px] uppercase tracking-[0.25em] text-accent">OUR MISSION</p>
+          <h2 className="mx-auto mt-5 text-balance text-center text-[32px] font-light leading-[1.3] tracking-[-0.01em] text-white md:text-[52px]">
             Give every student on the planet the{" "}
             <em className="text-accent">skills, belief and values</em> to change the world.
           </h2>
@@ -144,9 +158,7 @@ export default function AboutPage() {
                 alt={photo.alt}
                 fill
                 loading="lazy"
-                // Served as-is: the WebPs are already small (16–25KB) and low-res, so
-                // re-encoding at the optimiser's default quality would only soften them.
-                unoptimized
+                sizes="(min-width: 768px) 25vw, 50vw"
                 className={`object-cover ${photo.position ?? "object-center"}`}
               />
             </div>
@@ -180,12 +192,9 @@ export default function AboutPage() {
           Mint follows Our story's paper and paper follows the ink band, so no dividers. */}
       <TrustSection />
 
-      {/* 6. What it's like to work with us — ends with its own ink band. */}
+      {/* 6. What it's like to work with us (paper). It follows the trust section's ink testimonial
+          band and is followed by the shared dark "Book a demonstration" band, so no dividers. */}
       <WorkWithUsSection />
-
-      {/* The shared "Book a demonstration" band (rendered by layout.tsx) follows and is also
-          dark, so end with a 1px white-at-10% line drawn over ink between the two. */}
-      <div className="border-t border-white/10 bg-ink" aria-hidden="true" />
     </>
   );
 }
