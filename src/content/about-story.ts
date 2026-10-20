@@ -95,6 +95,11 @@ export const aboutStory: StoryChapter[] = [
       "There are new countries we’re excited to explore, more lessons we’re itching to create and some really exciting conversations happening about where future-focused learning could go next. But we’ve never wanted to change education by standing on the sidelines telling schools what they should be doing. We want to be right there with them, listening, learning, trying things out and figuring out how we can make things better together.",
       "Because at the end of the day, this was never really about building a big business. It was about giving young people more opportunities, more confidence and more belief in what they’re capable of. And if we can keep doing that, alongside schools who care just as much as we do, then who knows where this little idea might take us next?",
     ],
-    image: null,
+    image: {
+      src: "/images/about/story/06-team.webp",
+      alt: "The 8billionideas team together in the office in front of a green wall with the company logo",
+      // All 13 faces sit between 9% and 43% of the photo's height; this keeps them all in frame.
+      position: "center 20%",
+    },
   },
 ];

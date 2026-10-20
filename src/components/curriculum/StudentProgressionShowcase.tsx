@@ -6,11 +6,6 @@ import Container from "@/components/layout/Container";
 // through on any edge the cover-fit image doesn't reach.
 const BAND_BACKGROUND = "bg-paper";
 
-// Matches Container's own side inset (mx-auto max-w-[75rem] + md:px-12)
-// exactly, so the text column's left edge lines up with the nav logo even
-// though this section bleeds full-width past the Container.
-const CONTAINER_SIDE_INSET = "calc(48px + max(0px, (100vw - 1200px) / 2))";
-
 // The cleaned dashboard mock-up on white (1672×941, "SkillsforSuccess" removed). Its laptop
 // and floating panel fill x 25.6–92.5% and y 14.8–93.2% of the image; the white around them
 // disappears into the paper with mix-blend-mode: multiply. The previous image
@@ -20,18 +15,20 @@ const IMAGE_SRC = "/images/curriculum/student-progression-dashboard-light.webp";
 const ALT_TEXT =
   "The 8billionideas platform showing a student progression dashboard with confidence scores and key skills progress";
 
-// Desktop: the image box is right-anchored at the old size, but never so wide that the laptop
-// and panel (from 25.6% of the image's width) would reach within 40px of the 380px text column.
-// The image's "white" is a touch off-white (252–254), so its edges fade out to leave no faint
-// rectangle on the paper.
+// The laptop and panel fill x 25.6–92.5% and y 14.8–93.2% of the image (1118×738px of
+// 1672×941, ratio 1.515). Each layout sizes a box to just the device and draws the whole image
+// around it, so the device takes the box's full width; the white margin falls outside the box
+// and disappears into the paper.
+const DEVICE_IMAGE_STYLE = { width: "149.4%", left: "-38.25%", top: "-18.83%" } as const;
+
+// The image's "white" is a touch off-white (252–254), so its outer edges fade out to leave no
+// faint rectangle on the paper.
 const IMAGE_FADE = {
   maskImage:
     "linear-gradient(to right, transparent 0%, black 8%, black 96%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
   maskComposite: "intersect",
   WebkitMaskComposite: "source-in",
 } as const;
-
-const IMAGE_BOX_WIDTH = `min(100%, (100vw - ${CONTAINER_SIDE_INSET} - 380px - 40px) / 0.744)`;
 
 const HEADING = (
   <>
@@ -44,68 +41,35 @@ const HEADING = (
 const BODY =
   "Each programme starts and ends with a simple assessment, giving you a clearer view of how students' understanding develops over time and how that progress builds across the year.";
 
+function DeviceImage({ sizes }: { sizes: string }) {
+  return (
+    <div className="pointer-events-none relative aspect-[1118/738] w-full mix-blend-multiply">
+      <div className="absolute aspect-[1672/941]" style={{ ...DEVICE_IMAGE_STYLE, ...IMAGE_FADE }}>
+        {/* brightness(1.01) lifts the off-white (252–254) to pure white, which multiply leaves
+            invisible, so no faint box shows; the laptop's colours change imperceptibly. */}
+        <Image src={IMAGE_SRC} alt={ALT_TEXT} fill loading="lazy" sizes={sizes} className="object-contain brightness-[1.01]" />
+      </div>
+    </div>
+  );
+}
+
 export default function StudentProgressionShowcase() {
   return (
-    <section
-      className={`relative left-1/2 w-screen -translate-x-1/2 overflow-hidden ${BAND_BACKGROUND}`}
-    >
-      {/* Desktop (1024px+): the image sits at 80% of its previous size —
-          right-anchored, vertically centred, with at least 48px of the
-          band's own background showing above and below it (IMAGE_HEIGHT
-          is the old 16:9-derived band height scaled to 80%; the band
-          itself is that plus 96px of padding, so it's noticeably shorter
-          than before without ever cropping the image). The text sits on
-          top of the empty left side. */}
-      <div
-        className="relative hidden w-full lg:block"
-        style={{
-          height: "calc(clamp(512px, 100vw * 9 / 20, 720px) + 96px)",
-        }}
-      >
-        <div
-          className="absolute right-0 top-1/2 -translate-y-1/2 mix-blend-multiply"
-          style={{ height: "clamp(512px, 100vw * 9 / 20, 720px)", width: IMAGE_BOX_WIDTH, ...IMAGE_FADE }}
-        >
-          <Image
-            src={IMAGE_SRC}
-            alt={ALT_TEXT}
-            fill
-            loading="lazy"
-            sizes="80vw"
-            className="object-contain"
-            style={{ objectPosition: "right center" }}
-          />
-        </div>
-        <div
-          className="absolute inset-0 z-10 flex items-center"
-          style={{ paddingLeft: CONTAINER_SIDE_INSET, paddingRight: CONTAINER_SIDE_INSET }}
-        >
-          <div className="max-w-[380px]">
-            <h2 className="text-balance text-[38px] font-light leading-[1.15] tracking-[-0.01em] text-ink">
-              {HEADING}
-            </h2>
-            <p className="mt-6 text-[18px] leading-[1.6] text-ink/75">{BODY}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Tablet and mobile: stacked, the image below the text at full width. */}
-      <div className="lg:hidden">
-        <Container className="py-14 md:py-20">
-          <h2 className="max-w-[560px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[36px]">
+    <section className={`relative left-1/2 w-screen -translate-x-1/2 overflow-hidden ${BAND_BACKGROUND}`}>
+      {/* Desktop (1024px+): two columns in the page container, the text on the left and the
+          laptop and panel on the right (up to 560px wide, 51% of the container), 64px apart,
+          vertically centred. Below that: the text, then the image centred (up to 420px wide). */}
+      <Container className="py-14 md:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_min(560px,51%)] lg:items-center lg:gap-16 lg:py-24">
+        <div className="relative z-10">
+          <h2 className="max-w-[560px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[36px] lg:max-w-[380px] lg:text-[38px]">
             {HEADING}
           </h2>
-          <p className="mt-5 max-w-[480px] text-[18px] leading-[1.6] text-ink/75">{BODY}</p>
-
-          {/* Drawn at 140% and centred on the laptop and panel (so they fill about 94% of the
-              width, uncropped); the white blends into the paper. */}
-          <div className="relative mt-10 aspect-[100/70] w-full overflow-hidden mix-blend-multiply" style={IMAGE_FADE}>
-            <div className="absolute aspect-[1672/941] w-[140%]" style={{ left: "-32.6%", top: "-10.8%" }}>
-              <Image src={IMAGE_SRC} alt={ALT_TEXT} fill loading="lazy" sizes="140vw" className="object-contain" />
-            </div>
-          </div>
-        </Container>
-      </div>
+          <p className="mt-5 max-w-[480px] text-[18px] leading-[1.6] text-ink/75 lg:mt-6 lg:max-w-[380px]">{BODY}</p>
+        </div>
+        <div className="mx-auto mt-10 w-full max-w-[420px] lg:mt-0 lg:max-w-none">
+          <DeviceImage sizes="(min-width: 1024px) 840px, 630px" />
+        </div>
+      </Container>
     </section>
   );
 }

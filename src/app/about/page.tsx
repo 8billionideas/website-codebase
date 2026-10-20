@@ -3,7 +3,6 @@ import Image from "next/image";
 
 import Container from "@/components/layout/Container";
 import OurStorySection from "@/components/about/OurStorySection";
-import TeamSection from "@/components/about/TeamSection";
 import TrustSection from "@/components/about/TrustSection";
 import WorkWithUsSection from "@/components/about/WorkWithUsSection";
 
@@ -182,14 +181,12 @@ export default function AboutPage() {
       {/* 4. Our story */}
       <OurStorySection />
 
-      {/* Our story and the team section are both on paper, so a hairline separates them. */}
+      {/* Our story (paper) and the trust section's top (a light mint) are both light, so a
+          hairline separates them. */}
       <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
 
-      {/* 4b. The people behind 8billionideas (team collage). The trust section below is mint, so no divider. */}
-      <TeamSection />
-
       {/* 5. Trust: mint top part (stats, champion schools) and the ink testimonial band.
-          Mint follows Our story's paper and paper follows the ink band, so no dividers. */}
+          Paper follows the ink band, so no divider after it. */}
       <TrustSection />
 
       {/* 6. What it's like to work with us (paper). It follows the trust section's ink testimonial
