@@ -8,7 +8,9 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 // Shared overlay, panel, focus trap, Escape, scroll lock and enter animation for
-// the site's modals (Login and Request a demo).
+// the site's modals (Login, Request a demo, the quote and newsletter pop-ups).
+// variant "sheet": below 768px the panel is a bottom sheet (full width, rounded top corners, at
+// most 85% of the screen tall and scrollable) that slides up; from 768px a centred dialog.
 export default function ModalShell({
   open,
   onClose,
@@ -17,6 +19,8 @@ export default function ModalShell({
   returnFocusTo,
   panelClassName,
   closeTone = "ink",
+  variant = "dialog",
+  overlayOpacity = 0.6,
   children,
 }: {
   open: boolean;
@@ -26,6 +30,8 @@ export default function ModalShell({
   returnFocusTo: () => HTMLElement | null;
   panelClassName: string;
   closeTone?: "ink" | "white";
+  variant?: "dialog" | "sheet";
+  overlayOpacity?: number;
   children: ReactNode;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -80,14 +86,14 @@ export default function ModalShell({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto px-4 py-6 transition-opacity duration-150 motion-reduce:transition-none ${
-        shown ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex justify-center overflow-y-auto transition-opacity duration-150 motion-reduce:transition-none ${
+        variant === "sheet" ? "items-end md:items-center md:px-4 md:py-6" : "items-center px-4 py-6"
+      } ${shown ? "opacity-100" : "opacity-0"}`}
       onKeyDown={handleKeyDown}
     >
       <div
         className="fixed inset-0 backdrop-blur-[4px]"
-        style={{ backgroundColor: "rgba(22,33,61,0.6)" }}
+        style={{ backgroundColor: `rgba(22,33,61,${overlayOpacity})` }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -96,8 +102,12 @@ export default function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
-        className={`relative my-auto w-full rounded-2xl shadow-[0_20px_60px_rgba(22,33,61,0.25)] transition-[transform,background-color] duration-150 motion-reduce:transition-none ${
-          shown ? "scale-100" : "scale-95"
+        className={`relative w-full shadow-[0_20px_60px_rgba(22,33,61,0.25)] transition-[transform,background-color] motion-reduce:transition-none ${
+          variant === "sheet"
+            ? `mt-auto max-h-[85vh] overflow-y-auto rounded-t-2xl duration-300 ease-out md:my-auto md:max-h-none md:overflow-visible md:rounded-2xl md:duration-150 ${
+                shown ? "translate-y-0 md:scale-100" : "translate-y-full md:translate-y-0 md:scale-95"
+              }`
+            : `my-auto rounded-2xl duration-150 ${shown ? "scale-100" : "scale-95"}`
         } ${panelClassName}`}
       >
         <button

@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import DemoModalProvider from "@/components/demo/DemoModalProvider";
 import BookDemoSection from "@/components/shared/BookDemoSection";
 import HideOnRoutes from "@/components/shared/HideOnRoutes";
+import NewsletterPopup from "@/components/shared/NewsletterPopup";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -39,6 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <BookDemoSection />
           </HideOnRoutes>
           <Footer />
+          {/* Site-wide newsletter sign-up pop-up (timing and rules in the component). */}
+          <NewsletterPopup />
         </DemoModalProvider>
       </body>
     </html>

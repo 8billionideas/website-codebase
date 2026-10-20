@@ -9,6 +9,10 @@ const HUBSPOT_DEFAULTS = {
   contactFormId: "5a358bf0-8a69-4999-8046-b1decabb8d8d",
   // Not created yet: the quote pop-up stays "not connected" until it is.
   quoteFormId: null as string | null,
+  // Not created yet: the newsletter pop-up stays "not connected" until it is.
+  newsletterFormId: null as string | null,
+  // Fill in when HubSpot provides the newsletter subscription type ID.
+  newsletterSubscriptionTypeId: null as number | null,
 };
 
 // NEXT_PUBLIC_ variables are inlined at build time, so each is read by its full name.
@@ -20,9 +24,14 @@ export const HUBSPOT_CONTACT_FORM_ID =
 export const HUBSPOT_QUOTE_FORM_ID =
   process.env.NEXT_PUBLIC_HUBSPOT_QUOTE_FORM_ID || HUBSPOT_DEFAULTS.quoteFormId || "";
 
+export const HUBSPOT_NEWSLETTER_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_NEWSLETTER_FORM_ID || HUBSPOT_DEFAULTS.newsletterFormId || "";
+export const HUBSPOT_NEWSLETTER_SUBSCRIPTION_TYPE_ID = HUBSPOT_DEFAULTS.newsletterSubscriptionTypeId;
+
 export const isHubspotConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_DEMO_FORM_ID);
 export const isContactFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CONTACT_FORM_ID);
 export const isQuoteFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_QUOTE_FORM_ID);
+export const isNewsletterFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_NEWSLETTER_FORM_ID);
 
 // Forms API v3 submission hosts. HubSpot's Forms API v3 reference documents only the standard
 // host, so it's tried first. For EU accounts, a 404 there ("form not found") is retried once at

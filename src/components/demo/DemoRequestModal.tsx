@@ -5,6 +5,7 @@ import { Check, ChevronDown } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import { isHubspotConfigured, submitDemoRequest } from "@/lib/hubspot";
 import Button from "@/components/ui/Button";
+import { markFormSubmitted } from "@/lib/newsletter-popup";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
@@ -145,6 +146,7 @@ export default function DemoRequestModal({
         what_can_we_help_with: values.what_can_we_help_with,
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
+      markFormSubmitted();
       setSubmittedName(firstName);
       setStatus("success");
     } catch {
