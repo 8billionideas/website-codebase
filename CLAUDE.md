@@ -85,7 +85,7 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
 - HubSpot: the portal and form IDs live in src/lib/hubspot.ts as public defaults (they're shown in HubSpot's embed code, so safe to commit), with the NEXT_PUBLIC_HUBSPOT_* environment variables as optional overrides. The demo pop-up and /contact form post through the shared Forms API helper there; the quote form ID is still null (not connected).
 - Data files: src/lib/case-studies.ts, src/lib/pricing.ts, src/lib/curriculum-subjects.ts, src/content/lesson-explorer.ts, src/lib/resources.ts, src/lib/homepage-faqs.ts, plus the testimonials data in src/content/home.ts (home.proof.testimonials and home.proof.bandTestimonial).
 - Case studies order: The Internship (featured), Nord Anglia Education India, Severn Academies, Harrow Sustainability450, Chelsea FC Academy, GEMS World Academy (kept last and lower on the page).
-- Newsletter pop-up: site-wide, after 20s or 50% scroll, once per visitor (30 days after dismissal, never after sign-up), not on /contact; ?newsletter=1 opens it for review. Offer: 15% off with code WELCOME15 (sent by HubSpot email); sales verifies eligibility on the contact record.
+- Newsletter pop-up: Shows 5s after arriving, once per visit (NEWSLETTER_POPUP_FREQUENCY = 'session'; switch to '30-days' before launch); never again after sign-up; not on /contact; ?newsletter=1 opens it for review. Single compact box (about 420px), email only. Offer: 15% off with code WELCOME15 (sent by HubSpot email); sales verifies eligibility on the contact record.
 
 ## Open items (don't resolve these by guessing)
 
