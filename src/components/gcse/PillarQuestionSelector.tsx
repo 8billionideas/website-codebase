@@ -90,10 +90,13 @@ export default function PillarQuestionSelector({
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setActive(i)}
                 onKeyDown={(e) => handleKeyDown(e, i)}
-                className={`shrink-0 snap-start whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] transition-colors lg:px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${i >= 4 ? "xl:mt-2.5" : ""} ${
+                // Outlined so they read as clickable: unselected, a 1.5px accent-green border on the
+                // page background with ink text; hover/focus, a 10% green tint and a 1px lift;
+                // selected, solid ink with white text. Focus ring as on the shared Button.
+                className={`shrink-0 cursor-pointer snap-start whitespace-nowrap rounded-full border-[1.5px] px-3.5 py-2 text-[13px] font-medium transition-[background-color,border-color,color,transform] duration-150 lg:px-3 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-paper motion-reduce:transition-none ${i >= 4 ? "xl:mt-2.5" : ""} ${
                   selected
-                    ? "border border-ink bg-ink font-normal text-white"
-                    : "border border-ink/15 bg-white font-normal text-ink hover:border-ink/30"
+                    ? "border-ink bg-ink text-white"
+                    : "border-accent bg-transparent text-ink hover:-translate-y-px hover:bg-accent/10 focus-visible:-translate-y-px focus-visible:bg-accent/10 motion-reduce:hover:translate-y-0 motion-reduce:focus-visible:translate-y-0"
                 }`}
               >
                 {pillar.name}

@@ -233,7 +233,7 @@ export const gcse = {
         question: "What makes an effective leader in times of global crisis?",
       },
       {
-        name: "Health & Performance",
+        name: "Performance",
         question: "How does sports psychology impact the performance of elite athletes?",
       },
       {
@@ -305,9 +305,11 @@ export const gcse = {
     // Set to true once a real platform video is ready. While false, no
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,
+    // The annotated laptop (1536×1024), shown whole as the band's background. The earlier
+    // platform image is kept.
     image: {
-      src: "/images/gcse/platform.webp",
-      alt: "The 8billionideas platform on a laptop, showing the International GCSE Global Skills Project course and its lessons",
+      src: "/images/gcse/platform-annotated.webp",
+      alt: "The 8billionideas platform on a laptop showing the Global Skills Project course introduction, with labels pointing to the teaching video, lesson objectives, student activities, the starting assessment, and the end assessment and certification",
     },
   },
 

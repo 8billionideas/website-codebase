@@ -1,15 +1,29 @@
+// The eight pillars: approved names and display order (every pillar row, pill set and carousel
+// follows this order).
 export const PILLARS = [
   "Entrepreneurship",
+  "Leadership",
+  "Wellbeing",
+  "Performance",
   "Careers",
   "Financial Literacy",
-  "Wellbeing",
-  "Health & Performance",
-  "Leadership",
   "Sustainability",
   "Technology",
 ] as const;
 
 export type PillarName = (typeof PILLARS)[number];
+
+// Earlier pillar names still used as keys in some data (e.g. the lesson explorer programmes),
+// mapped to their current names.
+export const LEGACY_PILLAR_NAMES = { "Health & Performance": "Performance" } as const satisfies Record<
+  string,
+  PillarName
+>;
+export type LegacyPillarName = keyof typeof LEGACY_PILLAR_NAMES;
+
+export function currentPillarName(name: PillarName | LegacyPillarName): PillarName {
+  return name in LEGACY_PILLAR_NAMES ? LEGACY_PILLAR_NAMES[name as LegacyPillarName] : (name as PillarName);
+}
 export type Strength = "strong" | "light" | "none";
 
 export interface MatrixSkill {
@@ -43,7 +57,7 @@ export const curriculumMapping = {
         Careers: "strong",
         "Financial Literacy": "light",
         Wellbeing: "light",
-        "Health & Performance": "none",
+        Performance: "none",
         Leadership: "light",
         Sustainability: "strong",
         Technology: "light",
@@ -82,7 +96,7 @@ export const curriculumMapping = {
         Careers: "light",
         "Financial Literacy": "light",
         Wellbeing: "none",
-        "Health & Performance": "strong",
+        Performance: "strong",
         Leadership: "none",
         Sustainability: "none",
         Technology: "strong",
@@ -108,13 +122,13 @@ export const curriculumMapping = {
           name: "Smart Productivity",
           definition:
             "Managing time and energy effectively, not just working harder.",
-          pillars: ["Health & Performance", "Financial Literacy"],
+          pillars: ["Performance", "Financial Literacy"],
         },
         {
           name: "Focus",
           definition:
             "The ability to concentrate deeply in an increasingly distracting world.",
-          pillars: ["Health & Performance"],
+          pillars: ["Performance"],
         },
       ],
     },
@@ -128,7 +142,7 @@ export const curriculumMapping = {
         Careers: "strong",
         "Financial Literacy": "none",
         Wellbeing: "strong",
-        "Health & Performance": "light",
+        Performance: "light",
         Leadership: "strong",
         Sustainability: "light",
         Technology: "none",
@@ -155,7 +169,7 @@ export const curriculumMapping = {
           name: "Health Literacy",
           definition:
             "Understanding how to look after physical and mental wellbeing long-term.",
-          pillars: ["Health & Performance"],
+          pillars: ["Performance"],
         },
         {
           name: "Community Impact",

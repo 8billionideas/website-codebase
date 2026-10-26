@@ -6,6 +6,7 @@ import {
   addOnCost,
   addOnDetails,
   addOnLineLabel,
+  addOnSummary,
   addOnsTotal,
   calculateCurriculumPrice,
   quoteTotal,
@@ -105,4 +106,16 @@ test("summary labels and HubSpot details line", () => {
     ]),
     "CPD × 2 £3,950; Online Experience × 1 £995; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900"
   );
+});
+
+test("addOnSummary formats the quote message's add-ons line", () => {
+  assert.equal(
+    addOnSummary([
+      { id: "cpd", options: { quantity: 2 } },
+      { id: "live-experience", options: { groupId: "100", days: 2 } },
+    ]),
+    "CPD × 2 (£3,950); Live Experience, up to 100 students × 2 days (£3,600)"
+  );
+  assert.equal(addOnSummary([{ id: "assembly", options: { quantity: 1 } }]), "Assembly × 1 (£450)");
+  assert.equal(addOnSummary([]), "");
 });

@@ -7,6 +7,7 @@ import {
   Headset,
   type LucideIcon,
 } from "lucide-react";
+import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 
 const qualificationItems: { Icon: LucideIcon; text: string }[] = [
   { Icon: Award, text: "An internationally recognised GCSE qualification" },
@@ -19,15 +20,6 @@ const deliveryItems: { Icon: LucideIcon; text: string }[] = [
   { Icon: Monitor, text: "A platform to plan, deliver & monitor learning" },
   { Icon: Headset, text: "Year-round Partnership Manager support" },
 ];
-
-function OxfordAqaWordmark({ className = "" }: { className?: string }) {
-  return (
-    <p className={`tracking-wide text-white ${className}`}>
-      <span className="font-light">OXFORD</span>
-      <span className="font-bold">AQA</span>
-    </p>
-  );
-}
 
 // Shared between the homepage (Section 5) and /gcse (Section 6). Both cards
 // subgrid the same 6 parent row tracks (header, sub-label, divider, then the
@@ -45,7 +37,7 @@ export default function PartnerCards() {
       />
 
       <div className="row-span-6 grid [grid-template-rows:subgrid] rounded-2xl border border-white/15 bg-white/[0.03] p-6 md:pl-6 md:pr-10 md:pt-10 md:pb-10 lg:pl-[28px] lg:pr-[28px]">
-        <OxfordAqaWordmark className="text-h3" />
+        <OxfordAqaLogo variant="tile" width={160} className="self-start" />
         <p className="text-caption uppercase tracking-[0.2em] text-white/50">
           THE QUALIFICATION
         </p>

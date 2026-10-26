@@ -437,7 +437,7 @@ export const pillars: Pillar[] = [
     ],
   },
   {
-    name: "Health & Performance",
+    name: "Performance",
     description:
       "Equip students with the mindset and discipline to perform under pressure.",
     interaction: "carousel",

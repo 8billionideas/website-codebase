@@ -17,7 +17,7 @@ export interface Skill {
 
 export const skillsSection = {
   eyebrow: "BUILT FOR LIFE",
-  headingLine1: "Eight transferable skills",
+  headingLine1: "8 transferable skills",
   headingLine2: "that run through our curriculum",
   intro:
     "We believe the skills students develop are just as important as the knowledge they gain. That's why these eight skills run through our curriculum, giving students the opportunity to build on their learning and become more confident using it in different situations.",

@@ -6,6 +6,7 @@ import { gcseSchools } from "@/content/schools";
 import { home } from "@/content/home";
 import type { Testimonial } from "@/content/types";
 import { testimonialImage } from "@/content/about-work-with-us";
+import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 
 // Display order for the /about carousel; names missing from the data are skipped.
 const TESTIMONIAL_ORDER = [
@@ -17,8 +18,6 @@ const TESTIMONIAL_ORDER = [
   "Anita Gleave",
   "Adrian McLean",
   "Sean Walsh",
-  "Kelvin Hornsby",
-  "Ann Haydon MBE",
 ];
 
 function orderedTestimonials(): Testimonial[] {
@@ -74,13 +73,9 @@ export default function TrustSection() {
               text="Young people who have experienced 8billionideas learning"
             />
             <Stat
-              figure={
-                // Text wordmark, matching the OxfordAQA lockup on the homepage.
-                <p className="text-[36px] leading-none tracking-wide text-ink md:text-[44px]">
-                  <span className="font-light">OXFORD</span>
-                  <span className="font-bold">AQA</span>
-                </p>
-              }
+              // 160px at md (768–1023px), where the three columns are narrow: at 200px it ran to
+              // within 5px of "1 million+", less than the clear space it needs (the "O"'s height).
+              figure={<OxfordAqaLogo variant="light" width={200} className="md:max-lg:[--oxfordaqa-logo-width:160px]" />}
               label="Official delivery partner"
               text="Supporting schools to deliver International GCSE Global Skills Projects"
             />

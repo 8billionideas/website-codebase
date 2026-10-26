@@ -10,7 +10,7 @@ export const home = {
     headlineLine1: "Working alongside schools to",
     headlineLine2: "shape the future of learning",
     subhead:
-      "We’ve always believed that future-focused skills should be an important part of every student’s education. It’s a belief that’s shaped everything we’ve built, from our flexible, week-to-week curriculum that works around what you already teach, to the opportunities we create for students to develop skills for the world ahead, building towards the opportunity to achieve an internationally recognised GCSE qualification in Global Skills.",
+      "We believe future skills should be core to every student’s education, from age 5 to 18. That belief has shaped everything we’ve built, from The Critical Curriculum – flexible, week-to-week lessons that work around what you already teach – to our role as teaching and learning partner for the OxfordAQA International GCSE Global Skills Projects.",
     primaryCta: { label: "Explore the GCSE", href: "/gcse" } as CtaLink,
     secondaryCta: {
       label: "Explore the Critical Curriculum",
@@ -93,13 +93,6 @@ export const home = {
       },
       {
         quote:
-          "Over the last 4 years David and the 8billionideas team have played an integral part in the curriculum design, adaptation and implementation across many schools for over 11,000 learners in the Cluster. From Year 3 learners designing the next toy craze to Post 16 learners participating in the Perform Better Programme, the critical curriculum delivers for all. Learners global citizenship has been enhanced along with school inspection ratings from new start up schools to exceptionally well matured over subscribed ones. 8billionideas are a key strategic partner in the reimagining of education provision across all curricula.",
-        name: "Kelvin Hornsby",
-        role: "Principal/CEO, GEMS World Academy – Abu Dhabi",
-        sourceUrl: "https://www.trustpilot.com/reviews/6891bd2e39019d0ceb187c93",
-      },
-      {
-        quote:
           "8BillionIdeas provides an engaging and inspiring experience that encourages students to think creatively and turn their ideas into meaningful solutions. Teachers have a tool through which students develop skills such as problem-solving, teamwork, communication, and innovation in a practical and enjoyable way. What stands out most is the focus on empowering young people to believe in their own potential. The programme reflects the idea that everyone has valuable ideas and can make a positive impact when given the confidence and tools to do so. It encourages students to take ownership of their learning, think beyond the classroom, and approach challenges with creativity and resilience.",
         name: "Fatema Kashief",
         role: "Teaching and Learning Lead, Pristine Private School",
@@ -111,13 +104,6 @@ export const home = {
         name: "Andrew Elias",
         role: "Director of Marketing & Communications, Chatsworth Schools",
         sourceUrl: "https://www.trustpilot.com/reviews/6890ba1eccbe471e8a1dcf6e",
-      },
-      {
-        quote:
-          "8billionideas is a unique organisation — through their work, our pupils learn valuable life lessons which enables them to think strategically, creatively and independently.",
-        name: "Ann Haydon MBE",
-        role: "Principal, GEMS Wellington Academy, Al Khail",
-        sourceUrl: null,
       },
       {
         quote:

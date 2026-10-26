@@ -29,7 +29,7 @@ const PILLAR_ICONS: Record<string, LucideIcon> = {
   Careers: Briefcase,
   "Financial Literacy": Coins,
   Wellbeing: Heart,
-  "Health & Performance": Activity,
+  Performance: Activity,
   Leadership: Users,
   Sustainability: Leaf,
   Technology: Cpu,
@@ -43,7 +43,7 @@ const EXAMPLE_PROJECT_ICONS: Record<string, LucideIcon> = {
   Careers: Briefcase,
   "Financial Literacy": PiggyBank,
   Wellbeing: Heart,
-  "Health & Performance": Activity,
+  Performance: Activity,
   Leadership: Flag,
   Sustainability: Leaf,
   Technology: Cpu,
@@ -93,27 +93,33 @@ function BoxContent({ card, mode }: { card: PillarCarouselCard; mode: LevelMode 
 }
 
 export default function PillarCarousel() {
-  const { eyebrow, heading, subheading, cards } = pillarCarousel;
+  const { eyebrow, headingLine1, headingLine2, subheading, cards } = pillarCarousel;
   const [index, setIndex] = useState(0);
   const card = cards[index];
   const total = cards.length;
   const [mode] = useLevelMode();
   const rowRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const prevIndex = useRef(index);
 
   function go(next: number) {
     setIndex((next + total) % total);
   }
 
-  // Only scroll the active item into view when the row is actually the
+  // Only centre the active item when the row is actually the
   // horizontally-scrolling layout (below lg) — at lg+ it's a static
   // single-line row with no scroll container, so this is a no-op there.
+  // Skipped on mount, and scrolls the row only (not scrollIntoView), so the
+  // page itself never scrolls vertically.
   useEffect(() => {
+    if (prevIndex.current === index) return;
+    prevIndex.current = index;
     const row = rowRef.current;
     const item = itemRefs.current[index];
     if (!row || !item) return;
     if (row.scrollWidth > row.clientWidth) {
-      item.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      const itemLeft = item.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft;
+      row.scrollTo({ left: itemLeft - (row.clientWidth - item.clientWidth) / 2, behavior: "smooth" });
     }
   }, [index]);
 
@@ -123,7 +129,11 @@ export default function PillarCarousel() {
         <p className="text-caption uppercase tracking-[0.2em] text-muted">
           {eyebrow}
         </p>
-        <h2 className="mx-auto mt-3 max-w-2xl text-display text-ink">{heading}</h2>
+        <h2 className="mx-auto mt-3 max-w-3xl text-balance text-display text-ink">
+          {headingLine1}
+          <br />
+          <em className="text-accent">{headingLine2}</em>
+        </h2>
         <p className="mx-auto mt-4 max-w-[760px] text-body-lg text-muted">{subheading}</p>
       </div>
 

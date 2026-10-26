@@ -59,7 +59,7 @@ export const SUBJECT_AREAS: SubjectArea[] = [
       {
         name: "Science",
         description: null,
-        pillars: ["Sustainability", "Health & Performance", "Technology"],
+        pillars: ["Sustainability", "Performance", "Technology"],
       },
       {
         name: "Environmental Science",
@@ -69,7 +69,7 @@ export const SUBJECT_AREAS: SubjectArea[] = [
       {
         name: "Psychology",
         description: null,
-        pillars: ["Wellbeing", "Health & Performance", "Leadership"],
+        pillars: ["Wellbeing", "Performance", "Leadership"],
       },
     ],
   },
@@ -156,12 +156,12 @@ export const SUBJECT_AREAS: SubjectArea[] = [
       {
         name: "Drama / Theatre",
         description: null,
-        pillars: ["Health & Performance", "Wellbeing", "Leadership", "Careers"],
+        pillars: ["Performance", "Wellbeing", "Leadership", "Careers"],
       },
       {
         name: "Music",
         description: null,
-        pillars: ["Health & Performance", "Wellbeing", "Entrepreneurship"],
+        pillars: ["Performance", "Wellbeing", "Entrepreneurship"],
       },
       {
         name: "Media Studies",
@@ -186,17 +186,17 @@ export const SUBJECT_AREAS: SubjectArea[] = [
       {
         name: "PE & Sports Science",
         description: null,
-        pillars: ["Wellbeing", "Health & Performance", "Leadership", "Technology"],
+        pillars: ["Wellbeing", "Performance", "Leadership", "Technology"],
       },
       {
         name: "PSHE / Health & Wellbeing",
         description: null,
-        pillars: ["Wellbeing", "Health & Performance", "Careers", "Financial Literacy"],
+        pillars: ["Wellbeing", "Performance", "Careers", "Financial Literacy"],
       },
       {
         name: "Health & Social Care",
         description: null,
-        pillars: ["Wellbeing", "Health & Performance", "Careers"],
+        pillars: ["Wellbeing", "Performance", "Careers"],
       },
     ],
   },

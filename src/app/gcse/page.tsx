@@ -11,6 +11,7 @@ import ReadyToDeliver from "@/components/gcse/ReadyToDeliver";
 import ProjectThemes from "@/components/gcse/ProjectThemes";
 import QuoteBreak from "@/components/gcse/QuoteBreak";
 import DemoTrigger from "@/components/demo/DemoTrigger";
+import PlatformBand from "@/components/shared/PlatformBand";
 
 export const metadata: Metadata = {
   title: "OxfordAQA International GCSE Global Skills Projects | 8billionideas",
@@ -126,75 +127,26 @@ export default function GcsePage() {
         </div>
       )}
 
-      {/* 06. The platform */}
-      {/* Band colour sampled from the image's left side so the stacked image has no seam. */}
-      <section className="relative isolate overflow-hidden bg-[#051739] xl:flex xl:min-h-[640px] xl:items-center">
-        {/* Contained (not cover) so the laptop stays clear of the text; the photo's flat
-            navy edges blend into the band, and the mask softens the lit desk reflection. */}
-        <div
-          className="absolute top-1/2 right-0 hidden aspect-[1862/845] max-h-full w-[78%] -translate-y-1/2 xl:block"
-          style={{
-            maskImage: "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%)",
-          }}
-        >
-          <Image
-            src={platform.image.src}
-            alt={platform.image.alt}
-            fill
-            loading="lazy"
-            sizes="78vw"
-            className="object-contain object-right"
-          />
-        </div>
-        <div
-          className="absolute inset-0 hidden xl:block"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(22,33,61,0.9) 0%, rgba(22,33,61,0.6) 35%, rgba(22,33,61,0) 55%)",
-          }}
-          aria-hidden="true"
-        />
-        <Container className="relative z-10 w-full py-16 md:py-24">
-          <div className="max-w-[620px] text-left">
-            <p className="text-[12px] uppercase tracking-[0.25em] text-white/65">{platform.eyebrow}</p>
-            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px]">
-              {platform.headingLine1}
-              <br />
-              <em className="text-accent">{platform.headingLine2}</em>
-            </h2>
-            <p className="mt-5 text-[18px] leading-[1.6] text-white/80">{platform.body}</p>
-
-            {/* For teachers / For students: side by side from md, stacked below. */}
-            <ul className="mt-10 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2">
-              {platform.audiences.map((audience) => (
-                <li key={audience.title} className="rounded-[10px] border border-white/40 p-6">
-                  <h3 className="text-[18px] font-medium leading-[1.35] text-white">{audience.title}</h3>
-                  <p className="mt-2 text-[15px] leading-[1.6] text-white/80">{audience.text}</p>
-                </li>
-              ))}
-            </ul>
-
-            {platform.showPlatformVideo && (
-              <div className="mt-10">
-                <DemoTrigger appearance="button" arrow={false}>
-                  See the platform
-                </DemoTrigger>
-                <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />
-              </div>
-            )}
+      {/* 06. The platform (shared with /curriculum-mapping's lesson platform band). Band colour
+          sampled from the annotated image's left and right edges (#010e2a). */}
+      <PlatformBand
+        background="#010e2a"
+        eyebrow={platform.eyebrow}
+        headingLine1={platform.headingLine1}
+        headingLine2={platform.headingLine2}
+        body={platform.body}
+        audiences={platform.audiences}
+        image={platform.image}
+      >
+        {platform.showPlatformVideo && (
+          <div className="mt-10">
+            <DemoTrigger appearance="button" arrow={false}>
+              See the platform
+            </DemoTrigger>
+            <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />
           </div>
-        </Container>
-        <div className="relative aspect-video w-full xl:hidden">
-          <Image
-            src={platform.image.src}
-            alt={platform.image.alt}
-            fill
-            loading="lazy"
-            sizes="100vw"
-            className="object-cover object-right"
-          />
-        </div>
-      </section>
+        )}
+      </PlatformBand>
 
       {/* 07. Getting started */}
       <GettingStarted />

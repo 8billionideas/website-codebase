@@ -10,11 +10,25 @@ export const skillsProgressionSection = {
     "As students move through school, they build on the skills they've already developed and learn to use them in more challenging situations. Our curriculum is designed to support that progression, with learning that develops as students do.",
 };
 
-export const progressionYears = [1, 4, 7, 10, 13] as const;
+// The five timeline columns: bands of year groups (labels come from the Years/Grades helper,
+// e.g. "Years 1–3" / "Kindergarten–Grade 2") with the age range shown underneath.
+export interface ProgressionBand {
+  startYear: number;
+  endYear: number;
+  ages: string;
+}
+
+export const progressionBands: ProgressionBand[] = [
+  { startYear: 1, endYear: 3, ages: "Ages 5–8" },
+  { startYear: 4, endYear: 6, ages: "Ages 8–11" },
+  { startYear: 7, endYear: 9, ages: "Ages 11–14" },
+  { startYear: 10, endYear: 11, ages: "Ages 14–16" },
+  { startYear: 12, endYear: 13, ages: "Ages 16–18" },
+];
 
 export interface ProgressionRow {
   name: string;
-  // One entry per year in progressionYears, in the same order.
+  // One entry per band in progressionBands, in the same order.
   steps: [string, string, string, string, string];
 }
 

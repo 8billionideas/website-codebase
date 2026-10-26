@@ -3,7 +3,7 @@
 // capitalisation) – don't edit them here without a matching change to the source document.
 // The document's internal-only sections (curriculum decisions, editorial QA) are not imported.
 
-import type { PillarName } from "@/content/curriculumMapping";
+import { currentPillarName, type LegacyPillarName, type PillarName } from "@/content/curriculumMapping";
 
 export interface Lesson {
   number: number;
@@ -21,7 +21,9 @@ export interface LessonGroup {
 
 interface ProgrammeBase {
   year: number;
-  pillar: PillarName;
+  // Programmes for the Performance pillar are still keyed "Health & Performance" (its earlier
+  // name); getPublishedProgramme maps it to the current name.
+  pillar: PillarName | LegacyPillarName;
   // Display name (internal notes in brackets removed).
   name: string;
   // The document's heading, where it differs from the display name.
@@ -1044,7 +1046,7 @@ export const programmes: Programme[] = [
 
 // The one programme shown for a year and pillar (null when there isn't one).
 export function getPublishedProgramme(year: number, pillar: PillarName): Programme | null {
-  const candidates = programmes.filter((p) => p.year === year && p.pillar === pillar);
+  const candidates = programmes.filter((p) => p.year === year && currentPillarName(p.pillar) === pillar);
   if (candidates.length <= 1) return candidates[0] ?? null;
   const selection = PUBLISHED_SELECTIONS.find((s) => s.year === year && s.pillar === pillar);
   return candidates.find((p) => p.name === selection?.published) ?? null;

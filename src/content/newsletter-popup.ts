@@ -2,9 +2,9 @@
 // for word from the brief.
 export const newsletterPopup = {
   eyebrow: "JOIN OUR NEWSLETTER",
-  headingLine1: "Get 15% off",
+  headingLine1: "Get 10% off",
   headingLine2: "our programmes",
-  line: "Sign up to the 8billionideas newsletter for ideas, resources and updates for schools, and we’ll email you a code for 15% off our courses, the International GCSE and add-ons.",
+  line: "Sign up to the 8billionideas newsletter for ideas, resources and updates for schools, and we’ll email you a code for 10% off our courses, the International GCSE and add-ons.",
   email: { label: "Work email", placeholder: "name@school.com" },
   button: "Send me my code",
   buttonLoading: "Sending…",

@@ -23,7 +23,7 @@ const ICONS: Record<SkillIcon, LucideIcon> = {
   Scale,
 };
 
-// Homepage Section 3: "Eight transferable skills".
+// Homepage Section 3: "8 transferable skills".
 export default function SkillsFramework() {
   const { eyebrow, headingLine1, headingLine2, intro } = skillsSection;
 

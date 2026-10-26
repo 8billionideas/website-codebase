@@ -14,7 +14,8 @@ export interface CaseStudy {
   programme: string | null;
   scale: string | null;
   award: string | null;
-  headlineFact: string;
+  // null renders nothing (e.g. when the only headline fact was a date).
+  headlineFact: string | null;
   summary: string;
   challenge: string | null;
   whatWeDid: string | null;
@@ -36,20 +37,20 @@ export const caseStudies: CaseStudy[] = [
     name: "The Internship – Esher Sixth Form College",
     tag: "Programme",
     location: "Esher, UK",
-    years: "2021–2022",
+    years: null,
     ageGroups: "Sixth form",
     programme: "The Internship",
-    scale: "Almost 1,000 students by 2022",
-    award: "Sixth Form Colleges Association Enterprise and Employability Award 2022",
+    scale: "Almost 1,000 students",
+    award: "Sixth Form Colleges Association Enterprise and Employability Award",
     headlineFact: "Award-winning · almost 1,000 students",
     summary:
-      "A virtual three-day internship giving sixth formers meaningful work experience at scale, and winner of the Sixth Form Colleges Association's 2022 Enterprise and Employability Award.",
+      "A virtual three-day internship giving sixth formers meaningful work experience at scale, and winner of the Sixth Form Colleges Association's Enterprise and Employability Award.",
     challenge:
       "Careers leaders are often stretched thin, trying to find meaningful work placements for hundreds of students at once. Cat Jayne Elmes, Work Experience and Alumni Coordinator at Esher Sixth Form College, knew this challenge well, and her input helped shape the programme.",
     whatWeDid:
-      "Together we created The Internship, a virtual three-day work experience programme launched in early 2021. Students tackle real business problems through activities such as fundraising, website building and concept design, hear from guest speakers from around the world, and receive a certificate they can add to LinkedIn or to university and job applications.",
+      "Together we created The Internship, a virtual three-day work experience programme. Students tackle real business problems through activities such as fundraising, website building and concept design, hear from guest speakers from around the world, and receive a certificate they can add to LinkedIn or to university and job applications.",
     results:
-      "The programme reached almost 500 registrations in its first months and welcomed almost 1,000 students by 2022. In 2022 it won the Sixth Form Colleges Association's Enterprise and Employability Award.",
+      "The programme reached almost 500 registrations in its first months and has welcomed almost 1,000 students. It also won the Sixth Form Colleges Association's Enterprise and Employability Award.",
     quote: {
       text: "'The Internship' is a brilliant opportunity. Not only to get a meaningful work experience, to hit those Gatsby Benchmarks, and also to hit the numbers in college.",
       name: "Cat Jayne Elmes",
@@ -68,7 +69,7 @@ export const caseStudies: CaseStudy[] = [
     name: "Nord Anglia Education India",
     tag: "Curriculum partnership",
     location: "India",
-    years: "2022–2023",
+    years: null,
     ageGroups: "KS3 to KS5",
     programme: "Entrepreneurship pathway",
     scale: "Five schools, 11 days of learning each",
@@ -81,7 +82,7 @@ export const caseStudies: CaseStudy[] = [
     whatWeDid:
       "We created a learning pathway for KS3, KS4 and KS5, bringing entrepreneurial programmes into both the curriculum and extracurricular activities. Each school received 11 days of learning time with 8billionideas, and our team worked with each school to decide how and when to use it.",
     results:
-      "Running from 2022 into 2023, students across all five schools took part in entrepreneurship and skills-based learning, working on real-world challenges to build practical skills, critical thinking and an entrepreneurial mindset.",
+      "Students across all five schools took part in entrepreneurship and skills-based learning, working on real-world challenges to build practical skills, critical thinking and an entrepreneurial mindset.",
     quote: null,
     secondaryQuote: null,
     image: {
@@ -128,7 +129,7 @@ export const caseStudies: CaseStudy[] = [
     name: "Harrow Family of Schools – Sustainability450",
     tag: "Competition",
     location: "UK and international",
-    years: "2022",
+    years: null,
     ageGroups: "Pre-Prep to Sixth Form",
     programme: "Sustainability450 competition",
     scale: "Every Harrow-branded school worldwide",
@@ -155,13 +156,13 @@ export const caseStudies: CaseStudy[] = [
     name: "Chelsea FC Academy",
     tag: "Programme",
     location: "London, UK",
-    years: "2025/26 season",
+    years: null,
     ageGroups: null,
     programme: "Personal development programme",
     scale: null,
     award: null,
-    headlineFact: "2025/26 season",
-    summary: "Personal development sessions for Chelsea FC Academy players during the 2025/26 season.",
+    headlineFact: null,
+    summary: "Personal development sessions for Chelsea FC Academy players.",
     challenge: null,
     whatWeDid:
       "As part of the Academy's commitment to its players' personal development, 8billionideas delivered sessions built around questioning, critical thinking and discussion, giving players time and space to create, develop and reflect on their ideas. Each programme ended with a celebration of the players' achievements.",
@@ -176,38 +177,6 @@ export const caseStudies: CaseStudy[] = [
       src: "/images/case-studies/chelsea-fc-academy-branded.webp",
       alt: "The Chelsea FC crest over the club's academy training building",
       position: "center 45%",
-    },
-    featured: false,
-  },
-  {
-    slug: "gems-world-academy",
-    name: "GEMS World Academy – Abu Dhabi",
-    tag: "Curriculum partnership",
-    location: "Abu Dhabi, UAE",
-    years: "4-year partnership",
-    ageGroups: "Year 3 to Post-16",
-    programme: "Critical Curriculum",
-    scale: "11,000+ learners across the cluster",
-    award: null,
-    headlineFact: "11,000+ learners across the cluster",
-    summary:
-      "A four-year partnership designing, adapting and implementing the Critical Curriculum across a cluster of schools, from Year 3 to Post-16.",
-    challenge:
-      "The cluster wanted to reimagine its education provision, bringing future-focused learning to every age group across schools at very different stages, from new start-ups to well-established, oversubscribed schools.",
-    whatWeDid:
-      "Over four years, 8billionideas worked with the cluster on curriculum design, adaptation and implementation across its schools. Learning ran from Year 3, where students designed the next toy craze, through to Post-16, where learners took part in the Perform Better programme.",
-    results:
-      "More than 11,000 learners across the cluster have taken part. The cluster's leadership reports stronger global citizenship among learners and improved school inspection ratings, from new start-up schools to well-established ones.",
-    quote: {
-      text: "Over the last 4 years David and the 8billionideas team have played an integral part in the curriculum design, adaptation and implementation across many schools for over 11,000 learners in the Cluster. From Year 3 learners designing the next toy craze to Post 16 learners participating in the Perform Better Programme, the critical curriculum delivers for all. Learners global citizenship has been enhanced along with school inspection ratings from new start up schools to exceptionally well matured over subscribed ones. 8billionideas are a key strategic partner in the reimagining of education provision across all curricula.",
-      name: "Kelvin Hornsby",
-      role: "Principal/CEO, GEMS World Academy – Abu Dhabi",
-    },
-    secondaryQuote: null,
-    image: {
-      src: "/images/case-studies/gems-world-academy-branded.webp",
-      alt: "The GEMS World Academy Abu Dhabi logo over the school building",
-      position: "center center",
     },
     featured: false,
   },

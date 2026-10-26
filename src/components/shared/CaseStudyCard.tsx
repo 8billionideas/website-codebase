@@ -12,7 +12,7 @@ export default function CaseStudyCard({ study }: { study: CaseStudy }) {
       </span>
       <p className="mt-4 text-[20px] font-normal text-ink">{study.name}</p>
       {study.location && <p className="mt-1 text-[14px] text-muted">{study.location}</p>}
-      <p className="mt-3 text-[15px] font-medium text-accent">{study.headlineFact}</p>
+      {study.headlineFact && <p className="mt-3 text-[15px] font-medium text-accent">{study.headlineFact}</p>}
       <p className="mt-2 text-[15px] leading-[1.6] text-ink/75">{study.summary}</p>
       <span className="mt-auto pt-4 text-[15px] font-medium text-ink underline decoration-transparent underline-offset-2 transition-colors group-hover:decoration-ink">
         Read the case study →

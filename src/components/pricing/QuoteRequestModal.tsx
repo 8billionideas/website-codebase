@@ -11,8 +11,8 @@ import {
   LIVE_EXPERIENCE_GROUPS,
   QUOTE_ADD_ONS,
   addOnCost,
-  addOnDetails,
   addOnLineLabel,
+  addOnSummary,
   addOnsTotal,
   formatMoney,
   getAddOn,
@@ -26,30 +26,63 @@ import {
 } from "@/lib/pricing";
 import { markFormSubmitted } from "@/lib/newsletter-popup";
 
-// Confirm these match the internal field names in the HubSpot quote form.
-// quote_add_ons is sent as the selected add-on titles separated by semicolons (HubSpot's
-// multi-checkbox format), so the form's option values should match the titles exactly.
-// quote_add_on_details is a readable line of each add-on and its cost. Prices and totals are
-// sent as whole pounds with no symbol (e.g. "720").
+// Quote requests are submitted to the HubSpot Contact form (see HUBSPOT_QUOTE_FORM_ID).
+// All fields are contact properties ("0-1/…"). Prices, totals and counts are sent as plain
+// numbers (e.g. "720"); quote_addons is the ticked add-on titles separated by semicolons
+// (HubSpot's multi-checkbox format), so its option values must match the titles exactly.
 const HUBSPOT_FIELDS = {
-  firstname: "firstname",
-  lastname: "lastname",
-  email: "email",
-  company: "company",
-  jobtitle: "jobtitle",
-  message: "message",
-  discountCode: "quote_discount_code",
-  product: "quote_product",
-  yearGroups: "quote_year_groups",
-  pillars: "quote_pillars",
-  students: "quote_students",
-  ccPrice: "quote_cc_price",
-  gcsePrice: "quote_gcse_price",
-  addOns: "quote_add_ons",
-  addOnDetails: "quote_add_on_details",
-  addOnsTotal: "quote_add_ons_total",
-  total: "quote_total",
+  firstname: "0-1/firstname",
+  lastname: "0-1/lastname",
+  email: "0-1/email",
+  company: "0-1/company",
+  jobtitle: "0-1/jobtitle",
+  // Both required on the Contact form.
+  helpTopic: "0-1/what_can_we_help_with",
+  message: "0-1/message",
+  product: "0-1/quote_product",
+  yearGroups: "0-1/quote_year_groups",
+  pillars: "0-1/quote_pillars",
+  students: "0-1/quote_students",
+  ccPrice: "0-1/quote_critical_curriculum_price",
+  gcsePrice: "0-1/quote_international_gcse_price",
+  addOns: "0-1/quote_addons",
+  addOnsPrice: "0-1/quote_addon_price",
+  total: "0-1/quote_total",
 } as const;
+
+// Fill in when the HubSpot admin creates these (e.g. "0-1/quote_cpd_quantity"). Each is sent
+// only once it has a name; until then the message summary covers this information.
+const PENDING_HUBSPOT_FIELDS: Record<
+  | "cpdQuantity"
+  | "onlineExperienceQuantity"
+  | "liveExperienceGroupSize"
+  | "liveExperienceDays"
+  | "assemblyQuantity"
+  | "cpdPrice"
+  | "onlineExperiencePrice"
+  | "liveExperiencePrice"
+  | "assemblyPrice"
+  | "discountCode",
+  string | null
+> = {
+  cpdQuantity: null,
+  onlineExperienceQuantity: null,
+  liveExperienceGroupSize: null,
+  liveExperienceDays: null,
+  assemblyQuantity: null,
+  cpdPrice: null,
+  onlineExperiencePrice: null,
+  liveExperiencePrice: null,
+  assemblyPrice: null,
+  discountCode: null,
+};
+
+// The Contact form's internal values for "What can we help with?".
+const HELP_TOPIC_VALUES: Record<QuoteSelection["product"], string> = {
+  "Critical Curriculum": "Critical curriculum",
+  "International GCSE": "International GCSE",
+  Both: "Both",
+};
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
@@ -103,7 +136,7 @@ function productLabel(selection: QuoteSelection) {
 }
 
 // "Critical Curriculum · 3 year groups · 6 pillars · 2 add-ons · Estimated total £3,595"
-// (plus "· Discount code: WELCOME15" when one is entered).
+// (plus "· Discount code: WELCOME10" when one is entered).
 function recapLine(selection: QuoteSelection, addOnCount: number, total: number, discountCode: string) {
   const parts = [productLabel(selection)];
   if (selection.cc) parts.push(plural(selection.cc.yearGroups, "year group", "year groups"), plural(selection.cc.pillars, "pillar", "pillars"));
@@ -112,6 +145,65 @@ function recapLine(selection: QuoteSelection, addOnCount: number, total: number,
   parts.push(`Estimated total ${formatMoney(total)}`);
   if (discountCode) parts.push(`Discount code: ${discountCode}`);
   return parts.join(" · ");
+}
+
+// The Contact form's (required) message: the visitor's notes, a blank line, then a summary of
+// the quote. Only the lines that apply are included.
+function quoteMessage(
+  selection: QuoteSelection,
+  addOns: SelectedAddOn[],
+  total: number,
+  notes: string,
+  discountCode: string
+) {
+  const lines = ["Quote request via website", `Product: ${productLabel(selection)}`];
+  if (selection.cc) {
+    lines.push(
+      `Year groups: ${selection.cc.yearGroups} · Pillars: ${selection.cc.pillars} · Critical Curriculum price: ${formatMoney(selection.cc.total)}`
+    );
+  }
+  if (selection.gcse) {
+    lines.push(`Students: ${selection.gcse.students} · International GCSE price: ${formatMoney(selection.gcse.total)}`);
+  }
+  if (addOns.length) {
+    lines.push(`Add-ons: ${addOnSummary(addOns)}`, `Add-ons total: ${formatMoney(addOnsTotal(addOns))}`);
+  }
+  lines.push(`Estimated total: ${formatMoney(total)}`);
+  if (discountCode) lines.push(`Discount code: ${discountCode}`);
+  const summary = lines.join("\n");
+  return notes ? `${notes}\n\n${summary}` : summary;
+}
+
+// Values for the not-yet-created HubSpot properties, keyed by their (future) field names.
+function pendingFieldValues(addOns: SelectedAddOn[], discountCode: string): Record<string, string | undefined> {
+  const values: Record<string, string | undefined> = {};
+  const set = (key: keyof typeof PENDING_HUBSPOT_FIELDS, value: string | undefined) => {
+    const name = PENDING_HUBSPOT_FIELDS[key];
+    if (name && value) values[name] = value;
+  };
+  for (const { id, options = {} } of addOns) {
+    const cost = String(addOnCost(id, options));
+    const quantity = String(options.quantity ?? 1);
+    if (id === "cpd") {
+      set("cpdQuantity", quantity);
+      set("cpdPrice", cost);
+    }
+    if (id === "online-experience") {
+      set("onlineExperienceQuantity", quantity);
+      set("onlineExperiencePrice", cost);
+    }
+    if (id === "assembly") {
+      set("assemblyQuantity", quantity);
+      set("assemblyPrice", cost);
+    }
+    if (id === "live-experience") {
+      set("liveExperienceGroupSize", getLiveGroup(options.groupId).label);
+      set("liveExperienceDays", String(options.days ?? 1));
+      set("liveExperiencePrice", cost);
+    }
+  }
+  set("discountCode", discountCode);
+  return values;
 }
 
 // Add-ons priced per item, with their stepper labels.
@@ -324,7 +416,7 @@ export default function QuoteRequestModal({
   useEffect(() => {
     if (open && !isQuoteFormConfigured) {
       console.warn(
-        "Quote requests aren't connected: set NEXT_PUBLIC_HUBSPOT_PORTAL_ID and NEXT_PUBLIC_HUBSPOT_QUOTE_FORM_ID."
+        "Quote requests aren't connected: set NEXT_PUBLIC_HUBSPOT_PORTAL_ID and NEXT_PUBLIC_HUBSPOT_CONTACT_FORM_ID."
       );
     }
   }, [open]);
@@ -381,26 +473,28 @@ export default function QuoteRequestModal({
     const { cc, gcse } = selection;
     setStatus("submitting");
     try {
+      // Optional, not validated, and it doesn't change any prices.
+      const discountCode = values.discountCode.trim();
+      const hasAddOns = selectedAddOns.length > 0;
       const ok = await submitHubspotForm(HUBSPOT_QUOTE_FORM_ID, {
         [HUBSPOT_FIELDS.firstname]: firstName,
         [HUBSPOT_FIELDS.lastname]: values.lastname.trim(),
         [HUBSPOT_FIELDS.email]: values.email.trim(),
         [HUBSPOT_FIELDS.company]: values.company.trim(),
         [HUBSPOT_FIELDS.jobtitle]: values.jobtitle.trim(),
-        [HUBSPOT_FIELDS.message]: values.message.trim(),
-        // Optional, not validated, and it doesn't change any prices; left out when empty.
-        [HUBSPOT_FIELDS.discountCode]: values.discountCode.trim(),
+        [HUBSPOT_FIELDS.helpTopic]: HELP_TOPIC_VALUES[selection.product],
+        [HUBSPOT_FIELDS.message]: quoteMessage(selection, selectedAddOns, total, values.message.trim(), discountCode),
         [HUBSPOT_FIELDS.product]: selection.product,
-        // Fields that don't apply to the product are left out (empty values aren't sent).
+        // Fields that don't apply to the selection are left out (empty values aren't sent).
         [HUBSPOT_FIELDS.yearGroups]: cc ? String(cc.yearGroups) : undefined,
         [HUBSPOT_FIELDS.pillars]: cc ? String(cc.pillars) : undefined,
         [HUBSPOT_FIELDS.ccPrice]: cc ? String(cc.total) : undefined,
         [HUBSPOT_FIELDS.students]: gcse ? String(gcse.students) : undefined,
         [HUBSPOT_FIELDS.gcsePrice]: gcse ? String(gcse.total) : undefined,
-        [HUBSPOT_FIELDS.addOns]: selectedAddOns.map((a) => getAddOn(a.id).title).join(";"),
-        [HUBSPOT_FIELDS.addOnDetails]: addOnDetails(selectedAddOns),
-        [HUBSPOT_FIELDS.addOnsTotal]: String(addOnsTotal(selectedAddOns)),
+        [HUBSPOT_FIELDS.addOns]: hasAddOns ? selectedAddOns.map((a) => getAddOn(a.id).title).join(";") : undefined,
+        [HUBSPOT_FIELDS.addOnsPrice]: hasAddOns ? String(addOnsTotal(selectedAddOns)) : undefined,
         [HUBSPOT_FIELDS.total]: String(total),
+        ...pendingFieldValues(selectedAddOns, discountCode),
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       markFormSubmitted();
@@ -687,7 +781,7 @@ export default function QuoteRequestModal({
                     autoCapitalize="characters"
                     spellCheck={false}
                     maxLength={30}
-                    placeholder="e.g. WELCOME15"
+                    placeholder="e.g. WELCOME10"
                     value={values.discountCode}
                     onChange={(e) => update("discountCode", e.target.value.toUpperCase())}
                     className={`mt-2 border-ink/15 ${INPUT}`}

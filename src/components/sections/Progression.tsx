@@ -1,15 +1,15 @@
 import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import LevelModeToggle, { LevelText } from "@/components/shared/LevelModeToggle";
-import { progressionRows, progressionYears, skillsProgressionSection } from "@/content/skills-progression";
+import { progressionBands, progressionRows, skillsProgressionSection } from "@/content/skills-progression";
 
 // Grid template shared by the label row and the three timeline rows (desktop and the
 // tablet scroller): a row-label column, then five equal columns.
 const GRID = "grid grid-cols-[160px_repeat(5,minmax(0,1fr))]";
-const LAST = progressionYears.length - 1;
+const LAST = progressionBands.length - 1;
 
 // One timeline row: the line runs through the dots (12px down, the centre of the h-6 dot
-// row), with arrows between columns. The last (Year 13) column's dot, the line beyond it
+// row), with arrows between columns. The last (Years 12–13) column's dot, the line beyond it
 // and the closing arrow are accent-green.
 function TimelineRow({ name, steps }: { name: string; steps: readonly string[] }) {
   return (
@@ -53,12 +53,24 @@ function TimelineRow({ name, steps }: { name: string; steps: readonly string[] }
 function Timeline() {
   return (
     <div>
+      {/* Each label stays on one line (both Years and Grades versions share its box, so a wrapped
+          "Kindergarten–Grade 2" used to make "Years 1–3" two lines tall too, leaving a gap above
+          its age range). 14px below xl, where the columns are only ~155px wide (at 16px "Kindergarten–
+          Grade 2" ran into the next label at 1024px); 18px from xl.
+          The label is centred with flex, not text-align: "Kindergarten–Grade 2" is wider than its
+          column at 18px, and text-align pushes overflowing text to the right (taking "Years 1–3",
+          centred in the same box, with it); flex splits the overflow evenly. The corner cell only
+          needs its paper background for the tablet scroller, so it's transparent from lg, where
+          the first label can reach a few px into it. */}
       <div className={GRID}>
-        <div className="sticky left-0 z-10 bg-paper" />
-        {progressionYears.map((year) => (
-          <p key={year} className="text-center text-[18px] font-medium text-ink">
-            <LevelText year={year} />
-          </p>
+        <div className="sticky left-0 z-10 bg-paper lg:bg-transparent" />
+        {progressionBands.map((band) => (
+          <div key={band.startYear} className="px-2 text-center">
+            <p className="flex justify-center whitespace-nowrap text-[14px] font-medium leading-[1.3] text-ink xl:text-[18px]">
+              <LevelText year={band.startYear} to={band.endYear} />
+            </p>
+            <p className="mt-1 text-[13px] text-ink/55">{band.ages}</p>
+          </div>
         ))}
       </div>
       <div className="mt-8 flex flex-col gap-10">
@@ -122,8 +134,9 @@ export default function Progression() {
                       className={`absolute top-[7px] left-0 h-2 w-2 rounded-full ${i === LAST ? "bg-accent" : "bg-ink"}`}
                     />
                     <p className="text-[14px] font-medium text-ink">
-                      <LevelText year={progressionYears[i]} />
+                      <LevelText year={progressionBands[i].startYear} to={progressionBands[i].endYear} />
                     </p>
+                    <p className="text-[13px] text-ink/55">{progressionBands[i].ages}</p>
                     <p className="mt-1 text-[14px] leading-[1.5] text-ink/65">{text}</p>
                   </li>
                 ))}

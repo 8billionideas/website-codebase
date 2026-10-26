@@ -7,8 +7,6 @@ const HUBSPOT_DEFAULTS = {
   region: "eu1",
   demoFormId: "50392331-59e5-418f-90b3-5637649a6fa6",
   contactFormId: "5a358bf0-8a69-4999-8046-b1decabb8d8d",
-  // Not created yet: the quote pop-up stays "not connected" until it is.
-  quoteFormId: null as string | null,
   // Not created yet: the newsletter pop-up stays "not connected" until it is.
   newsletterFormId: null as string | null,
   // Fill in when HubSpot provides the newsletter subscription type ID.
@@ -21,8 +19,8 @@ export const HUBSPOT_REGION = process.env.NEXT_PUBLIC_HUBSPOT_REGION || HUBSPOT_
 export const HUBSPOT_DEMO_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_DEMO_FORM_ID || HUBSPOT_DEFAULTS.demoFormId;
 export const HUBSPOT_CONTACT_FORM_ID =
   process.env.NEXT_PUBLIC_HUBSPOT_CONTACT_FORM_ID || HUBSPOT_DEFAULTS.contactFormId;
-export const HUBSPOT_QUOTE_FORM_ID =
-  process.env.NEXT_PUBLIC_HUBSPOT_QUOTE_FORM_ID || HUBSPOT_DEFAULTS.quoteFormId || "";
+// Quote requests go to the Contact form by agreement with the HubSpot admin.
+export const HUBSPOT_QUOTE_FORM_ID = HUBSPOT_CONTACT_FORM_ID;
 
 export const HUBSPOT_NEWSLETTER_FORM_ID =
   process.env.NEXT_PUBLIC_HUBSPOT_NEWSLETTER_FORM_ID || HUBSPOT_DEFAULTS.newsletterFormId || "";

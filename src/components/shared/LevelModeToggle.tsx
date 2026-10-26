@@ -2,7 +2,7 @@
 
 import { useRef, type KeyboardEvent } from "react";
 import { useLevelMode } from "@/lib/level-mode";
-import { formatLevel, formatLevelUpper, type LevelMode } from "@/lib/year-grade";
+import { formatLevel, formatLevelRange, type LevelMode } from "@/lib/year-grade";
 
 const OPTIONS: { value: LevelMode; label: string }[] = [
   { value: "years", label: "Years" },
@@ -71,17 +71,23 @@ export default function LevelModeToggle({
 
 // A year label that follows the Years/Grades choice. Both versions sit in the same grid
 // cell (the hidden one invisible), so the label's box never changes size when switching.
+// With `to`, it's a band of year groups ("Years 1–3" / "Kindergarten–Grade 2").
 export function LevelText({
   year,
+  to,
   suffix = "",
   upper = false,
 }: {
   year: number;
+  to?: number;
   suffix?: string;
   upper?: boolean;
 }) {
   const [mode] = useLevelMode();
-  const format = upper ? formatLevelUpper : formatLevel;
+  const format = (y: number, m: LevelMode) => {
+    const label = to === undefined ? formatLevel(y, m) : formatLevelRange(y, to, m);
+    return upper ? label.toUpperCase() : label;
+  };
   return (
     <span className="inline-grid">
       {(["years", "grades"] as const).map((m) => (

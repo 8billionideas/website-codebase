@@ -26,9 +26,11 @@ export interface PillarCarouselCard {
 
 export const pillarCarousel = {
   eyebrow: "THE CURRICULUM",
-  heading: "A progressive learning journey across eight key areas",
+  // Heading: the first part in ink, the second in italic accent-green.
+  headingLine1: "One progressive journey across",
+  headingLine2: "eight Pillars of Learning",
   subheading:
-    "Each area includes lessons designed to support students aged 4–18, helping them develop critical skills that grow with them throughout their education. With everything ready to teach and the freedom to choose how lessons fit into the school week, we make it easier for schools to bring future-focused learning into their timetable in a way that works for their teachers and students.",
+    "At the heart of everything we do is The Critical Curriculum. Each of its eight pillars has ready-to-teach lessons from ages 5–18, so future skills build as students move through school. Choose the year groups and pillars that suit your school and fit the lessons into your week in the way that works for your teachers and students.",
   cards: [
     {
       name: "Entrepreneurship",
@@ -46,6 +48,62 @@ export const pillarCarousel = {
         src: "/images/pillars/entrepreneurship.webp",
         alt: "Primary pupils building a model snack shop stall from card and paper cups",
         position: "center 55%",
+      },
+    },
+    {
+      name: "Leadership",
+      exampleLesson: {
+        year: 12,
+        title: "The Boss Fight Practical",
+        description:
+          "Students put their critical-thinking and communication skills to the test, learning to identify flawed arguments, challenge reasoning and respond confidently in live debates.",
+      },
+      supportingLine: "Communicating clearly, making decisions and bringing others with you",
+      description:
+        "Exploring how people bring others with them, make decisions and create positive change",
+      exampleProject:
+        "Leadership Styles — working through real high-pressure scenarios.",
+      image: {
+        src: "/images/pillars/leadership.webp",
+        alt: "A student presenting her ideas to classmates at the front of the classroom",
+        position: "center 35%",
+      },
+    },
+    {
+      name: "Wellbeing",
+      exampleLesson: {
+        year: 7,
+        title: "Challenging the Myths",
+        description:
+          "Students investigate how misinformation spreads online, learn to question misleading health claims and apply their critical-thinking skills to create fact-or-fake challenges.",
+      },
+      supportingLine: "Self-awareness, resilience and looking after your mind",
+      description:
+        "Understanding yourself, managing everyday pressures and building habits that support you",
+      exampleProject:
+        "Heart and Mind — a personal journal built around real psychological tools.",
+      image: {
+        src: "/images/pillars/wellbeing.webp",
+        alt: "Young pupils identifying emotions from illustrated faces on a classroom screen",
+        position: "center center",
+      },
+    },
+    {
+      name: "Performance",
+      exampleLesson: {
+        year: 8,
+        title: "Competition & Performance",
+        description:
+          "Students explore the psychology behind competition, examining how pressure, stress and sportsmanship influence performance and developing strategies to manage challenging situations.",
+      },
+      supportingLine: "Sleep, nutrition, focus and performing under pressure",
+      description:
+        "Understanding what helps you perform well and get the best from yourself",
+      exampleProject: "Work Smart — designing a system that actually works for them.",
+      image: {
+        src: "/images/pillars/health-performance.webp",
+        alt: "Students in sports kit working together on a laptop in a school gym",
+        position: "center 45%",
       },
     },
     {
@@ -84,62 +142,6 @@ export const pillarCarousel = {
         src: "/images/pillars/financial-literacy.webp",
         alt: "A teacher leading a class discussion comparing spending and saving choices on a screen",
         position: "45% center",
-      },
-    },
-    {
-      name: "Wellbeing",
-      exampleLesson: {
-        year: 7,
-        title: "Challenging the Myths",
-        description:
-          "Students investigate how misinformation spreads online, learn to question misleading health claims and apply their critical-thinking skills to create fact-or-fake challenges.",
-      },
-      supportingLine: "Self-awareness, resilience and looking after your mind",
-      description:
-        "Understanding yourself, managing everyday pressures and building habits that support you",
-      exampleProject:
-        "Heart and Mind — a personal journal built around real psychological tools.",
-      image: {
-        src: "/images/pillars/wellbeing.webp",
-        alt: "Young pupils identifying emotions from illustrated faces on a classroom screen",
-        position: "center center",
-      },
-    },
-    {
-      name: "Health & Performance",
-      exampleLesson: {
-        year: 8,
-        title: "Competition & Performance",
-        description:
-          "Students explore the psychology behind competition, examining how pressure, stress and sportsmanship influence performance and developing strategies to manage challenging situations.",
-      },
-      supportingLine: "Sleep, nutrition, focus and performing under pressure",
-      description:
-        "Understanding what helps you perform well and get the best from yourself",
-      exampleProject: "Work Smart — designing a system that actually works for them.",
-      image: {
-        src: "/images/pillars/health-performance.webp",
-        alt: "Students in sports kit working together on a laptop in a school gym",
-        position: "center 45%",
-      },
-    },
-    {
-      name: "Leadership",
-      exampleLesson: {
-        year: 12,
-        title: "The Boss Fight Practical",
-        description:
-          "Students put their critical-thinking and communication skills to the test, learning to identify flawed arguments, challenge reasoning and respond confidently in live debates.",
-      },
-      supportingLine: "Communicating clearly, making decisions and bringing others with you",
-      description:
-        "Exploring how people bring others with them, make decisions and create positive change",
-      exampleProject:
-        "Leadership Styles — working through real high-pressure scenarios.",
-      image: {
-        src: "/images/pillars/leadership.webp",
-        alt: "A student presenting her ideas to classmates at the front of the classroom",
-        position: "center 35%",
       },
     },
     {

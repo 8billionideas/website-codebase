@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
         destination: "/curriculum-mapping",
         permanent: true,
       },
+      // A retired case study.
+      { source: "/case-studies/gems-world-academy", destination: "/case-studies", permanent: true },
     ];
   },
 };

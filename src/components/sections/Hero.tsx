@@ -46,7 +46,9 @@ export default function Hero() {
           <br />
           <em className="text-accent">{headlineLine2}</em>
         </h1>
-        <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">{subhead}</p>
+        {/* 560px from xl keeps the line ends over the dark part of the fade (at 620px they reached
+            the brighter photo, dropping contrast to ~2.7:1). */}
+        <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85 xl:max-w-[560px]">{subhead}</p>
         <div className="mt-8">
           <DemoTrigger appearance="button" className="w-full md:w-auto">
             Request a demo

@@ -204,6 +204,22 @@ export function addOnLineLabel(id: AddOnId, options: AddOnOptions = {}): string 
   return a.shortTitle;
 }
 
+// For the quote request's message summary:
+// "CPD × 2 (£3,950); Live Experience, up to 100 students × 2 days (£3,600); Assembly × 2 (£900)".
+export function addOnSummary(addOns: SelectedAddOn[]): string {
+  return addOns
+    .map(({ id, options = {} }) => {
+      const a = getAddOn(id);
+      const cost = `(${formatMoney(addOnCost(id, options))})`;
+      if (a.pricing === "group-days") {
+        return `${a.shortTitle}, ${getLiveGroup(options.groupId).label.toLowerCase()} × ${plural(clampQuantity(options.days), "day", "days")} ${cost}`;
+      }
+      if (a.pricing === "quantity") return `${a.shortTitle} × ${clampQuantity(options.quantity)} ${cost}`;
+      return `${a.shortTitle} ${cost}`;
+    })
+    .join("; ");
+}
+
 // Readable detail for HubSpot: "CPD × 2 £3,950; Live Experience up to 100 students × 2 days £3,600; Assembly × 2 £900".
 export function addOnDetails(addOns: SelectedAddOn[]): string {
   return addOns

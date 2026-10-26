@@ -75,7 +75,7 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
 
 ## Key facts and data
 
-- The eight pillars, in this order: Entrepreneurship, Careers, Financial Literacy, Wellbeing, Health & Performance, Leadership, Sustainability, Technology. Sustainability and Technology are marked **Coming soon**.
+- The eight pillars, in this order: Entrepreneurship, Leadership, Wellbeing, Performance (formerly "Health & Performance"), Careers, Financial Literacy, Sustainability, Technology. Sustainability and Technology are marked **Coming soon**.
 - Skills: eight transferable skills (Critical Thinking, Creative Thinking, Problem-Solving, Communication, Collaboration, Resilience, Self-Awareness, Decision-Making), shown as a Discovering / Developing / Applying progression across Year 1, 4, 7, 10 and 13.
 - Lesson explorer data comes from the Lesson Explorer developer document (src/content/lesson-explorer.ts): one published programme per year and pillar, standard lesson sequences or grouped overviews; no durations are shown; proposed six-part sequences stay hidden until curriculum sign-off.
 - Pricing (single source of truth in src/lib/pricing.ts):
@@ -84,15 +84,15 @@ Pages: / (homepage), /curriculum-mapping (Our Curriculum), /gcse, /pricing, /cas
   - Calculator defaults are the minimums: 1 year group, 1 pillar, 10 students.
 - HubSpot: the portal and form IDs live in src/lib/hubspot.ts as public defaults (they're shown in HubSpot's embed code, so safe to commit), with the NEXT_PUBLIC_HUBSPOT_* environment variables as optional overrides. The demo pop-up and /contact form post through the shared Forms API helper there; the quote form ID is still null (not connected).
 - Data files: src/lib/case-studies.ts, src/lib/pricing.ts, src/lib/curriculum-subjects.ts, src/content/lesson-explorer.ts, src/lib/resources.ts, src/lib/homepage-faqs.ts, plus the testimonials data in src/content/home.ts (home.proof.testimonials and home.proof.bandTestimonial).
-- Case studies order: The Internship (featured), Nord Anglia Education India, Severn Academies, Harrow Sustainability450, Chelsea FC Academy, GEMS World Academy (kept last and lower on the page).
-- Newsletter pop-up: Shows 5s after arriving, once per visit (NEWSLETTER_POPUP_FREQUENCY = 'session'; switch to '30-days' before launch); never again after sign-up; not on /contact; ?newsletter=1 opens it for review. Single compact box (about 420px), email only. Offer: 15% off with code WELCOME15 (sent by HubSpot email); sales verifies eligibility on the contact record.
+- Case studies order: The Internship (featured), Nord Anglia Education India, Severn Academies, Harrow Sustainability450, Chelsea FC Academy.
+- Newsletter pop-up: Shows 5s after arriving, once per visit (NEWSLETTER_POPUP_FREQUENCY = 'session'; switch to '30-days' before launch); never again after sign-up; not on /contact; ?newsletter=1 opens it for review. Single compact box (about 420px), email only. Offer: 10% off with code WELCOME10 (sent by HubSpot email); sales verifies eligibility on the contact record.
 
 ## Open items (don't resolve these by guessing)
 
 - GCSE price cliff (e.g. 25 students cost more than 26). Pricing rule to be decided by David.
 - "Typically parent-funded" wording for the GCSE, to be confirmed.
 - OxfordAQA specification checks: claims, learning hours, "recognised by universities", "internally assessed, externally moderated". Approval of the Jennifer Duggan and Emily Cheffins quotes. GCSE launch date (August vs September 2026).
-- Permission to show school and club names and logos (especially Chelsea, Harrow, GEMS).
+- Permission to show school and club names and logos (especially Chelsea and Harrow).
 - Lesson titles from the curriculum team (Samira, Lakshmi, Lyndsay). Subject-to-pillar mapping sign-off (Lyndsay).
 - Procurement one-pager (Elysha). About page 2025 timeline facts. Ann Haydon's current job title.
 - Safeguarding content currently doesn't appear anywhere on the site.

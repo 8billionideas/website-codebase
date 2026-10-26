@@ -82,12 +82,14 @@ export default function CaseStudiesPage() {
             <div className="grid grid-cols-1 divide-y divide-white/15 md:grid-cols-[55fr_45fr] md:divide-x md:divide-y-0">
               <div className="md:pr-16">
                 <p className="text-[12px] uppercase tracking-[0.25em] text-accent">
-                  FEATURED CASE STUDY · SFCA AWARD WINNER 2022
+                  FEATURED CASE STUDY · SFCA AWARD WINNER
                 </p>
                 <p className="mt-4 text-[28px] font-light leading-[1.1] text-white md:text-[40px]">
                   {featured.name}
                 </p>
-                <p className="mt-4 text-[18px] font-normal text-accent">{featured.headlineFact}</p>
+                {featured.headlineFact && (
+                  <p className="mt-4 text-[18px] font-normal text-accent">{featured.headlineFact}</p>
+                )}
                 <p className="mt-4 max-w-[520px] text-[17px] leading-[1.6] text-white/80">
                   {featured.summary}
                 </p>
@@ -164,7 +166,9 @@ export default function CaseStudiesPage() {
                   {study.location && (
                     <p className="mt-1 text-[14px] text-muted">{study.location}</p>
                   )}
-                  <p className="mt-3 text-[15px] font-medium text-accent">{study.headlineFact}</p>
+                  {study.headlineFact && (
+                    <p className="mt-3 text-[15px] font-medium text-accent">{study.headlineFact}</p>
+                  )}
                   <p className="mt-3 max-w-[520px] text-[17px] leading-[1.6] text-ink/75">
                     {study.summary}
                   </p>

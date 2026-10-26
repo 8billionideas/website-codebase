@@ -3,6 +3,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { Eyebrow, SectionBody, SectionH2, SectionMarker } from "@/components/home/SectionHeading";
 import PartnerCards from "@/components/shared/PartnerCards";
+import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 import ChampionSchools from "@/components/sections/ChampionSchools";
 import Button from "@/components/ui/Button";
 
@@ -33,23 +34,12 @@ const claims = [
   "Internally assessed, externally moderated",
 ];
 
-function OxfordAqaWordmark({ className = "" }: { className?: string }) {
-  return (
-    <p className={`tracking-wide text-white ${className}`}>
-      <span className="font-light">OXFORD</span>
-      <span className="font-bold">AQA</span>
-    </p>
-  );
-}
-
 function OxfordAqaLockup() {
   return (
     <div className="text-center">
-      <p className="text-[32px] tracking-[0.08em] text-white">
-        <span className="font-light">OXFORD</span>
-        <span className="font-bold">AQA</span>
-      </p>
-      <div className="mx-auto mt-3 mb-3 h-px w-[120px] bg-white/20" aria-hidden="true" />
+      <OxfordAqaLogo variant="tile" width={180} className="mx-auto" />
+      {/* 16px below the tile: at least the logo's "O" height (14px at 180px) of clear space. */}
+      <div className="mx-auto mt-4 mb-3 h-px w-[120px] bg-white/20" aria-hidden="true" />
       <p className="whitespace-nowrap text-[18px] font-light uppercase tracking-[0.3em] text-white">
         International GCSE
       </p>
@@ -343,8 +333,9 @@ export default function QualificationSection() {
         {/* Partnership lockup */}
         <div className="mt-16 flex flex-col items-center gap-6 text-center md:flex-row md:justify-center md:gap-10">
           <div>
-            <OxfordAqaWordmark className="text-h3 justify-center" />
-            <p className="mt-1 text-caption text-white/50">
+            <OxfordAqaLogo variant="tile" width={160} className="mx-auto" />
+            {/* 16px below the tile: at least the logo's "O" height (13px at 160px) of clear space. */}
+            <p className="mt-4 text-caption text-white/50">
               Qualification &amp; assessment expertise
             </p>
           </div>

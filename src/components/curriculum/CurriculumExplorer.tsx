@@ -29,7 +29,7 @@ const PILLAR_ICONS: Record<PillarName, LucideIcon> = {
   Careers: Briefcase,
   "Financial Literacy": Coins,
   Wellbeing: Heart,
-  "Health & Performance": Activity,
+  Performance: Activity,
   Leadership: Users,
   Sustainability: Leaf,
   Technology: Cpu,

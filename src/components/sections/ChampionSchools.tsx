@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { gcseSchools, type ChampionSchool } from "@/content/schools";
 
-// Logo box inside each tile (200×88 tile minus 14px padding). Logos are scaled
-// to the same visible area, then capped to the box, so wide wordmarks and
+// Logo box inside each tile: 80% of the 250×110 tile (200×88; the padding makes up the rest).
+// Logos are scaled to the same visible area, then capped to the box, so wide wordmarks and
 // narrow crests read as an even size.
-const BOX_W = 172;
-const BOX_H = 60;
+const BOX_W = 200;
+const BOX_H = 88;
 const TARGET_AREA = BOX_W * BOX_H * 0.65;
 
 function logoWidthPercent({ width, height }: ChampionSchool["logo"]) {
@@ -25,7 +25,9 @@ function LogoList({ schools, hidden = false }: { schools: ChampionSchool[]; hidd
       {schools.map((school) => (
         <li
           key={school.slug}
-          className="flex h-[72px] w-[160px] shrink-0 items-center justify-center rounded-xl bg-white p-3 md:h-[88px] md:w-[200px] md:p-[14px]"
+          // 200×90 on mobile, 250×110 from md (25% larger than before); the padding leaves an
+          // 80% logo box (160×72 / 200×88).
+          className="flex h-[90px] w-[200px] shrink-0 items-center justify-center rounded-xl bg-white px-5 py-[9px] md:h-[110px] md:w-[250px] md:px-[25px] md:py-[11px]"
         >
           <Image
             src={school.logo.src}
