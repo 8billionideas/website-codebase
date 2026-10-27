@@ -222,7 +222,7 @@ function ExamplePanel({
         </h3>
         <p className="mt-4 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
           {copy.comingSoon.pre(subject.name)}
-          <DemoTrigger className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent">
+          <DemoTrigger trackingLocation="curriculum_connections" className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent">
             {copy.comingSoon.linkLabel}
           </DemoTrigger>
           {copy.comingSoon.post}

@@ -19,6 +19,7 @@ import {
 } from "@/lib/pricing";
 import Button from "@/components/ui/Button";
 import QuoteRequestModal, { type QuoteSelection } from "@/components/pricing/QuoteRequestModal";
+import { trackEvent } from "@/lib/analytics";
 
 
 type Product = "cc" | "gcse" | "both";
@@ -208,6 +209,7 @@ export default function PricingCalculator() {
         : ["yearGroups", "pillars", "students"];
 
   function openQuote(event: React.MouseEvent<HTMLButtonElement>) {
+    trackEvent("quote_click");
     quoteButtonRef.current = event.currentTarget;
     setQuoteSelection({
       product: product === "cc" ? "Critical Curriculum" : product === "gcse" ? "International GCSE" : "Both",

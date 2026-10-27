@@ -198,13 +198,21 @@ function DemoButton({
   className = "",
   onBeforeOpen,
   returnFocusTo,
+  trackingLocation,
 }: {
   className?: string;
   onBeforeOpen?: () => void;
   returnFocusTo?: () => HTMLElement | null;
+  trackingLocation: string;
 }) {
   return (
-    <DemoTrigger appearance="button" onBeforeOpen={onBeforeOpen} returnFocusTo={returnFocusTo} className={className}>
+    <DemoTrigger
+      appearance="button"
+      onBeforeOpen={onBeforeOpen}
+      returnFocusTo={returnFocusTo}
+      className={className}
+      trackingLocation={trackingLocation}
+    >
       Request a demo
     </DemoTrigger>
   );
@@ -298,7 +306,7 @@ export default function Navbar() {
             >
               Login
             </button>
-            <DemoButton />
+            <DemoButton trackingLocation="nav" />
           </div>
         </div>
 
@@ -392,7 +400,12 @@ export default function Navbar() {
               Login
             </button>
             {/* The mobile menu (and this button) closes first, so focus returns to the menu toggle. */}
-            <DemoButton className="w-full" onBeforeOpen={closeMobile} returnFocusTo={() => menuToggleRef.current} />
+            <DemoButton
+              className="w-full"
+              onBeforeOpen={closeMobile}
+              returnFocusTo={() => menuToggleRef.current}
+              trackingLocation="nav_mobile"
+            />
           </div>
         </div>
       )}

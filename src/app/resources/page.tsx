@@ -209,7 +209,7 @@ export default function ResourcesPage() {
               team.
             </p>
             <div className="mt-8">
-              <DemoTrigger appearance="button" className="w-full sm:w-auto">
+              <DemoTrigger trackingLocation="resources_closing" appearance="button" className="w-full sm:w-auto">
                 Request a demo
               </DemoTrigger>
             </div>

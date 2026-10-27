@@ -6,6 +6,10 @@ import DemoModalProvider from "@/components/demo/DemoModalProvider";
 import BookDemoSection from "@/components/shared/BookDemoSection";
 import HideOnRoutes from "@/components/shared/HideOnRoutes";
 import NewsletterPopup from "@/components/shared/NewsletterPopup";
+import Script from "next/script";
+import CookieBanner from "@/components/analytics/CookieBanner";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import { ANALYTICS_ENABLED, CONSENT_DEFAULT_SCRIPT } from "@/lib/analytics";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -32,6 +36,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} h-full scroll-smooth antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
+        {/* Google Consent Mode v2 defaults (all denied), set before anything else runs. GA itself
+            loads only after consent (GoogleAnalytics). Production builds only. */}
+        {ANALYTICS_ENABLED && (
+          <Script id="ga-consent-default" strategy="beforeInteractive">
+            {CONSENT_DEFAULT_SCRIPT}
+          </Script>
+        )}
+        {/* First in the page, so keyboard users reach it before the nav. */}
+        <CookieBanner />
+        <GoogleAnalytics />
         <DemoModalProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

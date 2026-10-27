@@ -4,6 +4,7 @@ import { useId, useRef } from "react";
 import { ArrowRight, Presentation, ShieldCheck, UserRound, type LucideIcon } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import { ADMIN_LOGIN_URL, STUDENT_LOGIN_URL, TEACHER_LOGIN_URL } from "@/lib/config";
+import { trackEvent } from "@/lib/analytics";
 
 const OPTIONS: { label: string; href: string; icon: LucideIcon }[] = [
   { label: "Student", href: STUDENT_LOGIN_URL, icon: UserRound },
@@ -43,6 +44,8 @@ export default function LoginModal({
             <a
               ref={i === 0 ? firstOptionRef : undefined}
               href={option.href}
+              // Beacon, so the event still reaches GA as the page unloads.
+              onClick={() => trackEvent("login_click", { role: option.label.toLowerCase(), transport_type: "beacon" })}
               className="group flex w-full items-center gap-4 rounded-xl border border-ink/12 p-5 transition-colors hover:border-accent hover:bg-accent/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/15">

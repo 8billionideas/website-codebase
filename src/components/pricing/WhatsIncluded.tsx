@@ -71,7 +71,7 @@ export default function WhatsIncluded() {
           ))}
         </ul>
 
-        <DemoTrigger
+        <DemoTrigger trackingLocation="pricing"
           ariaLabel={more.ariaLabel}
           className="group mt-5 flex w-full flex-col text-left gap-4 rounded-2xl border border-white/12 bg-white/[0.03] px-6 py-6 transition-colors hover:border-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink sm:flex-row sm:items-center sm:gap-6 sm:px-8"
         >

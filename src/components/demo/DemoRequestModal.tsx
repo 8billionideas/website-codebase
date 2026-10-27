@@ -6,6 +6,7 @@ import ModalShell from "@/components/layout/ModalShell";
 import { isHubspotConfigured, submitDemoRequest } from "@/lib/hubspot";
 import Button from "@/components/ui/Button";
 import { markFormSubmitted } from "@/lib/newsletter-popup";
+import { trackEvent } from "@/lib/analytics";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
@@ -147,6 +148,7 @@ export default function DemoRequestModal({
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       markFormSubmitted();
+      trackEvent("generate_lead", { form_name: "demo_request" });
       setSubmittedName(firstName);
       setStatus("success");
     } catch {

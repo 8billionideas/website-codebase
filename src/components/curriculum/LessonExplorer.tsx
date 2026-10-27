@@ -122,7 +122,7 @@ function ProgrammePanel({
           <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink">{copy.proposed.heading}</h3>
           <p className="mt-3 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
             {copy.proposed.pre}
-            <DemoTrigger className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent">
+            <DemoTrigger trackingLocation="lesson_explorer" className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent">
               {copy.proposed.linkLabel}
             </DemoTrigger>
             {copy.proposed.post}

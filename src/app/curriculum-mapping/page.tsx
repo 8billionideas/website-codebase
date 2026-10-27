@@ -39,7 +39,7 @@ export default function CurriculumMappingPage() {
 
           <p className="mt-12 max-w-2xl text-body text-muted md:mt-16">
             {footnote.pre}
-            <DemoTrigger
+            <DemoTrigger trackingLocation="curriculum_mapping_footnote"
               className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
             >
               {footnote.linkLabel}

@@ -7,6 +7,7 @@ import { HUBSPOT_CONTACT_FORM_ID, isContactFormConfigured, submitHubspotForm } f
 import Button from "@/components/ui/Button";
 import { HELP_TOPICS, teamAvatars } from "@/content/contact";
 import { markFormSubmitted } from "@/lib/newsletter-popup";
+import { trackEvent } from "@/lib/analytics";
 
 // Field names as set up in the HubSpot "Contact us" form ("0-1/…" are contact properties;
 // on this form School / organisation is the contact's "company" property).
@@ -167,6 +168,7 @@ export default function ContactSection() {
         : undefined);
       if (!ok) throw new Error("HubSpot rejected the submission");
       markFormSubmitted();
+      trackEvent("generate_lead", { form_name: "contact" });
       setSubmittedName(firstName);
       setStatus("success");
     } catch {

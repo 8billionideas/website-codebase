@@ -2,6 +2,7 @@
 
 import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { openCookieSettings } from "@/lib/consent";
 import Container from "@/components/layout/Container";
 import Logo from "@/components/layout/Logo";
 import LoginModal from "@/components/layout/LoginModal";
@@ -150,7 +151,7 @@ export default function Footer() {
             <p className="max-w-[240px] text-[12px] uppercase leading-[1.8] tracking-[0.2em] text-accent">
               Ready to see what this could look like in your school?
             </p>
-            <DemoTrigger appearance="button" className="mt-6 w-full md:w-auto">
+            <DemoTrigger trackingLocation="footer" appearance="button" className="mt-6 w-full md:w-auto">
               Request a demo
             </DemoTrigger>
           </div>
@@ -160,23 +161,31 @@ export default function Footer() {
 
         <div className="mt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <p className="text-[14px] text-white/65">&copy; {year} 8billionideas. All rights reserved.</p>
-          {legalLinks.length > 0 && (
-            <ul className="flex list-none flex-wrap items-center p-0">
-              {legalLinks.map((link, i) => (
-                <li key={link.label} className={i > 0 ? "ml-3 border-l border-white/20 pl-3" : ""}>
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}
-                  >
-                    {link.label}
-                    <NewTabNote />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ul className="flex list-none flex-wrap items-center p-0">
+            {legalLinks.map((link, i) => (
+              <li key={link.label} className={i > 0 ? "ml-3 border-l border-white/20 pl-3" : ""}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}
+                >
+                  {link.label}
+                  <NewTabNote />
+                </a>
+              </li>
+            ))}
+            {/* Reopens the cookie banner; focus comes back here after a choice. */}
+            <li className={legalLinks.length > 0 ? "ml-3 border-l border-white/20 pl-3" : ""}>
+              <button
+                type="button"
+                onClick={(event) => openCookieSettings(event.currentTarget)}
+                className={`cursor-pointer text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}
+              >
+                Cookie settings
+              </button>
+            </li>
+          </ul>
         </div>
       </Container>
 

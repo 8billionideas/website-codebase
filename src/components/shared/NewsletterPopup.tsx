@@ -18,6 +18,8 @@ import {
   rememberNewsletterDismissed,
   rememberNewsletterSignedUp,
 } from "@/lib/newsletter-popup";
+import { trackEvent } from "@/lib/analytics";
+import { useConsent } from "@/lib/consent";
 
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
@@ -62,6 +64,16 @@ export default function NewsletterPopup() {
   // Another pop-up has been open during this page view, so this one stays away for the view.
   const blockedThisViewRef = useRef(false);
   const pathnameRef = useRef(pathname);
+  // The visit started with ?demo=1 (the demo pop-up opens first), read on mount before
+  // DemoModalProvider removes the parameter.
+  const startedWithDemoRef = useRef(false);
+  // ?newsletter=1 was used; it opens once the cookie banner is out of the way.
+  const reviewRequestedRef = useRef(false);
+
+  // Never while the cookie banner is showing: the timer starts once a cookie choice exists
+  // (straight away if one was stored), and stops if "Cookie settings" reopens the banner.
+  const consent = useConsent();
+  const cookieChoiceMade = consent.ready && consent.choice !== null && !consent.bannerOpen;
 
   const show = useCallback(() => {
     returnFocusRef.current = document.activeElement as HTMLElement | null;
@@ -84,13 +96,18 @@ export default function NewsletterPopup() {
     blockedThisViewRef.current = otherDialogOpen();
   }, [pathname]);
 
-  // 5 seconds after arriving. A visit that starts with ?demo=1 (the demo pop-up opens first) is
-  // skipped; the parameter is read here before DemoModalProvider removes it.
+  // Read before DemoModalProvider's effect removes ?demo=1 (child effects run first).
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("demo") === "1") return;
+    startedWithDemoRef.current = new URLSearchParams(window.location.search).get("demo") === "1";
+  }, []);
+
+  // 5 seconds after the cookie choice (or after arriving, if a choice was already stored). A visit
+  // that starts with ?demo=1 is skipped.
+  useEffect(() => {
+    if (!cookieChoiceMade || startedWithDemoRef.current) return;
     const timer = window.setTimeout(tryOpen, OPEN_AFTER_MS);
     return () => window.clearTimeout(timer);
-  }, [tryOpen]);
+  }, [tryOpen, cookieChoiceMade]);
 
   // Note any other pop-up opening during this page view.
   useEffect(() => {
@@ -101,16 +118,22 @@ export default function NewsletterPopup() {
     return () => observer.disconnect();
   }, []);
 
-  // ?newsletter=1 opens it straight away for review (ignoring the timing and the remembered
-  // state, though never on /contact), then the parameter is removed.
+  // ?newsletter=1 opens it for review (ignoring the timing and the remembered state, though never
+  // on /contact) as soon as there's a cookie choice, then the parameter is removed.
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get("newsletter") !== "1") return;
     url.searchParams.delete("newsletter");
     window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
     if (EXCLUDED_ROUTES.includes(pathname)) return;
+    reviewRequestedRef.current = true;
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!cookieChoiceMade || !reviewRequestedRef.current) return;
+    reviewRequestedRef.current = false;
     setTimeout(show, 0);
-  }, [pathname, show]);
+  }, [cookieChoiceMade, show]);
 
   useEffect(() => {
     if (status === "success") successHeadingRef.current?.focus();
@@ -173,6 +196,7 @@ export default function NewsletterPopup() {
       );
       if (!ok) throw new Error("HubSpot rejected the submission");
       succeed();
+      trackEvent("generate_lead", { form_name: "newsletter" });
     } catch {
       setStatus("error");
     }

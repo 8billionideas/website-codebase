@@ -51,7 +51,7 @@ export default function Hero() {
             the brighter photo, dropping contrast to ~2.7:1). */}
         <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85 xl:max-w-[560px]">{withCriticalCurriculum(subhead)}</p>
         <div className="mt-8">
-          <DemoTrigger appearance="button" className="w-full md:w-auto">
+          <DemoTrigger trackingLocation="hero" appearance="button" className="w-full md:w-auto">
             Request a demo
           </DemoTrigger>
         </div>

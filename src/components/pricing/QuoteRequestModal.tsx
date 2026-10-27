@@ -25,6 +25,7 @@ import {
   type SelectedAddOn,
 } from "@/lib/pricing";
 import { markFormSubmitted } from "@/lib/newsletter-popup";
+import { trackEvent } from "@/lib/analytics";
 
 // Quote requests are submitted to the HubSpot Contact form (see HUBSPOT_QUOTE_FORM_ID).
 // All fields are contact properties ("0-1/…"). Prices, totals and counts are sent as plain
@@ -498,6 +499,7 @@ export default function QuoteRequestModal({
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       markFormSubmitted();
+      trackEvent("generate_lead", { form_name: "quote_request", value: total, currency: "GBP", product: selection.product });
       setSubmittedName(firstName);
       setStatus("success");
     } catch {

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 function RequestDemoButton({ className = "" }: { className?: string }) {
   return (
-    <DemoTrigger appearance="button" className={`w-full md:w-auto ${className}`}>
+    <DemoTrigger trackingLocation="gcse_hero" appearance="button" className={`w-full md:w-auto ${className}`}>
       Request a demo
     </DemoTrigger>
   );
@@ -141,7 +141,7 @@ export default function GcsePage() {
       >
         {platform.showPlatformVideo && (
           <div className="mt-10">
-            <DemoTrigger appearance="button" arrow={false}>
+            <DemoTrigger trackingLocation="gcse_platform" appearance="button" arrow={false}>
               See the platform
             </DemoTrigger>
             <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-white/5" />

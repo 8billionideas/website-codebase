@@ -19,7 +19,7 @@ export default function BookDemoSection() {
           </h2>
           <p className="mx-auto mt-5 text-[18px] leading-[1.6] text-white/85">{bookDemo.line}</p>
           <div className="mt-8 flex justify-center">
-            <DemoTrigger appearance="button" className="w-full sm:w-auto">
+            <DemoTrigger trackingLocation="book_demo_band" appearance="button" className="w-full sm:w-auto">
               {bookDemo.cta}
             </DemoTrigger>
           </div>
