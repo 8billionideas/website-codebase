@@ -6,6 +6,7 @@ import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { KITS, closingImage, type Resource } from "@/lib/resources";
 import Button from "@/components/ui/Button";
+import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
 
 export const metadata: Metadata = {
   title: "Resources | 8billionideas",
@@ -135,12 +136,11 @@ export default function ResourcesPage() {
             <h1 className="mt-3 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
               Free classroom resources
               <br />
-              <em className="text-accent">for the skills students need next</em>
+              <em className="text-accent">for the skills students need now</em>
             </h1>
             <p className="mt-6 max-w-[560px] text-[18px] leading-[1.6] text-ink/75">
-              Use these free resources to open up conversations around careers, future skills
-              and the world beyond school in a way that feels practical, relevant and easy to
-              deliver.
+              Use these free resources to start conversations about careers, future skills and
+              life beyond school – practical, relevant and ready to use in class.
             </p>
           </div>
         </Container>
@@ -204,9 +204,9 @@ export default function ResourcesPage() {
               <em className="text-accent">further across your school?</em>
             </h2>
             <p className="mt-6 text-[18px] leading-[1.6] text-white/80">
-              Our Critical Curriculum gives schools a structured way to build future-focused
-              learning across year groups, with ready-to-teach lessons, practical resources and
-              support from our team.
+              <CriticalCurriculumName /> gives schools a structured way to build future skills across
+              year groups, with ready-to-teach lessons, practical resources and support from our
+              team.
             </p>
             <div className="mt-8">
               <DemoTrigger appearance="button" className="w-full sm:w-auto">

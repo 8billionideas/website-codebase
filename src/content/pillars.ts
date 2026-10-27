@@ -45,7 +45,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1",
           description:
-            "Students learn the key skills and attributes of an entrepreneur, ending with the 'Stone Age' task — building a business model in a time before currency existed.",
+            "Students learn the key skills and attributes of an entrepreneur, ending with the 'Stone Age' task – building a business model in a time before currency existed.",
         },
         skills: [
           "Confidence in Expressing Ideas",
@@ -63,7 +63,7 @@ export const pillars: Pillar[] = [
       {
         course: "Green My City",
         overview:
-          "Students become eco-innovators on a mission to green our cities — exploring real-world urban issues and designing bold, sustainable solutions.",
+          "Students become eco-innovators on a mission to green our cities – exploring real-world urban issues and designing bold, sustainable solutions.",
         skills: [
           "Risk Awareness",
           "Practical Problem-Solving",
@@ -85,7 +85,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Meet Your First Customer — understanding what customers want at every stage of design.",
+            "Meet Your First Customer – understanding what customers want at every stage of design.",
         },
         skills: [
           "Creative Problem-Solving",
@@ -106,7 +106,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Introduction To The World Of Business — discovering what makes businesses similar and different globally.",
+            "Introduction To The World Of Business – discovering what makes businesses similar and different globally.",
         },
         skills: [
           "Analytical Thinking",
@@ -128,7 +128,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Be The Expert — exploring how expertise develops through curiosity, practice and reflection.",
+            "Be The Expert – exploring how expertise develops through curiosity, practice and reflection.",
         },
         skills: [
           "Self-Reflection & Metacognition",
@@ -150,7 +150,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 2/5",
           description:
-            "Politics — learning how politics functions by designing government departments that better serve communities.",
+            "Politics – learning how politics functions by designing government departments that better serve communities.",
         },
         skills: [
           "Critical Thinking & Decision-Making",
@@ -172,7 +172,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1/6",
           description:
-            "Hello Mini Me — developing self-leadership through reflection and confidence-building.",
+            "Hello Mini Me – developing self-leadership through reflection and confidence-building.",
         },
         skills: [
           "Self-Awareness",
@@ -194,7 +194,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1",
           description:
-            "Unlocking the Founder Mindset — discovering entrepreneurial strengths and the mindset needed to start a business.",
+            "Unlocking the Founder Mindset – discovering entrepreneurial strengths and the mindset needed to start a business.",
         },
         skills: [
           "Resilience Under Scrutiny",
@@ -216,7 +216,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1",
           description:
-            "What Cause? — identifying a cause aligned with personal values.",
+            "What Cause? – identifying a cause aligned with personal values.",
         },
         skills: [
           "Ethical Decision-Making",
@@ -247,7 +247,7 @@ export const pillars: Pillar[] = [
         course: "The Internship",
         stage: "Flagship",
         overview:
-          "A professional simulation designed for every career path — students master universal skills required in Healthcare, Engineering, Law and the Arts, building a tangible portfolio.",
+          "A professional simulation designed for every career path – students master universal skills required in Healthcare, Engineering, Law and the Arts, building a tangible portfolio.",
         skills: [
           "Crisis Management & Resilience",
           "High-Stakes Communication",
@@ -269,11 +269,11 @@ export const pillars: Pillar[] = [
       {
         course: "Career Explorers",
         overview:
-          "Students step into exciting roles — from theme park designers to alien communicators — using creativity and problem-solving.",
+          "Students step into exciting roles – from theme park designers to alien communicators – using creativity and problem-solving.",
         module: {
           heading: "Module",
           description:
-            "Theme Park Imagineer — designing a thrilling, imaginative park.",
+            "Theme Park Imagineer – designing a thrilling, imaginative park.",
         },
         skills: [
           "Early Problem-Solving",
@@ -296,7 +296,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1/6",
           description:
-            "Data Science 101: Storytelling — analysing and visualising data to communicate insights.",
+            "Data Science 101: Storytelling – analysing and visualising data to communicate insights.",
         },
         skills: [
           "Analytical Thinking",
@@ -318,7 +318,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1/6",
           description:
-            "Networking — connecting authentically and building professional relationships.",
+            "Networking – connecting authentically and building professional relationships.",
         },
         skills: [
           "Professional Self-Presentation",
@@ -364,11 +364,11 @@ export const pillars: Pillar[] = [
       {
         course: "Utopian Economics",
         overview:
-          "Students become global change makers, exploring how economic values shape nations — building fictional economies rooted in real-world concepts.",
+          "Students become global change makers, exploring how economic values shape nations – building fictional economies rooted in real-world concepts.",
         module: {
           heading: "Module",
           description:
-            "Labour Market Analysis — using real labour market data to make policy decisions.",
+            "Labour Market Analysis – using real labour market data to make policy decisions.",
         },
         skills: [
           "Economic & Systems Thinking",
@@ -390,7 +390,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1/6",
           description:
-            "What's Security? — exploring why protecting personal belongings matters.",
+            "What's Security? – exploring why protecting personal belongings matters.",
         },
         skills: [
           "Risk Awareness",
@@ -425,7 +425,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Challenging — identifying and challenging negative thinking patterns through CBT.",
+            "Challenging – identifying and challenging negative thinking patterns through CBT.",
         },
         skills: ["Self-Awareness", "Emotional Regulation", "Resilience", "Self-Management"],
       },
@@ -449,7 +449,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module 1/6",
           description:
-            "Productivity: Goals — defining the purpose behind working smarter.",
+            "Productivity: Goals – defining the purpose behind working smarter.",
         },
         skills: [
           "Self-Management & Organisation",
@@ -471,7 +471,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Project Management — how successful projects are structured, planned and delivered.",
+            "Project Management – how successful projects are structured, planned and delivered.",
         },
         skills: ["Self-Reflection", "Leadership", "Accountability", "Resilience"],
       },
@@ -490,7 +490,7 @@ export const pillars: Pillar[] = [
         module: {
           heading: "Module",
           description:
-            "Navigating Bad Times — how leaders stay calm and make decisions under pressure.",
+            "Navigating Bad Times – how leaders stay calm and make decisions under pressure.",
         },
         skills: ["Leadership", "Communication", "Decision-Making", "Social Skills"],
       },
@@ -500,7 +500,7 @@ export const pillars: Pillar[] = [
           "A fast-paced debate and communication experience helping students express opinions and navigate disagreement productively.",
         module: {
           heading: "Module",
-          description: "The Digital Debate — critical thinking in online discussions.",
+          description: "The Digital Debate – critical thinking in online discussions.",
         },
         skills: ["Communication", "Critical Thinking", "Active Listening", "Digital Citizenship"],
       },

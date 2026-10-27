@@ -3,10 +3,10 @@ import { NamedItem } from "./types";
 export const pricing = {
   hero: {
     eyebrow: "PRICING",
-    headlineLead: "Find the right price",
-    headlineEmphasis: "for your school",
+    headlineLead: "Your school,",
+    headlineEmphasis: "your budget",
     intro:
-      "Every school will use 8billionideas slightly differently, the price depends on what you choose, so you can build the right option below and see what that could look like before speaking to our team.",
+      "Choose the year groups and pillars you want and see an indicative annual price straight away. Start small and add more as your school grows.",
     image: {
       src: "/images/pricing/hero.webp",
       alt: "Secondary students working together around a table with notebooks and a laptop",

@@ -43,7 +43,7 @@ export const pillarCarousel = {
       supportingLine: "Spotting problems, testing ideas and taking initiative",
       description: "Building an entrepreneurial mindset that turns ideas into action",
       exampleProject:
-        "Lightbulb Moments — turning a first idea into something they can actually show.",
+        "Lightbulb Moments – turning a first idea into something they can actually show.",
       image: {
         src: "/images/pillars/entrepreneurship.webp",
         alt: "Primary pupils building a model snack shop stall from card and paper cups",
@@ -62,7 +62,7 @@ export const pillarCarousel = {
       description:
         "Exploring how people bring others with them, make decisions and create positive change",
       exampleProject:
-        "Leadership Styles — working through real high-pressure scenarios.",
+        "Leadership Styles – working through real high-pressure scenarios.",
       image: {
         src: "/images/pillars/leadership.webp",
         alt: "A student presenting her ideas to classmates at the front of the classroom",
@@ -81,7 +81,7 @@ export const pillarCarousel = {
       description:
         "Understanding yourself, managing everyday pressures and building habits that support you",
       exampleProject:
-        "Heart and Mind — a personal journal built around real psychological tools.",
+        "Heart and Mind – a personal journal built around real psychological tools.",
       image: {
         src: "/images/pillars/wellbeing.webp",
         alt: "Young pupils identifying emotions from illustrated faces on a classroom screen",
@@ -99,7 +99,7 @@ export const pillarCarousel = {
       supportingLine: "Sleep, nutrition, focus and performing under pressure",
       description:
         "Understanding what helps you perform well and get the best from yourself",
-      exampleProject: "Work Smart — designing a system that actually works for them.",
+      exampleProject: "Work Smart – designing a system that actually works for them.",
       image: {
         src: "/images/pillars/health-performance.webp",
         alt: "Students in sports kit working together on a laptop in a school gym",
@@ -118,7 +118,7 @@ export const pillarCarousel = {
       description:
         "A broader view of the paths ahead and the different ways students might find their place within them",
       exampleProject:
-        "The Internship — a real taste of different working environments.",
+        "The Internship – a real taste of different working environments.",
       image: {
         src: "/images/pillars/careers.webp",
         alt: "A student presenting career areas on a classroom screen to her classmates",
@@ -137,7 +137,7 @@ export const pillarCarousel = {
       description:
         "Helping students understand the role money plays in everyday life and the choices that come with it",
       exampleProject:
-        "Utopian Economics — building a working budget from scratch.",
+        "Utopian Economics – building a working budget from scratch.",
       image: {
         src: "/images/pillars/financial-literacy.webp",
         alt: "A teacher leading a class discussion comparing spending and saving choices on a screen",

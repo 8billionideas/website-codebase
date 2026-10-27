@@ -12,7 +12,7 @@ import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 const qualificationItems: { Icon: LucideIcon; text: string }[] = [
   { Icon: Award, text: "An internationally recognised GCSE qualification" },
   { Icon: ClipboardCheck, text: "Clear assessment and grading framework" },
-  { Icon: GraduationCap, text: "A qualification recognised by schools & universities" },
+  { Icon: GraduationCap, text: "A qualification recognised by schools and universities" },
 ];
 
 const deliveryItems: { Icon: LucideIcon; text: string }[] = [
@@ -37,7 +37,7 @@ export default function PartnerCards() {
       />
 
       <div className="row-span-6 grid [grid-template-rows:subgrid] rounded-2xl border border-white/15 bg-white/[0.03] p-6 md:pl-6 md:pr-10 md:pt-10 md:pb-10 lg:pl-[28px] lg:pr-[28px]">
-        <OxfordAqaLogo variant="tile" width={160} className="self-start" />
+        <OxfordAqaLogo variant="dark" width={160} className="self-start" />
         <p className="text-caption uppercase tracking-[0.2em] text-white/50">
           THE QUALIFICATION
         </p>

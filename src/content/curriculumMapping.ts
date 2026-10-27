@@ -157,12 +157,12 @@ export const curriculumMapping = {
         {
           name: "Social Skills",
           definition:
-            "The ability to work well with others — increasingly cited by employers as harder to find than technical skills.",
+            "The ability to work well with others – increasingly cited by employers as harder to find than technical skills.",
           pillars: ["Wellbeing", "Leadership"],
         },
         {
           name: "Emotional Intelligence",
-          definition: "Reading and managing emotions — in yourself and others.",
+          definition: "Reading and managing emotions – in yourself and others.",
           pillars: ["Wellbeing"],
         },
         {
@@ -186,7 +186,7 @@ export const curriculumMapping = {
     },
   ] as MatrixCategory[],
   footnote: {
-    pre: "This is illustrative — every school's framework is different. ",
+    pre: "This is illustrative – every school's framework is different. ",
     linkLabel: "Get in touch",
     post: " and we'll map our pillars directly to yours.",
   },

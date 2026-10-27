@@ -6,6 +6,7 @@ import PartnerCards from "@/components/shared/PartnerCards";
 import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 import ChampionSchools from "@/components/sections/ChampionSchools";
 import Button from "@/components/ui/Button";
+import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
 
 // x-positions are percentages of content width (so they line up with the
 // left-bleed stub regardless of viewport), y-positions are exact pixels
@@ -37,8 +38,8 @@ const claims = [
 function OxfordAqaLockup() {
   return (
     <div className="text-center">
-      <OxfordAqaLogo variant="tile" width={180} className="mx-auto" />
-      {/* 16px below the tile: at least the logo's "O" height (14px at 180px) of clear space. */}
+      <OxfordAqaLogo variant="dark" width={180} className="mx-auto" />
+      {/* 16px below the logo: at least the logo's "O" height (14px at 180px) of clear space. */}
       <div className="mx-auto mt-4 mb-3 h-px w-[120px] bg-white/20" aria-hidden="true" />
       <p className="whitespace-nowrap text-[18px] font-light uppercase tracking-[0.3em] text-white">
         International GCSE
@@ -284,11 +285,10 @@ export default function QualificationSection() {
             <em className="text-accent">into a qualification</em>
           </SectionH2>
           <SectionBody variant="dark" className="mt-5">
-            At secondary level, as the official delivery partner for OxfordAQA
-            International GCSE Global Skills Projects, we support schools with
-            the learning experience around the qualification, giving students
-            the opportunity to apply and demonstrate the skills they&apos;ve
-            developed.
+            At secondary level, as the teaching and learning partner for the
+            OxfordAQA International GCSE Global Skills Projects, we help schools
+            give students the opportunity to apply and demonstrate the skills
+            they&apos;ve developed through <CriticalCurriculumName />.
           </SectionBody>
         </div>
 
@@ -330,21 +330,27 @@ export default function QualificationSection() {
           ))}
         </div>
 
-        {/* Partnership lockup */}
-        <div className="mt-16 flex flex-col items-center gap-6 text-center md:flex-row md:justify-center md:gap-10">
+        {/* Partnership lockup: both logos in 36px-high areas, vertically centred, with their captions
+            16px below, so the captions share a line; the "×" is centred on the logo row. The
+            OxfordAQA logo is at its 140px minimum, where its "AQA" box matches the wordmark's cap
+            height (smaller would make "International Qualifications" too small to read). */}
+        <div className="mt-16 flex flex-col items-center gap-6 text-center md:flex-row md:items-start md:justify-center md:gap-10">
           <div>
-            <OxfordAqaLogo variant="tile" width={160} className="mx-auto" />
-            {/* 16px below the tile: at least the logo's "O" height (13px at 160px) of clear space. */}
+            <div className="flex h-9 items-center justify-center">
+              <OxfordAqaLogo variant="dark" width={140} />
+            </div>
             <p className="mt-4 text-caption text-white/50">
               Qualification &amp; assessment expertise
             </p>
           </div>
-          <span className="text-h3 font-light text-white/30" aria-hidden="true">
+          <span className="flex h-9 items-center text-h3 font-light text-white/30" aria-hidden="true">
             ×
           </span>
           <div>
-            <p className="text-h3 font-bold text-white">8billionideas</p>
-            <p className="mt-1 text-caption text-white/50">
+            <div className="flex h-9 items-center justify-center">
+              <p className="text-h3 font-bold text-white">8billionideas</p>
+            </div>
+            <p className="mt-4 text-caption text-white/50">
               Teaching, platform &amp; school support
             </p>
           </div>

@@ -72,7 +72,7 @@ export default function Footer() {
               <Logo variant="dark" className="h-[23px] w-auto" />
             </Link>
             <p className="mt-5 max-w-[300px] text-[16px] leading-[1.6] text-white/75">
-              We give every student on the planet the skills and belief to change the world.
+              We give every student on the planet the skills, belief and values to change the world.
             </p>
             <p className="mt-5">
               <a href={`mailto:${email}`} className={`text-[15px] text-white hover:underline ${FOCUS_RING}`}>

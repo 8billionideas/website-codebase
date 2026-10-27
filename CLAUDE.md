@@ -7,7 +7,7 @@ Read this file in full at the start of every session. It holds the rules and dec
 ## Project
 
 - Marketing website for **8billionideas** (always written as one lowercase word, never "8 Billion Ideas").
-- Two products: the **Critical Curriculum** (eight pillars, Year 1 to Year 13) and the **OxfordAQA International GCSE Global Skills Projects**. 8billionideas is the official delivery partner. OxfordAQA provides the qualification.
+- Two products: **The Critical Curriculum** (eight pillars, Year 1 to Year 13) and the **OxfordAQA International GCSE Global Skills Projects**. 8billionideas is the teaching and learning partner. OxfordAQA provides the qualification.
 - Audience: school leaders, heads of department, trusts and governments. Write for teachers, not marketers.
 
 ## Repos and environments
@@ -38,10 +38,11 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 
 - **Never invent copy, statistics, quotes, dates, lesson titles or descriptions.** Use the exact wording given. If something is missing, use an empty (null) data field that renders nothing, or a clearly labelled placeholder.
 - **British English** throughout (organisation, programme, prioritise).
-- Use **en dashes (–)**, not em dashes, in any new copy we write. Keep quotes exactly as written, including the reviewer's own spelling (e.g. "8Bill").
+- Use **en dashes (–)**, not em dashes, in all visible copy (spaced: " – "). Keep quotes word for word, except that the company name inside quotes is always written "8billionideas" (Marketing, October 2026).
 - Numbers: spell out one to nine, numerals from 10 up. Ages, percentages, money and measurements are always numerals.
-- Approved headline figures: **350+ schools** and **over 1 million students**. Use these everywhere.
-- Always name **OxfordAQA** when the GCSE is mentioned.
+- Approved headline figures: **350+ schools** and **1 million+ students** as big stat numbers; in sentences, write "more than 350 schools" and "more than 1 million students".
+- Always name **OxfordAQA** when the GCSE is mentioned. On each page, the first mention is "OxfordAQA International GCSE Global Skills Projects", then "Global Skills Projects" (always plural). 8billionideas is the "teaching and learning partner" (never "official delivery partner").
+- In body text the programme is always *The Critical Curriculum* (capital T, italic), via src/components/shared/CriticalCurriculumName.tsx. Headings, pricing labels, buttons and form options are decided case by case.
 - The only email address shown on the website is hello@8billionideas.com. Never use personal email addresses.
 - The support role is the **Partnership Manager**. Never "project manager". Never promise "24/7".
 - Plain English. No marketing inflation, no unsourced industry statistics.

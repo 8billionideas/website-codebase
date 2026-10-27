@@ -76,8 +76,8 @@ export default function TrustSection() {
               // 160px at md (768–1023px), where the three columns are narrow: at 200px it ran to
               // within 5px of "1 million+", less than the clear space it needs (the "O"'s height).
               figure={<OxfordAqaLogo variant="light" width={200} className="md:max-lg:[--oxfordaqa-logo-width:160px]" />}
-              label="Official delivery partner"
-              text="Supporting schools to deliver International GCSE Global Skills Projects"
+              label="Teaching and learning partner"
+              text="Supporting schools to deliver Global Skills Projects"
             />
           </div>
 

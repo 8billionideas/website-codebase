@@ -5,7 +5,7 @@ import { gcse } from "@/content/gcse";
 // /gcse 02: "Works with the curriculum you already follow" – the curricula it sits alongside
 // and the three routes into the qualification.
 export default function CurriculumFitSection() {
-  const { eyebrow, headingLine1, headingLine2, intro, curricula, routesHeading, foundation, routes, closingLead, closingRest } =
+  const { eyebrow, headingLine1, headingLine2, intro, curricula, routesHeading, foundation, routes, closingLead, closingRest, closingNote } =
     gcse.curriculumFit;
 
   return (
@@ -71,6 +71,9 @@ export default function CurriculumFitSection() {
           <span className="font-medium text-ink">{closingLead}</span>
           <span className="text-ink/60">{closingRest}</span>
         </p>
+        {/* PROVISIONAL – wording subject to Lyndsay's confirmation. Same style as the muted part
+            of the closing line above. */}
+        <p className="mt-2 text-[17px] leading-[1.6] text-ink/60">{closingNote}</p>
       </Container>
     </section>
   );

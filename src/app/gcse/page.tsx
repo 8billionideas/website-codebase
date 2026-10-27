@@ -12,6 +12,7 @@ import ProjectThemes from "@/components/gcse/ProjectThemes";
 import QuoteBreak from "@/components/gcse/QuoteBreak";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import PlatformBand from "@/components/shared/PlatformBand";
+import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
 
 export const metadata: Metadata = {
   title: "OxfordAQA International GCSE Global Skills Projects | 8billionideas",
@@ -94,7 +95,7 @@ export default function GcsePage() {
             <em className="text-accent">{hero.headingLine2}</em>
           </h1>
           <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85">
-            {hero.subline}
+            {withCriticalCurriculum(hero.subline)}
           </p>
           <div className="mt-8">
             <RequestDemoButton />

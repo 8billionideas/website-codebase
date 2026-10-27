@@ -21,6 +21,7 @@ import { pillarCarousel, type PillarCarouselCard } from "@/content/pillarCarouse
 import { home } from "@/content/home";
 import { useLevelMode } from "@/lib/level-mode";
 import { formatLevelUpper, type LevelMode } from "@/lib/year-grade";
+import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
 
 const { bandTestimonial } = home.proof;
 
@@ -134,7 +135,7 @@ export default function PillarCarousel() {
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mx-auto mt-4 max-w-[760px] text-body-lg text-muted">{subheading}</p>
+        <p className="mx-auto mt-4 max-w-[760px] text-body-lg text-muted">{withCriticalCurriculum(subheading)}</p>
       </div>
 
       {/* Icon row (above the card) — one line always. Below lg it scrolls horizontally

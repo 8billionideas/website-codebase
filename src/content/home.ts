@@ -22,7 +22,7 @@ export const home = {
     headline: "The Critical Curriculum",
     whatIsIt: {
       heading: "What is the Critical Curriculum?",
-      body: "A week-to-week curriculum, delivered alongside what your school already teaches — no overhaul, no new systems. Every lesson comes ready to run: a lesson plan, teacher resources, a video guide, and student materials, built for FS1 through Year 13.",
+      body: "A week-to-week curriculum, delivered alongside what your school already teaches – no overhaul, no new systems. Every lesson comes ready to run: a lesson plan, teacher resources, a video guide, and student materials, built for FS1 through Year 13.",
     },
     pillarsIntro: {
       skills: [
@@ -45,10 +45,10 @@ export const home = {
 
   curriculumFit: {
     eyebrow: "FITS YOUR WORLD",
-    body: "8billionideas is designed to complement your existing curriculum, connecting with the subjects you already teach. It's flexible by design, working across British, IB, American, Indian and any other international curriculum — wherever your school is in the world.",
+    body: "8billionideas works alongside the subjects and timetable you already have, whichever curriculum you follow – British, IB, American, Indian or another international curriculum. You choose the year groups, pillars and time slots, and our Curriculum Mapping tool will help show where the lessons link to what you already teach.",
     cta: { label: "Explore curriculum mapping", href: "/curriculum-mapping" } as CtaLink,
     ctaTagline: ["SAME LEARNING.", "BRIGHTER FUTURES."],
-    imageTagline: ["DIFFERENT", "CURRICULUMS.", "A BRIGHTER", "TOMORROW."],
+    imageTagline: ["DIFFERENT", "CURRICULA.", "A BRIGHTER", "TOMORROW."],
     worksAcrossLabel: ["WORKS ACROSS", "CURRICULUMS"],
     curriculums: ["BRITISH", "IB", "AMERICAN", "INDIAN", "INTERNATIONAL", "AND MORE"],
   },
@@ -58,7 +58,7 @@ export const home = {
     leadItem: {
       name: "One system, not six separate providers",
       description:
-        "Most providers solve one piece — careers, or wellbeing, or enterprise. We bring curriculum, qualifications, careers, entrepreneurship, work experience, teacher development and impact measurement into eight pillars — worked with 350+ schools for live events with over 1 million students in attendance.",
+        "Most providers solve one piece – careers, or wellbeing, or enterprise. We bring curriculum, qualifications, careers, entrepreneurship, work experience, teacher development and impact measurement into eight pillars – worked with more than 350 schools for live events with more than 1 million students in attendance.",
     } as NamedItem,
     items: [
       {
@@ -73,12 +73,12 @@ export const home = {
       {
         name: "Adaptable",
         description:
-          "Courses, timelines, live days, CPD — shaped around how your school actually works, not a fixed package.",
+          "Courses, timelines, live days, CPD – shaped around how your school actually works, not a fixed package.",
       },
       {
         name: "Support",
         description:
-          "Every school gets a dedicated partnership manager — a real point of contact who supports your rollout from day one, not just a name on a welcome email.",
+          "Every school gets a dedicated partnership manager – a real point of contact who supports your rollout from day one, not just a name on a welcome email.",
       },
     ] as NamedItem[],
 
@@ -93,14 +93,14 @@ export const home = {
       },
       {
         quote:
-          "8BillionIdeas provides an engaging and inspiring experience that encourages students to think creatively and turn their ideas into meaningful solutions. Teachers have a tool through which students develop skills such as problem-solving, teamwork, communication, and innovation in a practical and enjoyable way. What stands out most is the focus on empowering young people to believe in their own potential. The programme reflects the idea that everyone has valuable ideas and can make a positive impact when given the confidence and tools to do so. It encourages students to take ownership of their learning, think beyond the classroom, and approach challenges with creativity and resilience.",
+          "8billionideas provides an engaging and inspiring experience that encourages students to think creatively and turn their ideas into meaningful solutions. Teachers have a tool through which students develop skills such as problem-solving, teamwork, communication, and innovation in a practical and enjoyable way. What stands out most is the focus on empowering young people to believe in their own potential. The programme reflects the idea that everyone has valuable ideas and can make a positive impact when given the confidence and tools to do so. It encourages students to take ownership of their learning, think beyond the classroom, and approach challenges with creativity and resilience.",
         name: "Fatema Kashief",
         role: "Teaching and Learning Lead, Pristine Private School",
         sourceUrl: "https://www.trustpilot.com/reviews/6a2fe5f97cdf5236789c8c33",
       },
       {
         quote:
-          "8Bill are a truly inspiring, innovative and unique curriculum partner who I would recommend to any school looking to up their schools educational and engagement levels. There's no other company designing and delivering such 21st century relevant, digital first content than 8Billionideas and I would always encourage school leaders to contact them to see how they can help your school reach its maximum potential ✅",
+          "8billionideas are a truly inspiring, innovative and unique curriculum partner who I would recommend to any school looking to up their schools educational and engagement levels. There's no other company designing and delivering such 21st century relevant, digital first content than 8billionideas and I would always encourage school leaders to contact them to see how they can help your school reach its maximum potential ✅",
         name: "Andrew Elias",
         role: "Director of Marketing & Communications, Chatsworth Schools",
         sourceUrl: "https://www.trustpilot.com/reviews/6890ba1eccbe471e8a1dcf6e",
@@ -126,21 +126,21 @@ export const home = {
     aboutOnlyTestimonials: [
       {
         quote:
-          "We have been an 8 Billion Ideas Partner School for over five years. 8Bill has energised our enterprise work and helped us broaden its scope to our Prep/ Primary School as well as our Senior School. Parents love our week-long Prep School summer enterprise projects with content delivered by 8Bill, culminating in our children presenting to their peers and parents.",
+          "We have been an 8billionideas Partner School for over five years. 8billionideas has energised our enterprise work and helped us broaden its scope to our Prep/ Primary School as well as our Senior School. Parents love our week-long Prep School summer enterprise projects with content delivered by 8billionideas, culminating in our children presenting to their peers and parents.",
         name: "Silas Edmonds",
         role: "Principal, Ewell Castle School",
         sourceUrl: null,
       },
       {
         quote:
-          "The team of 8Billionideas have been a brilliant addition to our programme at an international school in Germany. We have worked with them in purely online, purely in person and in hybrid mode. Throughout this experience they have been responsive, friendly, personable, approachable and able to help us work out what packages work for us. They have been so flexible and understanding also and maintain regular contact with us. Their workshop leaders are engaging, energetic, passionate people who bring much to enhance the delivery. We have really enjoyed with them in flagship enrichment events and also our careers programmes. Highly recommended.",
+          "The team of 8billionideas have been a brilliant addition to our programme at an international school in Germany. We have worked with them in purely online, purely in person and in hybrid mode. Throughout this experience they have been responsive, friendly, personable, approachable and able to help us work out what packages work for us. They have been so flexible and understanding also and maintain regular contact with us. Their workshop leaders are engaging, energetic, passionate people who bring much to enhance the delivery. We have really enjoyed with them in flagship enrichment events and also our careers programmes. Highly recommended.",
         name: "Tom Penny",
         role: "Assistant Principal, International School of Stuttgart",
         sourceUrl: null,
       },
       {
         quote:
-          "8Billionideas offer something to schools that no other company does. Additionally their staff are professional and knowledgeable. Our students were totally engaged in their project for the days 8Billionideas were with us and really proud of their achievement. 8Billionideas support schools in bringing life skills for the future into the wider curriculum; entrepreneurship, collaboration, problem-solving, creativity - time with 8Billionideas brings all of this to students.",
+          "8billionideas offer something to schools that no other company does. Additionally their staff are professional and knowledgeable. Our students were totally engaged in their project for the days 8billionideas were with us and really proud of their achievement. 8billionideas support schools in bringing life skills for the future into the wider curriculum; entrepreneurship, collaboration, problem-solving, creativity - time with 8billionideas brings all of this to students.",
         name: "Adele O'Doherty",
         role: "Principal, EEP",
         sourceUrl: null,
@@ -148,13 +148,14 @@ export const home = {
     ] as Testimonial[],
 
     // Kept out of `testimonials` so it doesn't also appear in the /case-studies carousel.
+    // Interim quote; Marketing to confirm a replacement before launch.
     bandTestimonial: {
       quote:
-        "Their focus on creative and strategic thinking, collaboration, innovation, technology and financial literacy are all essential skills which give our pupils the competitive edge in today's world.",
+        "Teachers have a tool through which students develop skills such as problem-solving, teamwork, communication, and innovation in a practical and enjoyable way.",
       excerpt:
-        "Their focus on creative and strategic thinking, collaboration, innovation, technology and financial literacy are all essential skills which give our pupils the competitive edge in today's world.",
-      name: "Ann Haydon",
-      role: "Headmistress, Harrow International School Hong Kong",
+        "Teachers have a tool through which students develop skills such as problem-solving, teamwork, communication, and innovation in a practical and enjoyable way.",
+      name: "Fatema Kashief",
+      role: "Teaching and Learning Lead, Pristine Private School",
       sourceUrl: null,
     } as Testimonial,
   },
@@ -165,27 +166,27 @@ export const home = {
       {
         question: "How do I know I can trust 8billionideas?",
         answer:
-          "We work with 350+ schools in 25+ countries, and over 1 million students have used our courses. We're also the official partner for the OxfordAQA International GCSE.",
+          "We work with more than 350 schools in 25+ countries, and more than 1 million students have used our courses. We're also the teaching and learning partner for the OxfordAQA International GCSE Global Skills Projects.",
       },
       {
         question: "Is this actually a problem for my school?",
         answer:
-          "Employers want more than good grades — they want communication, adaptability, problem-solving. Universities look beyond grades too. And parents are already asking what you're doing to prepare kids for life after exams.",
+          "Employers want more than good grades – they want communication, adaptability, problem-solving. Universities look beyond grades too. And parents are already asking what you're doing to prepare kids for life after exams.",
       },
       {
         question: "Why do other providers feel so messy?",
         answer:
-          "Most schools end up juggling separate providers for careers, wellbeing, enterprise — none of them talk to each other. It eats into the timetable, costs more, and your staff end up holding it all together.",
+          "Most schools end up juggling separate providers for careers, wellbeing, enterprise – none of them talk to each other. It eats into the timetable, costs more, and your staff end up holding it all together.",
       },
       {
         question: "What makes 8billionideas different?",
         answer:
-          "One system, not six. Curriculum, careers, qualifications, and teacher training all in one place — eight subject areas, plus a real GCSE at the end of it.",
+          "One system, not six. Curriculum, careers, qualifications, and teacher training all in one place – eight subject areas, plus a real GCSE at the end of it.",
       },
       {
         question: "Will this still be running in a year, or fizzle out?",
         answer:
-          "It's built to fit into what you're already doing — tutor time, PSHE, whatever works. It doesn't rely on one keen teacher to keep it alive. Start with one year group, expand when you're ready.",
+          "It's built to fit into what you're already doing – tutor time, PSHE, whatever works. It doesn't rely on one keen teacher to keep it alive. Start with one year group, expand when you're ready.",
       },
       {
         question: "How do I justify this to governors or parents?",

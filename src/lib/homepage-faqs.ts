@@ -46,9 +46,9 @@ export const homepageFaqs: HomepageFaq[] = [
     link: { label: "Explore our pricing →", href: "/pricing" },
   },
   {
-    question: "Can schools following any curriculum offer the Global Skills GCSE?",
+    question: "Can schools following any curriculum offer the International GCSE Global Skills Projects?",
     paragraphs: [
-      "Yes. The International GCSE Global Skills Project isn't limited to schools following a British or OxfordAQA curriculum. Schools following IB, American, Cambridge, Pearson and other international curricula can offer the qualification too. If your school isn't currently an OxfordAQA centre, that doesn't prevent you from getting started. 8billionideas will support you through the registration process, and OxfordAQA is currently waiving the usual centre registration fee for schools introducing the qualification.",
+      "Yes. The Global Skills Projects qualification isn't limited to schools following a British or OxfordAQA curriculum. Schools following IB, American, Cambridge, Pearson and other international curricula can offer the qualification too. If your school isn't currently an OxfordAQA centre, that doesn't prevent you from getting started. 8billionideas will support you through the registration process, and OxfordAQA is currently waiving the usual centre registration fee for schools introducing the qualification.",
     ],
   },
 ];

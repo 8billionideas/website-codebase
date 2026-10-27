@@ -19,15 +19,15 @@ export interface GcseFeaturedQuote {
 // PLACEHOLDER quote: replace with an approved quote and attribution before launch, or set SHOW_GCSE_QUOTE to false.
 // When false, section 05 (the quote break) isn't rendered and the thin divider between
 // "Ready to deliver" and the platform section returns.
-export const SHOW_GCSE_QUOTE = true;
+export const SHOW_GCSE_QUOTE = false;
 
 export const gcse = {
   hero: {
     eyebrow: "OXFORDAQA INTERNATIONAL GCSE GLOBAL SKILLS PROJECTS",
-    headingLine1: "Turn real-world learning into",
+    headingLine1: "Turn future skills into",
     headingLine2: "a recognised qualification",
     subline:
-      "Give your students the opportunity to work towards an International GCSE through practical projects that explore real-world topics and challenges. Developed by OxfordAQA and supported by 8billionideas as its teaching and learning partner, the qualification comes with a structured learning experience, ready-to-teach resources and a dedicated platform to help your school deliver it.",
+      "Students earn an International GCSE through two practical projects on topics such as sustainability, technology and entrepreneurship. OxfordAQA develops and awards the qualification. As its teaching and learning partner, 8billionideas provides the structured lessons, resources and platform to deliver it – building on the skills students develop through The Critical Curriculum.",
     // Set to a date string (e.g. "September 2027") to show a small pill
     // above the H1. Leave null to render nothing.
     launchDate: null as string | null,
@@ -70,6 +70,8 @@ export const gcse = {
     ],
     closingLead: "However your school is structured,",
     closingRest: " we'll help you work out where the qualification fits best.",
+    // PROVISIONAL – wording subject to Lyndsay's confirmation.
+    closingNote: "Students can start from Year 7, so the qualification doesn't have to add to the pressure of Years 10 and 11.",
   },
 
   // 03: how the qualification is assessed.
@@ -78,7 +80,7 @@ export const gcse = {
     headingLine1: "Students demonstrate their learning",
     headingLine2: "through independent and group projects",
     intro:
-      "The OxfordAQA International GCSE Global Skills Projects qualification is assessed through two projects rather than a traditional written exam. Students explore real-world topics, research their ideas, work independently and collaboratively, and demonstrate what they've learned through practical work.",
+      "The Global Skills Projects qualification is assessed through two projects rather than a traditional written exam. Students explore real-world topics, research their ideas, work independently and collaboratively, and demonstrate what they've learned through practical work.",
     projects: [
       {
         label: "INDIVIDUAL PROJECT",
@@ -253,7 +255,7 @@ export const gcse = {
     intro:
       "Students can explore a wide range of real-world topics, from sustainability and technology to entrepreneurship and wellbeing. These themes offer inspiration for students to develop their own questions, investigate issues that interest them and shape their projects.",
     individual: {
-      eyebrow: "INDIVIDUAL PROJECT · 60%",
+      eyebrow: "YEAR 1 · 60%",
       title: "Individual Project",
       line: "Students choose a topic that interests them and develop their own research question to investigate.",
       questionHeading: "Explore an example research question",
@@ -265,8 +267,8 @@ export const gcse = {
       },
     },
     group: {
-      eyebrow: "GROUP PROJECT · 40%",
-      title: "Group Sustainability Action Project",
+      eyebrow: "YEAR 2 · 40%",
+      title: "Group Project",
       line: "Students work together on a shared sustainability challenge, using the UN Sustainable Development Goals to help shape their project.",
       focusLabel: "PROJECT FOCUS",
       focus: "A collaborative project based on a real-world sustainability issue.",

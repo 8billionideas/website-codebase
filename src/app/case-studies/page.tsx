@@ -59,10 +59,10 @@ export default function CaseStudiesPage() {
         />
         <Container className="relative z-10 w-full py-16 md:py-20">
           <Eyebrow variant="light">CASE STUDIES</Eyebrow>
-          <h1 className="mt-4 max-w-[620px] text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-            See how schools are
+          <h1 className="mt-4 max-w-[620px] text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+            See how schools are bringing
             <br />
-            <em className="text-accent">bringing it to life</em>
+            <em className="text-accent">future skills to life</em>
           </h1>
           <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-ink/75">
             From single programmes to whole-school partnerships, here&apos;s how

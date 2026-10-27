@@ -3,6 +3,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { home } from "@/content/home";
 import DemoTrigger from "@/components/demo/DemoTrigger";
+import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
 
 export default function Hero() {
   const { headlineLine1, headlineLine2, subhead } = home.hero;
@@ -48,7 +49,7 @@ export default function Hero() {
         </h1>
         {/* 560px from xl keeps the line ends over the dark part of the fade (at 620px they reached
             the brighter photo, dropping contrast to ~2.7:1). */}
-        <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85 xl:max-w-[560px]">{subhead}</p>
+        <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-white/85 xl:max-w-[560px]">{withCriticalCurriculum(subhead)}</p>
         <div className="mt-8">
           <DemoTrigger appearance="button" className="w-full md:w-auto">
             Request a demo
