@@ -1,13 +1,15 @@
 import Image from "next/image";
 
-// /contact hero: the team photo as a background, multiplied into the paper, with a paper
-// fade at the bottom (so it flows into the form) and a soft paper glow behind the centred text.
+// /contact hero: the workspace photo (hero-v2, 2172×724) as a background, multiplied into the
+// paper (its white fades become paper), with a paper fade at the bottom (so it flows into the form)
+// and a soft paper glow behind the centred text. The people sit at the left and right edges; the
+// bright, open middle is behind the text. The earlier hero image is kept.
 export default function ContactHero() {
   return (
     <section className="relative isolate overflow-hidden bg-paper">
       <Image
-        src="/images/contact/hero.webp"
-        alt="Members of the 8billionideas team smiling and working together in the office"
+        src="/images/contact/hero-v2.webp"
+        alt="People working at laptops around a long table in a bright, plant-filled office"
         fill
         preload
         sizes="100vw"

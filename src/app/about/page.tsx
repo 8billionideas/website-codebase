@@ -13,9 +13,10 @@ export const metadata: Metadata = {
 };
 
 
+// hero-v2 (1942×809, soft focus, already faded to white on the left). The earlier hero is kept.
 const HERO_IMAGE = {
-  src: "/images/about/hero.webp",
-  alt: "Members of the 8billionideas team talking and laughing together around a table",
+  src: "/images/about/hero-v2.webp",
+  alt: "Colleagues smiling and working together around a table in a bright, plant-filled office",
 };
 
 const WHY_WE_CARE_COLUMNS = [
@@ -56,15 +57,15 @@ export default function AboutPage() {
     <>
       {/* 1. Hero */}
       <section className="relative isolate overflow-hidden bg-paper xl:flex xl:min-h-[560px] xl:items-center">
-        {/* Desktop: the photo sits in a right-hand box rather than full-bleed cover, so all four
-            people stay clear of the text; its cut edges fade into the paper. */}
+        {/* Desktop: the photo full width, sized by the width (not the hero's height, which would
+            push the people left under the text at 1280px), right centre, multiplied into the paper.
+            It's already faded to white on the left, where the text sits, and the paper gradient
+            below softens it further; soft top and bottom fades hide its edges where it's shorter
+            than the hero. */}
         <div
-          className="absolute top-1/2 right-0 hidden aspect-[1923/818] w-[64%] -translate-y-1/2 mix-blend-multiply xl:block"
+          className="absolute inset-x-0 top-1/2 hidden aspect-[1942/809] w-full -translate-y-1/2 mix-blend-multiply xl:block"
           style={{
-            maskImage:
-              "linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%), linear-gradient(to right, transparent 0%, black 12%)",
-            maskComposite: "intersect",
-            WebkitMaskComposite: "source-in",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)",
           }}
         >
           <Image
@@ -72,9 +73,9 @@ export default function AboutPage() {
             alt={HERO_IMAGE.alt}
             fill
             preload
-            sizes="64vw"
+            sizes="100vw"
             quality={85}
-            className="object-cover object-right"
+            className="object-cover object-[right_center]"
           />
         </div>
         <div
