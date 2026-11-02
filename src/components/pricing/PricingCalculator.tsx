@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
-import { BookOpen, GraduationCap, Minus, Plus, type LucideIcon } from "lucide-react";
+import { BookOpen, GraduationCap, Minus, Plus, Tag, type LucideIcon } from "lucide-react";
 import {
   YEAR_GROUPS_MIN,
   YEAR_GROUPS_MAX,
@@ -261,6 +261,45 @@ function DiscountProgress({
   );
 }
 
+// Under each product's headline price: what was chosen, the full price (struck through) and the
+// price paid, then the saving in accent green (#21D199 on the ink panel: 8.07:1, passes AA).
+// The full price and the saving only show when there is a saving.
+function PanelPriceLines({ summary, full, price, saving }: { summary: string; full: number; price: number; saving: number }) {
+  return (
+    <div className="mt-6 space-y-1.5 text-[16px]">
+      <p className="text-white/80">{summary}</p>
+      {saving > 0 && (
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="text-white/80">Full price</span>
+          {/* line-through on the number itself: it doesn't carry into an inline-block. */}
+          <s className="text-white/50">
+            <FadeOnChange value={formatMoney(full)} className="line-through" />
+          </s>
+        </div>
+      )}
+      <div className="flex items-baseline justify-between gap-4">
+        <span className="text-white/80">Your price</span>
+        <span className="text-white">
+          <FadeOnChange value={formatMoney(price)} /> / year
+        </span>
+      </div>
+      {saving > 0 && <SavingLine label="You save" amount={formatMoney(saving)} />}
+    </div>
+  );
+}
+
+// A bright-green saving line with a tag icon: "You save £165", "Total saving: £180".
+function SavingLine({ label, amount, bold = false }: { label: string; amount: string; bold?: boolean }) {
+  return (
+    <p className={`flex items-center gap-2 pt-1 text-[18px] text-accent ${bold ? "font-semibold" : "font-medium"}`}>
+      <Tag className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+      <span>
+        {label} <FadeOnChange value={amount} />
+      </span>
+    </p>
+  );
+}
+
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 
 // CC: to scale, 1–78 units (shown as programmes), markers where each lower rate starts (10th, 25th, 49th).
@@ -309,6 +348,10 @@ export default function PricingCalculator() {
   const ccNext = cc ? ccNextBand(cc.units) : null;
   const gcseNext = gcse ? gcseNextBand(gcse.students) : null;
   const crossHint = showCC && showGcse ? crossProductHint(students) : null;
+  // Every saving line shown in the panel; the total shows for Both, or with more than one line.
+  const savings = [cc?.saving ?? 0, gcse?.saving ?? 0, quote.crossProduct.applied].filter((v) => v > 0);
+  const totalSaving = savings.reduce((sum, v) => sum + v, 0);
+  const showTotalSaving = totalSaving > 0 && (product === "both" || savings.length > 1);
   const ccHelpId = `${radioGroupName}-cc-help`;
   const gcseHelpId = `${radioGroupName}-gcse-help`;
 
@@ -544,20 +587,12 @@ export default function PricingCalculator() {
                 <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
               </p>
 
-              <div className="mt-6 flex items-baseline justify-between gap-4 text-[16px]">
-                <span className="text-white/80">{plural(cc.units, "programme", "programmes")}</span>
-                <span className="text-right">
-                  {cc.saving > 0 && (
-                    <>
-                      <s className="mr-2 text-white/50">
-                        <span className="sr-only">Full price </span>
-                        {formatMoney(cc.list)}
-                      </s>
-                    </>
-                  )}
-                  {formatMoney(cc.charge)} / year
-                </span>
-              </div>
+              <PanelPriceLines
+                summary={plural(cc.units, "programme", "programmes")}
+                full={cc.list}
+                price={cc.charge}
+                saving={cc.saving}
+              />
             </div>
           )}
 
@@ -587,24 +622,27 @@ export default function PricingCalculator() {
                 <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
               </p>
 
-              <div className="mt-6 flex items-baseline justify-between gap-4 text-[16px]">
-                <span className="text-white/80">
-                  {plural(gcse.students, "student", "students")} × {formatMoney(gcse.rate)}
-                </span>
-                <span>{formatMoney(gcse.fee)} / year</span>
-              </div>
+              <PanelPriceLines
+                summary={`${plural(gcse.students, "student", "students")} × ${formatMoney(gcse.rate)}`}
+                full={gcse.full}
+                price={gcse.fee}
+                saving={gcse.saving}
+              />
             </div>
           )}
 
           {cc && gcse && quote.crossProduct.applied > 0 && (
-            <div className="mt-6 border-t border-white/15 pt-5 text-[16px]">
-              <div className="flex items-baseline justify-between gap-4">
-                <span className="text-white/80">Discount for choosing both</span>
-                <span className="text-accent">−{formatMoney(quote.crossProduct.applied)}</span>
-              </div>
+            <div className="mt-6 border-t border-white/15 pt-4">
+              <SavingLine label="Discount for choosing both:" amount={`−${formatMoney(quote.crossProduct.applied)}`} />
               <p className="mt-1 text-[13px] leading-[1.5] text-white/60">
                 Applied once your GCSE students are confirmed.
               </p>
+            </div>
+          )}
+
+          {showTotalSaving && (
+            <div className="mt-6 border-t border-white/15 pt-4">
+              <SavingLine label="Total saving:" amount={formatMoney(totalSaving)} bold />
             </div>
           )}
 

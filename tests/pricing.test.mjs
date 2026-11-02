@@ -23,6 +23,7 @@ import {
   addOnCredits,
   creditAllowance,
   priceCc,
+  priceGcse,
 } from "../src/lib/pricing.ts";
 
 const gbp = (amount) => Math.round(amount * 100);
@@ -71,6 +72,12 @@ test("GCSE fee: one rate for the whole cohort (cliffs are intentional)", () => {
   assert.equal(gcseFee(200), gbp(8000));
   assert.equal(gcseRate(150), gbp(50));
   assert.equal(gcseRate(151), gbp(45));
+});
+
+test("GCSE full price (every student at £105) and saving", () => {
+  assert.deepEqual([priceGcse(50).full, priceGcse(50).fee, priceGcse(50).saving], [gbp(5250), gbp(4250), gbp(1000)]);
+  assert.equal(priceGcse(20).saving, 0);
+  assert.equal(priceGcse(200).saving, gbp(13000));
 });
 
 test("GCSE next band", () => {

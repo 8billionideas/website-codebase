@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent, type ReactNode } from "react";
-import { ArrowLeft, Check, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Check, Minus, Plus, Tag } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import Button from "@/components/ui/Button";
 import { HUBSPOT_QUOTE_FORM_ID, isQuoteFormConfigured, submitHubspotForm } from "@/lib/hubspot";
@@ -10,7 +10,6 @@ import {
   ADD_ON_QUANTITY_MIN,
   LIVE_EXPERIENCE_GROUPS,
   QUOTE_ADD_ONS,
-  CC_LIST_RATE,
   PRICING_ESTIMATE_NOTE,
   addOnCost,
   formatMoney,
@@ -339,7 +338,34 @@ function AddOnCard({
   );
 }
 
-function SummaryCard({ title, rows, total }: { title: string; rows: [string, ReactNode][]; total: number }) {
+// A bright-green saving pill, matching the price panel's saving lines. Ink text on the accent
+// green (8.07:1), as accent-green text on white would fail AA.
+function SavingPill({ children, bold = false }: { children: ReactNode; bold?: boolean }) {
+  return (
+    <p
+      className={`inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-[15px] leading-[1.4] text-ink ${bold ? "font-semibold" : "font-medium"}`}
+    >
+      <Tag className="h-4 w-4 shrink-0" strokeWidth={1.5} aria-hidden="true" />
+      {children}
+    </p>
+  );
+}
+
+// One product: its detail rows, then (as in the price panel) the full price struck through and
+// the saving, both only when there is a saving, and the price paid.
+function SummaryCard({
+  title,
+  rows,
+  full,
+  total,
+  saving,
+}: {
+  title: string;
+  rows: [string, ReactNode][];
+  full: number;
+  total: number;
+  saving: number;
+}) {
   return (
     <div className="rounded-xl border border-ink/10 bg-white p-5">
       <h3 className="text-[17px] font-medium leading-[1.3] text-ink">{title}</h3>
@@ -350,11 +376,24 @@ function SummaryCard({ title, rows, total }: { title: string; rows: [string, Rea
             <dd className="text-right text-ink">{value}</dd>
           </div>
         ))}
+        {saving > 0 && (
+          <div className="flex items-baseline justify-between gap-4">
+            <dt className="text-ink/65">Full price</dt>
+            <dd className="text-right">
+              <s className="text-ink/45">{formatMoney(full)}</s>
+            </dd>
+          </div>
+        )}
         <div className="flex items-baseline justify-between gap-4 border-t border-ink/10 pt-2">
           <dt className="font-medium text-ink">Your price</dt>
           <dd className="font-medium text-ink">{formatMoney(total)} / year</dd>
         </div>
       </dl>
+      {saving > 0 && (
+        <div className="mt-3">
+          <SavingPill>You save {formatMoney(saving)}</SavingPill>
+        </div>
+      )}
     </div>
   );
 }
@@ -652,6 +691,12 @@ export default function QuoteRequestModal({
     );
   }
 
+  // As in the price panel: every saving shown (the discount for choosing both only when it
+  // applies); the total shows for Both, or with more than one saving.
+  const savings = [q.cc?.saving ?? 0, q.gcse?.saving ?? 0, q.crossProduct.applied].filter((v) => v > 0);
+  const totalSaving = savings.reduce((sum, v) => sum + v, 0);
+  const showTotalSaving = totalSaving > 0 && (selection.product === "Both" || savings.length > 1);
+
   const summaryCards: ReactNode = (
     <div className="space-y-3">
       {q.cc && (
@@ -659,20 +704,10 @@ export default function QuoteRequestModal({
           title="Critical Curriculum"
           rows={[
             ["Year groups × pillars", `${q.cc.yearGroups} × ${q.cc.pillars} = ${plural(q.cc.units, "programme", "programmes")}`],
-            [
-              `Full price (${formatMoney(CC_LIST_RATE)} per programme)`,
-              q.cc.saving > 0 ? (
-                <s className="text-ink/45">
-                  <span className="sr-only">Full price </span>
-                  {formatMoney(q.cc.list)}
-                </s>
-              ) : (
-                formatMoney(q.cc.list)
-              ),
-            ],
-            ...(q.cc.saving > 0 ? [["Your saving", `−${formatMoney(q.cc.saving)}`] as [string, ReactNode]] : []),
           ]}
+          full={q.cc.list}
           total={q.cc.charge}
+          saving={q.cc.saving}
         />
       )}
       {q.gcse && (
@@ -682,18 +717,31 @@ export default function QuoteRequestModal({
             ["Students", q.gcse.students.toLocaleString("en-GB")],
             [`Price for ${q.gcse.band} students`, `${formatMoney(q.gcse.rate)} per student`],
           ]}
+          full={q.gcse.full}
           total={q.gcse.fee}
+          saving={q.gcse.saving}
         />
       )}
       {q.crossProduct.earned > 0 && (
         <div className="rounded-xl border border-ink/10 bg-white p-5 text-[15px] leading-[1.4]">
-          <div className="flex items-baseline justify-between gap-4">
-            <span className="font-medium text-ink">{BOTH_DISCOUNT}</span>
-            <BenefitAmount amount={q.crossProduct.earned} dropped={q.crossProduct.dropped} />
-          </div>
-          <p className="mt-1 text-[13px] leading-[1.5] text-ink/60">
+          {q.crossProduct.dropped ? (
+            <div className="flex items-baseline justify-between gap-4">
+              <span className="font-medium text-ink">{BOTH_DISCOUNT}</span>
+              <BenefitAmount amount={q.crossProduct.earned} dropped />
+            </div>
+          ) : (
+            <SavingPill>
+              {BOTH_DISCOUNT}: −{formatMoney(q.crossProduct.applied)}
+            </SavingPill>
+          )}
+          <p className="mt-1.5 text-[13px] leading-[1.5] text-ink/60">
             {q.crossProduct.dropped ? ONLY_ONE_BENEFIT : BOTH_DISCOUNT_NOTE}
           </p>
+        </div>
+      )}
+      {showTotalSaving && (
+        <div className="pt-1">
+          <SavingPill bold>Total saving: {formatMoney(totalSaving)}</SavingPill>
         </div>
       )}
     </div>

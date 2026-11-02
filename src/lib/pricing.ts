@@ -134,11 +134,15 @@ export interface GcsePrice {
   rate: number;
   fee: number;
   band: string; // "26–50"
+  full: number; // every student at the top rate (£105), for showing the saving
+  saving: number; // full − fee
 }
 
 export function priceGcse(students: number): GcsePrice {
   const band = gcseBand(students);
-  return { students, rate: band.rate, fee: students * band.rate, band: gcseBandLabel(band) };
+  const fee = students * band.rate;
+  const full = students * GCSE_BANDS[0].rate;
+  return { students, rate: band.rate, fee, band: gcseBandLabel(band), full, saving: full - fee };
 }
 
 // ── Cross-product benefit (X) ───────────────────────────────────────────────────────────────
