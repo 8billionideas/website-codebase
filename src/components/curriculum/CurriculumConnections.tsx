@@ -20,10 +20,12 @@ const DEFAULT_MAPPING_STAGE: StageKey = "primary";
 const tabId = (subject: Subject) => `curriculum-connections-tab-${subject.id}`;
 
 // Every subject/stage pair is rendered in the same grid cell with only the selected one
-// visible, so the area is always as tall as the tallest example and the page never jumps.
-// Hidden ones are inert; the visible one cross-fades in.
+// visible. Hidden ones are inert and take no height (so there's no empty space under a short
+// example; the content below can move a little when switching); the visible one cross-fades in.
 const STACKED = "[grid-area:1/1] transition-[opacity,visibility] duration-200 motion-reduce:transition-none";
-const stackState = (active: boolean) => (active ? "opacity-100" : "invisible opacity-0");
+// Hidden panels take no height, so the box fits the one on show (the tallest used to leave empty
+// space below shorter panels, above the footnote).
+const stackState = (active: boolean) => (active ? "opacity-100" : "invisible h-0 overflow-hidden opacity-0");
 
 const isUnconfirmed = (stage: Stage) => !SHOW_UNCONFIRMED_EXAMPLES && stage.status !== "confirmed";
 

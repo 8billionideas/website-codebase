@@ -5,8 +5,19 @@ import { home } from "@/content/home";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
 
+// Splits a heading line after its first n words (for the desktop-only line breaks).
+function splitAfter(text: string, n: number): [string, string] {
+  const words = text.split(" ");
+  return [words.slice(0, n).join(" "), words.slice(n).join(" ")];
+}
+
 export default function Hero() {
   const { headlineLine1, headlineLine2, subhead } = home.hero;
+  // From xl (1280px) the heading sits on three balanced lines: "Working alongside" / "schools to
+  // shape the" / "future of learning", the green italic starting at "shape". Below xl it keeps its
+  // two-part break and wraps naturally.
+  const [line1Start, line1End] = splitAfter(headlineLine1, 2);
+  const [line2Start, line2End] = splitAfter(headlineLine2, 2);
 
   return (
     <section className="relative flex min-h-[560px] items-center overflow-hidden md:min-h-[640px]">
@@ -43,9 +54,13 @@ export default function Hero() {
       />
       <Container className="relative z-10 w-full py-16 text-left md:py-20">
         <h1 className="max-w-[620px] text-display font-light text-white text-balance">
-          {headlineLine1}
-          <br />
-          <em className="text-accent">{headlineLine2}</em>
+          {line1Start}
+          <br className="hidden xl:inline" /> {line1End}
+          <br className="xl:hidden" />{" "}
+          <em className="text-accent">
+            {line2Start}
+            <br className="hidden xl:inline" /> {line2End}
+          </em>
         </h1>
         {/* 560px from xl keeps the line ends over the dark part of the fade (at 620px they reached
             the brighter photo, dropping contrast to ~2.7:1). */}

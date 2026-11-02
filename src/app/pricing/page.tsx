@@ -52,7 +52,7 @@ export default function PricingPage() {
         </Container>
       </section>
 
-      <Container className="pb-16 md:pb-24">
+      <Container className="pb-22 md:pb-32">
         {/* Combined pricing calculator */}
         <PricingCalculator />
       </Container>

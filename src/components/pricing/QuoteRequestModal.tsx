@@ -10,18 +10,21 @@ import {
   ADD_ON_QUANTITY_MIN,
   LIVE_EXPERIENCE_GROUPS,
   QUOTE_ADD_ONS,
+  CC_LIST_RATE,
+  PRICING_EXCLUSIONS,
   addOnCost,
-  addOnLineLabel,
-  addOnSummary,
-  addOnsTotal,
   formatMoney,
   getAddOn,
   getLiveGroup,
-  quoteTotal,
+  poundsValue,
+  CREDIT_CAP_PERCENT,
+  priceQuote,
+  quoteBreakdownLines,
   type AddOnId,
   type AddOnOptions,
   type LiveGroupId,
   type QuoteAddOn,
+  type QuoteBreakdown,
   type SelectedAddOn,
 } from "@/lib/pricing";
 import { markFormSubmitted } from "@/lib/newsletter-popup";
@@ -29,7 +32,7 @@ import { trackEvent } from "@/lib/analytics";
 
 // Quote requests are submitted to the HubSpot Contact form (see HUBSPOT_QUOTE_FORM_ID).
 // All fields are contact properties ("0-1/…"). Prices, totals and counts are sent as plain
-// numbers (e.g. "720"); quote_addons is the ticked add-on titles separated by semicolons
+// numbers of pounds (e.g. "1167.5"); quote_addons is the ticked add-on titles separated by semicolons
 // (HubSpot's multi-checkbox format), so its option values must match the titles exactly.
 const HUBSPOT_FIELDS = {
   firstname: "0-1/firstname",
@@ -88,11 +91,11 @@ const HELP_TOPIC_VALUES: Record<QuoteSelection["product"], string> = {
 const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
 // A snapshot of the calculator when "Request a tailored quote" was clicked. Only the parts
-// for the chosen product are set.
+// for the chosen product are set; every price comes from priceQuote() in src/lib/pricing.ts.
 export interface QuoteSelection {
   product: "Critical Curriculum" | "International GCSE" | "Both";
-  cc?: { yearGroups: number; pillars: number; perYearGroup: number; total: number };
-  gcse?: { students: number; fee: number; total: number };
+  cc?: { yearGroups: number; pillars: number };
+  gcse?: { students: number };
 }
 
 type FieldName = "firstname" | "lastname" | "company" | "jobtitle" | "email";
@@ -136,40 +139,37 @@ function productLabel(selection: QuoteSelection) {
   return selection.product === "Both" ? "Critical Curriculum and International GCSE" : selection.product;
 }
 
-// "Critical Curriculum · 3 year groups · 6 pillars · 2 add-ons · Estimated total £3,595"
+// "Critical Curriculum · 24 units · 20 students · 1 add-on · Year 1 total £5,050"
 // (plus "· Discount code: WELCOME10" when one is entered).
-function recapLine(selection: QuoteSelection, addOnCount: number, total: number, discountCode: string) {
+function recapLine(selection: QuoteSelection, q: QuoteBreakdown, discountCode: string) {
   const parts = [productLabel(selection)];
-  if (selection.cc) parts.push(plural(selection.cc.yearGroups, "year group", "year groups"), plural(selection.cc.pillars, "pillar", "pillars"));
-  if (selection.gcse) parts.push(plural(selection.gcse.students, "student", "students"));
-  parts.push(addOnCount ? plural(addOnCount, "add-on", "add-ons") : "no add-ons");
-  parts.push(`Estimated total ${formatMoney(total)}`);
+  if (q.cc) parts.push(plural(q.cc.units, "unit", "units"));
+  if (q.gcse) parts.push(plural(q.gcse.students, "student", "students"));
+  parts.push(q.services.length ? plural(q.services.length, "add-on", "add-ons") : "no add-ons");
+  parts.push(`Year 1 total ${formatMoney(q.year1Total)}`);
   if (discountCode) parts.push(`Discount code: ${discountCode}`);
   return parts.join(" · ");
 }
 
-// The Contact form's (required) message: the visitor's notes, a blank line, then a summary of
-// the quote. Only the lines that apply are included.
-function quoteMessage(
+// Local time with its UTC offset: "2026-10-30T10:15:00+00:00".
+function isoWithOffset(date: Date) {
+  const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, "0");
+  const offset = -date.getTimezoneOffset();
+  const local = new Date(date.getTime() + offset * 60000).toISOString().slice(0, 19);
+  return `${local}${offset >= 0 ? "+" : "-"}${pad(offset / 60)}:${pad(offset % 60)}`;
+}
+
+// The Contact form's (required) message: the visitor's notes, a blank line, then the full
+// pricing breakdown (rules version, every calculation step, totals, timestamp and exclusions).
+export function quoteMessage(
   selection: QuoteSelection,
-  addOns: SelectedAddOn[],
-  total: number,
+  q: QuoteBreakdown,
   notes: string,
-  discountCode: string
+  discountCode: string,
+  submittedAt: string,
+  validUntil: string
 ) {
-  const lines = ["Quote request via website", `Product: ${productLabel(selection)}`];
-  if (selection.cc) {
-    lines.push(
-      `Year groups: ${selection.cc.yearGroups} · Pillars: ${selection.cc.pillars} · Critical Curriculum price: ${formatMoney(selection.cc.total)}`
-    );
-  }
-  if (selection.gcse) {
-    lines.push(`Students: ${selection.gcse.students} · International GCSE price: ${formatMoney(selection.gcse.total)}`);
-  }
-  if (addOns.length) {
-    lines.push(`Add-ons: ${addOnSummary(addOns)}`, `Add-ons total: ${formatMoney(addOnsTotal(addOns))}`);
-  }
-  lines.push(`Estimated total: ${formatMoney(total)}`);
+  const lines = ["Quote request via website", `Product: ${productLabel(selection)}`, ...quoteBreakdownLines(q, submittedAt, validUntil)];
   if (discountCode) lines.push(`Discount code: ${discountCode}`);
   const summary = lines.join("\n");
   return notes ? `${notes}\n\n${summary}` : summary;
@@ -183,7 +183,7 @@ function pendingFieldValues(addOns: SelectedAddOn[], discountCode: string): Reco
     if (name && value) values[name] = value;
   };
   for (const { id, options = {} } of addOns) {
-    const cost = String(addOnCost(id, options));
+    const cost = poundsValue(addOnCost(id, options));
     const quantity = String(options.quantity ?? 1);
     if (id === "cpd") {
       set("cpdQuantity", quantity);
@@ -210,7 +210,7 @@ function pendingFieldValues(addOns: SelectedAddOn[], discountCode: string): Reco
 // Add-ons priced per item, with their stepper labels.
 type QuantityAddOnId = "cpd" | "online-experience" | "assembly";
 const QUANTITY_LABELS: Record<QuantityAddOnId, string> = {
-  cpd: "Number of CPD sessions",
+  cpd: "Number of CPD bookings",
   "online-experience": "Number of online experiences",
   assembly: "Number of assemblies",
 };
@@ -265,12 +265,15 @@ function AddOnCard({
   checked,
   onToggle,
   descId,
+  creditPct,
   children,
 }: {
   addOn: QuoteAddOn;
   checked: boolean;
   onToggle: () => void;
   descId: string;
+  // The add-on's credit cap (shown when the Critical Curriculum is selected).
+  creditPct?: number;
   children?: ReactNode;
 }) {
   const price = addOn.pricing === "group-days" ? `from ${formatMoney(addOn.price)}` : formatMoney(addOn.price);
@@ -307,11 +310,17 @@ function AddOnCard({
           <span className="mt-1.5 block sm:hidden">
             <span className="text-[15px] font-medium text-ink">{price}</span>{" "}
             <span className="text-[12px] text-ink/60">{addOn.unit}</span>
+            {creditPct !== undefined && (
+              <span className="mt-0.5 block text-[12px] font-medium text-ink/70">Up to {creditPct}% credit</span>
+            )}
           </span>
         </span>
         <span className="hidden shrink-0 text-right sm:block">
           <span className="block whitespace-nowrap text-[15px] font-medium leading-[1.35] text-ink">{price}</span>
           <span className="block whitespace-nowrap text-[12px] leading-[1.5] text-ink/60">{addOn.unit}</span>
+          {creditPct !== undefined && (
+            <span className="block whitespace-nowrap text-[12px] font-medium leading-[1.5] text-ink/70">Up to {creditPct}% credit</span>
+          )}
         </span>
       </label>
       {children && (
@@ -330,7 +339,7 @@ function AddOnCard({
   );
 }
 
-function SummaryCard({ title, rows, total }: { title: string; rows: [string, string][]; total: number }) {
+function SummaryCard({ title, rows, total }: { title: string; rows: [string, ReactNode][]; total: number }) {
   return (
     <div className="rounded-xl border border-ink/10 bg-white p-5">
       <h3 className="text-[17px] font-medium leading-[1.3] text-ink">{title}</h3>
@@ -338,7 +347,7 @@ function SummaryCard({ title, rows, total }: { title: string; rows: [string, str
         {rows.map(([label, value]) => (
           <div key={label} className="flex items-baseline justify-between gap-4">
             <dt className="text-ink/65">{label}</dt>
-            <dd className="text-ink">{value}</dd>
+            <dd className="text-right text-ink">{value}</dd>
           </div>
         ))}
         <div className="flex items-baseline justify-between gap-4 border-t border-ink/10 pt-2">
@@ -346,6 +355,100 @@ function SummaryCard({ title, rows, total }: { title: string; rows: [string, str
           <dd className="font-medium text-ink">{formatMoney(total)} / year</dd>
         </div>
       </dl>
+    </div>
+  );
+}
+
+const ONLY_ONE_BENEFIT = "Only one benefit applies to this combination.";
+const PENDING_REVIEW_NOTE = "Your team will confirm how the combined benefit and add-on credit apply in your formal quote.";
+
+// A benefit amount: "−£150", or struck through when the anti-stacking rule drops it.
+function BenefitAmount({ amount, dropped }: { amount: number; dropped: boolean }) {
+  return dropped ? (
+    <s className="text-ink/45">
+      <span className="sr-only">Not applied: </span>−{formatMoney(amount)}
+    </s>
+  ) : (
+    <span>−{formatMoney(amount)}</span>
+  );
+}
+
+// Totals for step 1 and the success screen: each product, the benefits (struck through when the
+// anti-stacking rule drops one), each service, then annual, one-off and Year 1 totals.
+function QuoteTotals({ q, live = false }: { q: QuoteBreakdown; live?: boolean }) {
+  const row = (label: ReactNode, value: ReactNode, note?: string, key?: string) => (
+    <div key={key ?? String(label)}>
+      <div className="flex items-baseline justify-between gap-4">
+        <dt className="text-ink/70">{label}</dt>
+        <dd className="shrink-0 text-right text-ink">{value}</dd>
+      </div>
+      {note && <p className="mt-0.5 text-[12px] leading-[1.5] text-ink/55">{note}</p>}
+    </div>
+  );
+  const x = q.crossProduct;
+  const sc = q.serviceCredit;
+  return (
+    <>
+      <dl className="space-y-2 text-[15px] leading-[1.4]">
+        {q.cc && row(`Critical Curriculum (${plural(q.cc.units, "unit", "units")})`, `${formatMoney(q.cc.charge)} / year`)}
+        {q.gcse &&
+          row(
+            `International GCSE (${plural(q.gcse.students, "student", "students")} × ${formatMoney(q.gcse.rate)})`,
+            `${formatMoney(q.gcse.fee)} / year`
+          )}
+        {x.earned > 0 &&
+          row(
+            "Combined benefit (conditional)",
+            <BenefitAmount amount={x.earned} dropped={x.dropped} />,
+            x.dropped ? ONLY_ONE_BENEFIT : "Applies once your GCSE cohort is confirmed and activated."
+          )}
+        {q.services.map((a) => row(a.label, formatMoney(a.cost), undefined, a.id))}
+        {sc.earned > 0 &&
+          row(
+            "Add-on credit",
+            <BenefitAmount amount={sc.earned} dropped={sc.dropped} />,
+            sc.dropped ? ONLY_ONE_BENEFIT : "Earned with your Critical Curriculum; usable on eligible add-ons within 6 months of activation."
+          )}
+      </dl>
+      <dl className="mt-3 space-y-1.5 border-t border-ink/10 pt-3 text-[15px] leading-[1.4]">
+        <div className="flex items-baseline justify-between gap-4">
+          <dt className="text-ink/80">Annual (recurring)</dt>
+          <dd className="text-ink">{formatMoney(q.annualRecurring)}</dd>
+        </div>
+        <div className="flex items-baseline justify-between gap-4">
+          <dt className="text-ink/80">One-off services</dt>
+          <dd className="text-ink">{formatMoney(q.oneOff)}</dd>
+        </div>
+        <div className="flex items-baseline justify-between gap-4 pt-1">
+          <dt className="text-[17px] font-medium text-ink">Year 1 total</dt>
+          <dd aria-live={live ? "polite" : undefined} aria-atomic={live || undefined} className="text-[22px] font-medium leading-[1.2] text-ink">
+            {formatMoney(q.year1Total)}
+          </dd>
+        </div>
+      </dl>
+      {q.pendingCombinationReview && (
+        <p className="mt-3 text-[13px] leading-[1.5] text-ink/65">{PENDING_REVIEW_NOTE}</p>
+      )}
+      <p className="mt-2 text-[12px] leading-[1.5] text-ink/55">{PRICING_EXCLUSIONS}</p>
+    </>
+  );
+}
+
+// Under a ticked add-on: the credit applied to that line and what's left to pay (or the credit
+// struck through when the anti-stacking rule drops it).
+function LineCredit({ line }: { line: QuoteBreakdown["services"][number] | undefined }) {
+  if (!line || line.credit === 0) return null;
+  if (line.creditApplied === 0) {
+    return (
+      <p className="text-right text-[13px] leading-[1.5] text-ink/65">
+        Credit: <BenefitAmount amount={line.credit} dropped /> · {ONLY_ONE_BENEFIT}
+      </p>
+    );
+  }
+  return (
+    <div className="text-right text-[14px] leading-[1.5]">
+      <p className="text-ink/75">Credit applied: −{formatMoney(line.creditApplied)}</p>
+      <p className="font-medium text-ink">You pay: {formatMoney(line.net)}</p>
     </div>
   );
 }
@@ -412,7 +515,7 @@ export default function QuoteRequestModal({
     id: a.id,
     options: optionsFor(a.id),
   }));
-  const total = quoteTotal(selection, selectedAddOns);
+  const q = priceQuote({ cc: selection.cc, gcse: selection.gcse, addOns: selectedAddOns });
 
   useEffect(() => {
     if (open && !isQuoteFormConfigured) {
@@ -471,7 +574,8 @@ export default function QuoteRequestModal({
       return;
     }
 
-    const { cc, gcse } = selection;
+    const { cc, gcse } = q;
+    const submittedAt = new Date();
     setStatus("submitting");
     try {
       // Optional, not validated, and it doesn't change any prices.
@@ -484,22 +588,31 @@ export default function QuoteRequestModal({
         [HUBSPOT_FIELDS.company]: values.company.trim(),
         [HUBSPOT_FIELDS.jobtitle]: values.jobtitle.trim(),
         [HUBSPOT_FIELDS.helpTopic]: HELP_TOPIC_VALUES[selection.product],
-        [HUBSPOT_FIELDS.message]: quoteMessage(selection, selectedAddOns, total, values.message.trim(), discountCode),
+        // "Price valid until" (submitted + 30 calendar days) is for the team only, not shown on the site.
+        [HUBSPOT_FIELDS.message]: quoteMessage(
+          selection,
+          q,
+          values.message.trim(),
+          discountCode,
+          isoWithOffset(submittedAt),
+          isoWithOffset(new Date(submittedAt.getTime() + 30 * 24 * 60 * 60 * 1000)).slice(0, 10)
+        ),
         [HUBSPOT_FIELDS.product]: selection.product,
         // Fields that don't apply to the selection are left out (empty values aren't sent).
         [HUBSPOT_FIELDS.yearGroups]: cc ? String(cc.yearGroups) : undefined,
         [HUBSPOT_FIELDS.pillars]: cc ? String(cc.pillars) : undefined,
-        [HUBSPOT_FIELDS.ccPrice]: cc ? String(cc.total) : undefined,
+        [HUBSPOT_FIELDS.ccPrice]: cc ? poundsValue(cc.charge) : undefined,
         [HUBSPOT_FIELDS.students]: gcse ? String(gcse.students) : undefined,
-        [HUBSPOT_FIELDS.gcsePrice]: gcse ? String(gcse.total) : undefined,
+        [HUBSPOT_FIELDS.gcsePrice]: gcse ? poundsValue(gcse.fee) : undefined,
         [HUBSPOT_FIELDS.addOns]: hasAddOns ? selectedAddOns.map((a) => getAddOn(a.id).title).join(";") : undefined,
-        [HUBSPOT_FIELDS.addOnsPrice]: hasAddOns ? String(addOnsTotal(selectedAddOns)) : undefined,
-        [HUBSPOT_FIELDS.total]: String(total),
+        // One-off services after any training credit.
+        [HUBSPOT_FIELDS.addOnsPrice]: hasAddOns ? poundsValue(q.oneOff) : undefined,
+        [HUBSPOT_FIELDS.total]: poundsValue(q.year1Total),
         ...pendingFieldValues(selectedAddOns, discountCode),
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       markFormSubmitted();
-      trackEvent("generate_lead", { form_name: "quote_request", value: total, currency: "GBP", product: selection.product });
+      trackEvent("generate_lead", { form_name: "quote_request", value: q.year1Total / 100, currency: "GBP", product: selection.product });
       setSubmittedName(firstName);
       setStatus("success");
     } catch {
@@ -539,36 +652,50 @@ export default function QuoteRequestModal({
 
   const summaryCards: ReactNode = (
     <div className="space-y-3">
-      {selection.cc && (
+      {q.cc && (
         <SummaryCard
           title="Critical Curriculum"
           rows={[
-            ["Year groups", String(selection.cc.yearGroups)],
-            ["Pillars per year group", String(selection.cc.pillars)],
-            ["Price per year group", formatMoney(selection.cc.perYearGroup)],
+            ["Year groups × pillars", `${q.cc.yearGroups} × ${q.cc.pillars} = ${plural(q.cc.units, "unit", "units")}`],
+            [
+              `List price (${formatMoney(CC_LIST_RATE)} per unit)`,
+              q.cc.saving > 0 ? (
+                <s className="text-ink/45">
+                  <span className="sr-only">List price </span>
+                  {formatMoney(q.cc.list)}
+                </s>
+              ) : (
+                formatMoney(q.cc.list)
+              ),
+            ],
+            ...(q.cc.saving > 0 ? [["Volume rates", `−${formatMoney(q.cc.saving)}`] as [string, ReactNode]] : []),
           ]}
-          total={selection.cc.total}
+          total={q.cc.charge}
         />
       )}
-      {selection.gcse && (
+      {q.gcse && (
         <SummaryCard
           title="International GCSE"
           rows={[
-            ["Students", selection.gcse.students.toLocaleString("en-GB")],
-            ["Price per student", formatMoney(selection.gcse.fee)],
+            ["Students", q.gcse.students.toLocaleString("en-GB")],
+            [`Rate for ${q.gcse.band} students`, `${formatMoney(q.gcse.rate)} per student`],
           ]}
-          total={selection.gcse.total}
+          total={q.gcse.fee}
         />
+      )}
+      {q.crossProduct.earned > 0 && (
+        <div className="rounded-xl border border-ink/10 bg-white p-5 text-[15px] leading-[1.4]">
+          <div className="flex items-baseline justify-between gap-4">
+            <span className="font-medium text-ink">Combined benefit (conditional)</span>
+            <BenefitAmount amount={q.crossProduct.earned} dropped={q.crossProduct.dropped} />
+          </div>
+          <p className="mt-1 text-[13px] leading-[1.5] text-ink/60">
+            {q.crossProduct.dropped ? ONLY_ONE_BENEFIT : "Applies once your GCSE cohort is confirmed and activated."}
+          </p>
+        </div>
       )}
     </div>
   );
-
-  // Rows for the estimated total (step 1) and the success recap.
-  const totalRows: [string, string][] = [
-    ...(selection.cc ? [["Critical Curriculum", `${formatMoney(selection.cc.total)} / year`] as [string, string]] : []),
-    ...(selection.gcse ? [["International GCSE", `${formatMoney(selection.gcse.total)} / year`] as [string, string]] : []),
-    ...selectedAddOns.map((a): [string, string] => [addOnLineLabel(a.id, a.options), formatMoney(addOnCost(a.id, a.options))]),
-  ];
 
   const success = status === "success";
   const headingId = id(success ? "success-heading" : `step-${step}-heading`);
@@ -596,22 +723,13 @@ export default function QuoteRequestModal({
 
           <div className="mt-6 rounded-xl border border-ink/10 bg-white p-5 text-[15px] leading-[1.5]">
             <p className="text-[12px] uppercase tracking-[0.15em] text-ink/55">Your request</p>
-            <dl className="mt-3 space-y-1.5">
-              {totalRows.map(([label, value]) => (
-                <div key={label} className="flex justify-between gap-4">
-                  <dt className="text-ink/70">{label}</dt>
-                  <dd className="shrink-0 font-medium text-ink">{value}</dd>
-                </div>
-              ))}
-            </dl>
-            {!selectedAddOns.length && <p className="mt-1.5 text-ink/70">No add-ons</p>}
+            <div className="mt-3">
+              <QuoteTotals q={q} />
+            </div>
+            {!q.services.length && <p className="mt-1.5 text-ink/70">No add-ons</p>}
             {values.discountCode.trim() && (
               <p className="mt-1.5 text-ink/70">Discount code: {values.discountCode.trim()}</p>
             )}
-            <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-ink/10 pt-3">
-              <span className="font-medium text-ink">Estimated total</span>
-              <span className="text-[18px] font-medium text-ink">{formatMoney(total)}</span>
-            </div>
           </div>
 
           <Button onClick={onClose} className="mt-8">
@@ -641,6 +759,11 @@ export default function QuoteRequestModal({
                 <p id={id("addons-help")} className="mt-1 text-[14px] leading-[1.5] text-ink/60">
                   Tick any extras you&apos;d like included. Prices are shown below and added to your estimated total.
                 </p>
+                {q.cc && (
+                  <p className="mt-2 text-[14px] leading-[1.5] text-ink">
+                    Your Critical Curriculum includes up to {formatMoney(q.serviceCredit.allowance)} towards eligible add-ons.
+                  </p>
+                )}
                 <div className="mt-4 flex flex-col gap-2">
                   {QUOTE_ADD_ONS.map((addOn) => {
                     const checked = ticked.includes(addOn.id);
@@ -651,6 +774,7 @@ export default function QuoteRequestModal({
                         checked={checked}
                         onToggle={() => toggleAddOn(addOn.id)}
                         descId={id(`${addOn.id}-desc`)}
+                        creditPct={q.cc ? CREDIT_CAP_PERCENT[addOn.id] : undefined}
                       >
                         {children}
                       </AddOnCard>
@@ -689,6 +813,7 @@ export default function QuoteRequestModal({
                             {plural(liveDays, "day", "days")} × {formatMoney(group.pricePerDay)} ={" "}
                             {formatMoney(addOnCost("live-experience", { groupId: liveGroup, days: liveDays }))}
                           </p>
+                          <LineCredit line={q.services.find((l) => l.id === "live-experience")} />
                         </>
                       );
                     }
@@ -705,31 +830,24 @@ export default function QuoteRequestModal({
                           <p className="text-right text-[14px] font-medium text-ink">
                             {quantity} × {formatMoney(addOn.price)} = {formatMoney(addOnCost(qid, { quantity }))}
                           </p>
+                          <LineCredit line={q.services.find((l) => l.id === qid)} />
                         </>
                       );
                     }
                     return card();
                   })}
                 </div>
+                {q.serviceCredit.applied > 0 && (
+                  <p aria-live="polite" className="mt-3 text-[14px] leading-[1.5] text-ink">
+                    Credit used: {formatMoney(q.serviceCredit.applied)} · Remaining: {formatMoney(q.serviceCredit.remaining)} (usable on
+                    eligible add-ons within 6 months of activation).
+                  </p>
+                )}
               </fieldset>
 
-              {/* Estimated total: the subscriptions plus each ticked add-on, updating live. */}
+              {/* Totals: the subscriptions, benefits and each ticked add-on, updating live. */}
               <div className="mt-8 rounded-xl border border-ink/10 bg-white p-5">
-                <dl className="space-y-2 text-[15px] leading-[1.4]">
-                  {totalRows.map(([label, value]) => (
-                    <div key={label} className="flex items-baseline justify-between gap-4">
-                      <dt className="text-ink/70">{label}</dt>
-                      <dd className="shrink-0 text-ink">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="mt-3 flex items-baseline justify-between gap-4 border-t border-ink/10 pt-3">
-                  <span className="text-[17px] font-medium text-ink">Estimated total</span>
-                  <span aria-live="polite" aria-atomic="true" className="text-[22px] font-medium leading-[1.2] text-ink">
-                    {formatMoney(total)}
-                  </span>
-                </div>
-                <p className="mt-2 text-[12px] leading-[1.5] text-ink/55">Your final quote will confirm any VAT or travel costs.</p>
+                <QuoteTotals q={q} live />
               </div>
 
               <Button type="button" size="form" arrow onClick={() => goTo(2)} className="mt-8">
@@ -803,7 +921,7 @@ export default function QuoteRequestModal({
                 )}
 
                 <div className="mt-1">
-                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, selectedAddOns.length, total, values.discountCode.trim())}</p>
+                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, q, values.discountCode.trim())}</p>
                   <Button
                     type="submit"
                     size="form"

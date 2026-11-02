@@ -3,19 +3,29 @@
 import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { BookOpen, GraduationCap, Minus, Plus, type LucideIcon } from "lucide-react";
 import {
-  PILLAR_OPTIONS,
-  PRICE_PER_PILLAR_PER_YEAR_GROUP,
   YEAR_GROUPS_MIN,
   YEAR_GROUPS_MAX,
+  PILLARS_MIN,
+  PILLARS_MAX,
+  CC_UNITS_MAX,
+  CC_LIST_RATE,
+  CC_BANDS,
+  CROSS_PRODUCT_CAP,
+  CROSS_PRODUCT_MIN_STUDENTS,
   DEFAULT_YEAR_GROUPS,
   DEFAULT_PILLARS,
   DEFAULT_PRODUCT,
   STUDENTS_MIN,
   STUDENTS_MAX,
   DEFAULT_STUDENTS,
-  calculateCurriculumPrice,
-  getGcseTier,
+  GCSE_BANDS,
+  PRICING_EXCLUSIONS,
+  ccNextBand,
+  crossProductHint,
   formatMoney,
+  gcseNextBand,
+  ordinal,
+  priceQuote,
 } from "@/lib/pricing";
 import Button from "@/components/ui/Button";
 import QuoteRequestModal, { type QuoteSelection } from "@/components/pricing/QuoteRequestModal";
@@ -176,6 +186,98 @@ function PillStepper({
   );
 }
 
+// A discount progress track: filled to the current value, with a dot and rate label at each band
+// threshold (and the starting rate at the left). position() maps a value to 0–1 along the track.
+function DiscountProgress({
+  label,
+  value,
+  min,
+  max,
+  valueText,
+  startLabel,
+  markers,
+  position,
+  describedBy,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  valueText: string;
+  startLabel: string;
+  markers: { at: number; label: string }[];
+  position: (v: number) => number;
+  describedBy: string;
+}) {
+  const fill = Math.min(1, Math.max(0, position(value)));
+  return (
+    <div
+      role="progressbar"
+      aria-label={label}
+      aria-valuemin={min}
+      aria-valuemax={max}
+      aria-valuenow={Math.min(value, max)}
+      aria-valuetext={valueText}
+      aria-describedby={describedBy}
+      className="relative pt-1 pb-7"
+    >
+      <div className="relative h-2 rounded-full bg-ink/10">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-300 ease-out motion-reduce:transition-none"
+          style={{ width: `${fill * 100}%` }}
+        />
+        {markers.map((m) => {
+          const at = position(m.at);
+          return (
+            <span
+              key={m.at}
+              aria-hidden="true"
+              className={`absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-paper transition-colors duration-300 motion-reduce:transition-none ${
+                value >= m.at ? "bg-accent" : "bg-ink/30"
+              }`}
+              style={{ left: `${at * 100}%` }}
+            />
+          );
+        })}
+      </div>
+      <div aria-hidden="true" className="relative mt-2 text-[12px] leading-none text-ink/60">
+        <span className="absolute left-0">{startLabel}</span>
+        {markers.map((m) => {
+          const at = position(m.at);
+          return (
+            <span
+              key={m.at}
+              // Each rate label starts at its dot ("from here on"); the one at the far end sits
+              // right-aligned. (Centred, the first CC labels overlapped at 375px.)
+              className={`absolute whitespace-nowrap ${at >= 1 ? "-translate-x-full" : "-translate-x-1.5"} ${value >= m.at ? "font-medium text-ink" : ""}`}
+              style={{ left: `${at * 100}%` }}
+            >
+              {m.label}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const plural = (n: number, one: string, many: string) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
+
+// CC: to scale, 1–78 units, markers where each lower rate starts (10th, 25th, 49th unit).
+const ccPosition = (v: number) => (Math.min(Math.max(v, 1), CC_UNITS_MAX) - 1) / (CC_UNITS_MAX - 1);
+const CC_MARKERS = CC_BANDS.slice(1).map((b) => ({ at: b.from, label: formatMoney(b.rate) }));
+
+// GCSE: the band thresholds (26, 51, 101, 151, 200) evenly spaced (to scale, the first labels would
+// overlap), filling within each step; the visual stops at 200+.
+const GCSE_POINTS = GCSE_BANDS.map((b) => b.min);
+function gcsePosition(v: number) {
+  const last = GCSE_POINTS.length - 1;
+  if (v >= GCSE_POINTS[last]) return 1;
+  const i = Math.max(0, GCSE_POINTS.findIndex((p, k) => v >= p && v < GCSE_POINTS[k + 1]));
+  return (i + (v - GCSE_POINTS[i]) / (GCSE_POINTS[i + 1] - GCSE_POINTS[i])) / last;
+}
+const GCSE_MARKERS = GCSE_BANDS.slice(1).map((b) => ({ at: b.min, label: formatMoney(b.rate) }));
+
 export default function PricingCalculator() {
   const [product, setProduct] = useState<Product>(DEFAULT_PRODUCT);
   const [yearGroups, setYearGroups] = useState(DEFAULT_YEAR_GROUPS);
@@ -197,9 +299,18 @@ export default function PricingCalculator() {
   const showCC = product === "cc" || product === "both";
   const showGcse = product === "gcse" || product === "both";
 
-  const { perYearGroup, total: ccTotal } = calculateCurriculumPrice(pillars, yearGroups);
-  const gcseTier = getGcseTier(students);
-  const gcseTotal = gcseTier.fee * students;
+  // Everything comes from the pricing module (src/lib/pricing.ts); no services in the calculator.
+  const quote = priceQuote({
+    cc: showCC ? { yearGroups, pillars } : undefined,
+    gcse: showGcse ? { students } : undefined,
+  });
+  const cc = quote.cc;
+  const gcse = quote.gcse;
+  const ccNext = cc ? ccNextBand(cc.units) : null;
+  const gcseNext = gcse ? gcseNextBand(gcse.students) : null;
+  const crossHint = showCC && showGcse ? crossProductHint(students) : null;
+  const ccHelpId = `${radioGroupName}-cc-help`;
+  const gcseHelpId = `${radioGroupName}-gcse-help`;
 
   const steps: StepKind[] =
     product === "cc"
@@ -213,8 +324,8 @@ export default function PricingCalculator() {
     quoteButtonRef.current = event.currentTarget;
     setQuoteSelection({
       product: product === "cc" ? "Critical Curriculum" : product === "gcse" ? "International GCSE" : "Both",
-      cc: showCC ? { yearGroups, pillars, perYearGroup, total: ccTotal } : undefined,
-      gcse: showGcse ? { students, fee: gcseTier.fee, total: gcseTotal } : undefined,
+      cc: showCC ? { yearGroups, pillars } : undefined,
+      gcse: showGcse ? { students } : undefined,
     });
     quoteReturnTo.current = "button";
     setQuoteSession((n) => n + 1);
@@ -248,32 +359,52 @@ export default function PricingCalculator() {
             title="How many pillars per year group?"
             helper="Choose how many pillars you'd like to deliver in each selected year group."
           >
-            <fieldset>
-              <legend className="sr-only">How many pillars per year group?</legend>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {PILLAR_OPTIONS.map((option) => (
-                  <label
-                    key={option}
-                    className="relative flex cursor-pointer flex-col rounded-xl border border-ink/12 bg-white p-5 text-ink transition-colors has-[:checked]:border-ink has-[:checked]:bg-ink has-[:checked]:text-white has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2"
-                  >
-                    <input
-                      type="radio"
-                      name={`pillars-${radioGroupName}`}
-                      value={option}
-                      checked={pillars === option}
-                      onChange={() => setPillars(option)}
-                      className="sr-only"
-                    />
-                    <span className="text-[18px]">
-                      {option} pillar{option === 1 ? "" : "s"}
-                    </span>
-                    <span className="mt-1 text-[14px] opacity-70">
-                      {formatMoney(option * PRICE_PER_PILLAR_PER_YEAR_GROUP)} per year group
-                    </span>
-                  </label>
-                ))}
+            <PillStepper
+              value={pillars}
+              min={PILLARS_MIN}
+              max={PILLARS_MAX}
+              label={pillars === 1 ? "pillar per year group" : "pillars per year group"}
+              onChange={setPillars}
+            />
+            <p className="mt-3 text-[13px] text-ink/60">Sustainability and Technology are coming soon.</p>
+            {/* Below 640px the units line, bar and messages use the full width (not the step's
+                56px indent), so the bar's rate labels have room. */}
+            {cc && (
+              <div className="mt-6 -ml-14 sm:ml-0">
+                <p className="text-[15px] text-ink">
+                  {plural(cc.yearGroups, "year group", "year groups")} × {plural(cc.pillars, "pillar", "pillars")} ={" "}
+                  <span className="font-medium">{plural(cc.units, "unit", "units")}</span>
+                </p>
+                <div className="mt-4">
+                  <DiscountProgress
+                    label="Critical Curriculum units"
+                    value={cc.units}
+                    min={1}
+                    max={CC_UNITS_MAX}
+                    valueText={plural(cc.units, "unit", "units")}
+                    startLabel={formatMoney(CC_LIST_RATE)}
+                    markers={CC_MARKERS}
+                    position={ccPosition}
+                    describedBy={ccHelpId}
+                  />
+                </div>
+                <div id={ccHelpId} aria-live="polite" className="space-y-1 text-[14px] leading-[1.5] text-ink/80">
+                  <p>
+                    {ccNext
+                      ? `Add ${plural(ccNext.needed, "more unit", "more units")} and every unit from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
+                      : `You've reached our lowest rate: every unit from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
+                  </p>
+                  {cc.saving > 0 && (
+                    <p>
+                      You&apos;re saving {formatMoney(cc.saving)} compared with {formatMoney(CC_LIST_RATE)} per unit.
+                    </p>
+                  )}
+                  <p className="text-[12px] text-ink/55">
+                    Volume rates apply to the units in each band; earlier units stay at their original rate.
+                  </p>
+                </div>
               </div>
-            </fieldset>
+            )}
           </StepShell>
         );
       case "students":
@@ -292,6 +423,34 @@ export default function PricingCalculator() {
               onChange={setStudents}
               editable
             />
+            {gcse && (
+              <div className="mt-6 -ml-14 sm:ml-0">
+                <DiscountProgress
+                  label="International GCSE students"
+                  value={gcse.students}
+                  min={STUDENTS_MIN}
+                  max={GCSE_POINTS[GCSE_POINTS.length - 1]}
+                  valueText={plural(gcse.students, "student", "students")}
+                  startLabel={formatMoney(GCSE_BANDS[0].rate)}
+                  markers={GCSE_MARKERS}
+                  position={gcsePosition}
+                  describedBy={gcseHelpId}
+                />
+                <div id={gcseHelpId} aria-live="polite" className="space-y-1 text-[14px] leading-[1.5] text-ink/80">
+                  <p>
+                    {gcseNext
+                      ? `Add ${plural(gcseNext.needed, "more student", "more students")} and the whole cohort moves to ${formatMoney(gcseNext.rate)} per student.`
+                      : `You're on our lowest per-student rate: ${formatMoney(GCSE_BANDS[GCSE_BANDS.length - 1].rate)} for the whole cohort.`}
+                  </p>
+                  {crossHint !== null && (
+                    <p>
+                      Add {plural(crossHint, "more student", "more students")} ({CROSS_PRODUCT_MIN_STUDENTS} or more) to qualify
+                      for a combined benefit of up to {formatMoney(CROSS_PRODUCT_CAP)} on your Critical Curriculum.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
           </StepShell>
         );
     }
@@ -362,7 +521,7 @@ export default function PricingCalculator() {
             YOUR INDICATIVE ANNUAL PRICING
           </p>
 
-          {showCC && (
+          {cc && (
             <div className="mt-6">
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
@@ -378,35 +537,35 @@ export default function PricingCalculator() {
 
               <p className="mt-6" aria-live="polite">
                 <FadeOnChange
-                  value={formatMoney(ccTotal)}
+                  value={formatMoney(cc.charge)}
                   className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
                 />
                 <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
               </p>
 
-              <div className="mt-6 space-y-4 text-[16px]">
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Year groups</span>
-                  <span>{yearGroups}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Pillars per year group</span>
-                  <span>{pillars}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Price per year group</span>
-                  <span>{formatMoney(perYearGroup)}</span>
-                </div>
+              <div className="mt-6 flex items-baseline justify-between gap-4 text-[16px]">
+                <span className="text-white/80">{plural(cc.units, "unit", "units")}</span>
+                <span className="text-right">
+                  {cc.saving > 0 && (
+                    <>
+                      <s className="mr-2 text-white/50">
+                        <span className="sr-only">List price </span>
+                        {formatMoney(cc.list)}
+                      </s>
+                    </>
+                  )}
+                  {formatMoney(cc.charge)} / year
+                </span>
               </div>
             </div>
           )}
 
-          {showCC && showGcse && (
+          {cc && gcse && (
             <div className="my-8 h-px w-full bg-white/15" aria-hidden="true" />
           )}
 
-          {showGcse && (
-            <div className={showCC ? "" : "mt-6"}>
+          {gcse && (
+            <div className={cc ? "" : "mt-6"}>
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
                   <GraduationCap className="h-6 w-6 text-white" strokeWidth={1.5} aria-hidden="true" />
@@ -421,24 +580,40 @@ export default function PricingCalculator() {
 
               <p className="mt-6" aria-live="polite">
                 <FadeOnChange
-                  value={formatMoney(gcseTotal)}
+                  value={formatMoney(gcse.fee)}
                   className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
                 />
                 <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
               </p>
 
-              <div className="mt-6 space-y-4 text-[16px]">
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Students</span>
-                  <span>{students.toLocaleString("en-GB")}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white/80">Price per student</span>
-                  <span>{formatMoney(gcseTier.fee)}</span>
-                </div>
+              <div className="mt-6 flex items-baseline justify-between gap-4 text-[16px]">
+                <span className="text-white/80">
+                  {plural(gcse.students, "student", "students")} × {formatMoney(gcse.rate)}
+                </span>
+                <span>{formatMoney(gcse.fee)} / year</span>
               </div>
             </div>
           )}
+
+          {cc && gcse && quote.crossProduct.applied > 0 && (
+            <div className="mt-6 border-t border-white/15 pt-5 text-[16px]">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="text-white/80">Combined benefit (conditional)</span>
+                <span className="text-accent">−{formatMoney(quote.crossProduct.applied)}</span>
+              </div>
+              <p className="mt-1 text-[13px] leading-[1.5] text-white/60">
+                Applies once your GCSE cohort is confirmed and activated.
+              </p>
+            </div>
+          )}
+
+          <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-white/15 pt-5">
+            <span className="text-[16px] font-medium text-white">Estimated annual total</span>
+            <span aria-live="polite" className="text-[20px] font-medium text-white">
+              {formatMoney(quote.annualRecurring)} / year
+            </span>
+          </div>
+          <p className="mt-3 text-[12px] leading-[1.5] text-white/60">{PRICING_EXCLUSIONS}</p>
 
           <p className="mt-8 text-[15px] leading-[1.6] text-white/80">
             These are indicative prices based on your current selections. Get in touch for a

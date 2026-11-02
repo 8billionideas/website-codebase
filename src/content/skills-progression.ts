@@ -2,7 +2,6 @@
 // Column labels come from the Years/Grades helper (src/lib/year-grade.ts), never hardcoded.
 
 export const skillsProgressionSection = {
-  index: "04",
   eyebrow: "A PROGRESSIVE JOURNEY",
   headingLine1: "Skills that grow",
   headingLine2: "with students",

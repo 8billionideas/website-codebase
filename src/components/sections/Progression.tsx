@@ -84,16 +84,13 @@ function Timeline() {
 
 // Homepage Section 4: "Skills that grow with students".
 export default function Progression() {
-  const { index, eyebrow, headingLine1, headingLine2, intro } = skillsProgressionSection;
+  const { eyebrow, headingLine1, headingLine2, intro } = skillsProgressionSection;
 
   return (
     <section className="bg-paper py-16 md:py-24">
       <Container>
-        <p className="text-caption text-muted">{index}</p>
-        <div className="mt-2 h-8 w-px bg-accent" aria-hidden="true" />
-
         {/* Heading block on the left, Years/Grades toggle on the right (below the paragraph on mobile). */}
-        <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
           <div>
             <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
             <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">

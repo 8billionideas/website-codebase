@@ -57,6 +57,11 @@ export type Programme = StandardProgramme | GroupedProgramme | ProposedProgramme
 // Proposed six-part sequences stay hidden ("Programme details coming soon") until sign-off.
 export const SHOW_PROPOSED_SEQUENCES = false;
 
+// A year and (available) pillar with no programme in this data yet is a "Coming soon" slot: its pill
+// is clickable with a small "Coming soon" label and opens "Programme details coming soon". No
+// programme titles are invented for these slots.
+export const SHOW_MISSING_AS_COMING_SOON = true;
+
 // Year/pillar slots with two documented programmes: only the published one is shown.
 export const PUBLISHED_SELECTIONS: {
   year: number;
@@ -83,6 +88,13 @@ export const lessonExplorerSection = {
   proposed: {
     heading: "Programme details coming soon",
     pre: "We're finalising the lesson sequence for this programme. ",
+    linkLabel: "Get in touch",
+    post: " to find out more.",
+  },
+  // A "Coming soon" slot (no programme for this year and pillar yet).
+  missing: {
+    heading: "Programme details coming soon",
+    pre: (pillar: string) => `We're finalising the ${pillar} programme for this year group. `,
     linkLabel: "Get in touch",
     post: " to find out more.",
   },

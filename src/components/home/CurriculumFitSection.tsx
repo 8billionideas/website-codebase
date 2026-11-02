@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
-import { Eyebrow, SectionBody, SectionH2, SectionMarker, Tagline } from "@/components/home/SectionHeading";
+import { Eyebrow, SectionBody, SectionH2, Tagline } from "@/components/home/SectionHeading";
 import { home } from "@/content/home";
 import Button from "@/components/ui/Button";
 
@@ -15,13 +15,13 @@ export default function CurriculumFitSection() {
     home.curriculumFit;
 
   return (
-    <section className="relative overflow-x-hidden bg-paper pt-20 pb-7 md:pt-28 md:pb-10">
+    <section className="relative overflow-x-hidden bg-paper pt-16 pb-10 md:pt-24 md:pb-16">
+      {/* Bottom padding 40/64px: with the curricula strip's own 24/32px, the space under the last
+          text matches the standard 64/96px section spacing. */}
       <Container>
         <div className="lg:flex lg:items-start lg:gap-x-12">
           <div className="lg:w-[58%]">
-            <SectionMarker number="06" variant="light" />
-
-            <div className="mt-10">
+            <div>
               <Eyebrow variant="light">{eyebrow}</Eyebrow>
               <SectionH2 variant="light" className="mt-4">
                 Fits into the curriculum

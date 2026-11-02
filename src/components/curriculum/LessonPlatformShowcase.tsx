@@ -21,6 +21,11 @@ export default function LessonPlatformShowcase() {
       background="#01102f"
       headingLine1="Each lesson is already built,"
       headingLine2="structured and ready to teach"
+      // From xl the heading uses 760px (more than the 620px text column), so it sits on three lines
+      // instead of four; the paragraph and boxes stay 620px wide. The image box narrows to 50% so
+      // the laptop and its labels keep clear of the wider heading (the image stays whole).
+      headingClassName="xl:w-[760px] xl:max-w-none"
+      imageWidthClassName="w-[50%]"
       body={BODY}
       audiences={gcse.platform.audiences}
       image={IMAGE}

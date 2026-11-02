@@ -5,6 +5,7 @@ import DemoTrigger from "@/components/demo/DemoTrigger";
 import LevelModeToggle from "@/components/shared/LevelModeToggle";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import {
+  SHOW_MISSING_AS_COMING_SOON,
   SHOW_PROPOSED_SEQUENCES,
   getPublishedProgramme,
   lessonExplorerSection as copy,
@@ -26,6 +27,11 @@ const COMING_SOON = new Set<string>(pillarCarousel.cards.filter((c) => c.comingS
 
 const isAvailable = (year: number, pillar: PillarName) =>
   !COMING_SOON.has(pillar) && getPublishedProgramme(year, pillar) !== null;
+// No programme for this year yet (and not a "Coming soon" pillar): a "Coming soon" slot.
+const isMissing = (year: number, pillar: PillarName) =>
+  SHOW_MISSING_AS_COMING_SOON && !COMING_SOON.has(pillar) && getPublishedProgramme(year, pillar) === null;
+// Can be picked: a programme, or a "Coming soon" slot.
+const isSelectable = (year: number, pillar: PillarName) => isAvailable(year, pillar) || isMissing(year, pillar);
 const firstAvailable = (year: number) => PILLARS.find((p) => isAvailable(year, p)) ?? DEFAULT_PILLAR;
 
 // Every published year/pillar programme, rendered in one grid cell with only the selected one
@@ -150,6 +156,28 @@ function ProgrammePanel({
   );
 }
 
+// A "Coming soon" slot: no programme for this year and pillar yet.
+function ComingSoonPanel({ year, pillar, mode }: { year: number; pillar: PillarName; mode: LevelMode }) {
+  return (
+    <div className="rounded-2xl border border-ink/[0.08] bg-white p-5 md:p-8">
+      <p className="text-[12px] uppercase leading-[1.5] tracking-[0.2em] text-ink/70">
+        {formatLevelUpper(year, mode)} · {pillar.toUpperCase()}
+      </p>
+      <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink">{copy.missing.heading}</h3>
+      <p className="mt-3 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
+        {copy.missing.pre(pillar)}
+        <DemoTrigger
+          trackingLocation="lesson_explorer"
+          className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
+        >
+          {copy.missing.linkLabel}
+        </DemoTrigger>
+        {copy.missing.post}
+      </p>
+    </div>
+  );
+}
+
 // /curriculum-mapping: "Lesson explorer" – pick a year group and pillar to see that programme's
 // lessons (or grouped overview). Follows the site-wide Years/Grades setting.
 export default function LessonExplorer() {
@@ -165,8 +193,9 @@ export default function LessonExplorer() {
 
   function selectYear(next: number) {
     setYear(next);
-    // Keep the pillar if the new year has it; otherwise the first available one.
-    if (!isAvailable(next, pillar)) setPillar(firstAvailable(next));
+    // Keep the pillar if the new year has it (or a "Coming soon" slot for it); otherwise the first
+    // available programme.
+    if (!isSelectable(next, pillar)) setPillar(firstAvailable(next));
   }
 
   const programme = getPublishedProgramme(year, pillar);
@@ -246,8 +275,9 @@ export default function LessonExplorer() {
             className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4 xl:grid-cols-[repeat(4,auto)]"
           >
             {PILLARS.map((p, i) => {
-              const comingSoon = COMING_SOON.has(p);
-              const available = isAvailable(year, p);
+              const missing = isMissing(year, p);
+              const comingSoon = COMING_SOON.has(p) || missing;
+              const available = isSelectable(year, p);
               const selected = p === pillar;
               return (
                 <button
@@ -265,7 +295,7 @@ export default function LessonExplorer() {
                   tabIndex={selected ? 0 : -1}
                   onClick={() => available && setPillar(p)}
                   onKeyDown={(e) => {
-                    const next = nextIndex(e, i, PILLARS.length, (j) => isAvailable(year, PILLARS[j]));
+                    const next = nextIndex(e, i, PILLARS.length, (j) => isSelectable(year, PILLARS[j]));
                     if (next === null) return;
                     setPillar(PILLARS[next]);
                     pillarRefs.current[next]?.focus();
@@ -295,7 +325,9 @@ export default function LessonExplorer() {
         {announcement}
       </p>
 
-      {/* Programme panel: every published programme stacked, the selected one shown. */}
+      {/* Programme panel: every published programme stacked, the selected one shown. Hidden panels
+          take no height, so the box fits the one on show (the tallest used to leave empty space
+          below shorter panels). */}
       <div className="mt-8 grid grid-cols-[minmax(0,1fr)] items-start">
         {PUBLISHED.map((entry) => {
           const active = entry.year === year && entry.pillar === pillar;
@@ -304,12 +336,17 @@ export default function LessonExplorer() {
               key={`${entry.year}-${entry.pillar}`}
               aria-hidden={!active}
               inert={!active}
-              className={`${STACKED} ${active ? "opacity-100" : "invisible opacity-0"}`}
+              className={`${STACKED} ${active ? "opacity-100" : "invisible h-0 overflow-hidden opacity-0"}`}
             >
               <ProgrammePanel {...entry} mode={mode} />
             </div>
           );
         })}
+        {isMissing(year, pillar) && (
+          <div className={`${STACKED} opacity-100`}>
+            <ComingSoonPanel year={year} pillar={pillar} mode={mode} />
+          </div>
+        )}
       </div>
     </>
   );

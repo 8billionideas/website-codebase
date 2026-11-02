@@ -106,7 +106,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Link columns: 2-up on mobile (Explore + About, then Resources & Access), 3-up from md. */}
+          {/* Link columns: 2-up on mobile (Explore + About, then Resources), 3-up from md. */}
           <nav
             aria-label="Footer"
             className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-8 md:grid-cols-3 xl:flex xl:justify-between xl:gap-6"
@@ -122,7 +122,7 @@ export default function Footer() {
               <li><Link href="/about" className={COLUMN_LINK}>About 8billionideas</Link></li>
               <li><Link href="/contact" className={COLUMN_LINK}>Contact us</Link></li>
             </FooterColumn>
-            <FooterColumn heading="Resources & Access">
+            <FooterColumn heading="Resources">
               <li><Link href="/resources" className={COLUMN_LINK}>Free Resources</Link></li>
               {externalKits.filter((kit) => kit.inFooter).map((kit) => (
                 <li key={kit.label}>

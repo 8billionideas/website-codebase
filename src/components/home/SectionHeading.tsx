@@ -23,23 +23,6 @@ const LINE_COLOR: Record<SectionVariant, string> = {
   dark: "bg-white",
 };
 
-export function SectionMarker({
-  number,
-  variant,
-}: {
-  number: string;
-  variant: SectionVariant;
-}) {
-  return (
-    <div>
-      <p className={`text-[12px] font-medium tracking-[0.1em] ${MUTED_COLOR[variant]}`}>
-        {number}
-      </p>
-      <div className={`mt-2 h-12 w-px ${LINE_COLOR[variant]}`} aria-hidden="true" />
-    </div>
-  );
-}
-
 export function Eyebrow({
   children,
   variant,

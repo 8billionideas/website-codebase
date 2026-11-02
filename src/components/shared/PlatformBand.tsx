@@ -29,6 +29,8 @@ export default function PlatformBand({
   audiences,
   image,
   children,
+  headingClassName = "",
+  imageWidthClassName = "w-[53.1%]",
 }: {
   // The image's sampled edge colour, so its faded edges melt into the band.
   background: string;
@@ -41,6 +43,10 @@ export default function PlatformBand({
   image: { src: string; alt: string };
   // Optional extras under the boxes (e.g. the /gcse platform video, while switched on).
   children?: ReactNode;
+  // Optional overrides (the defaults are the /gcse band): the heading's width, and the image
+  // box's width from xl (the image keeps its 3:2 box and is never cropped).
+  headingClassName?: string;
+  imageWidthClassName?: string;
 }) {
   return (
     <section
@@ -52,7 +58,7 @@ export default function PlatformBand({
           the new 3:2 ratio), right-aligned, vertically centred, clear of the text and boxes. The
           box matches the drawn image, so the fades sit on its edges. */}
       <div
-        className="absolute top-1/2 right-0 hidden aspect-[3/2] max-h-full w-[53.1%] -translate-y-1/2 xl:block"
+        className={`absolute top-1/2 right-0 hidden aspect-[3/2] max-h-full -translate-y-1/2 xl:block ${imageWidthClassName}`}
         style={IMAGE_FADE}
       >
         <Image
@@ -75,7 +81,7 @@ export default function PlatformBand({
       <Container className="relative z-10 w-full py-16 md:py-24">
         <div className="max-w-[620px] text-left">
           {eyebrow && <p className="mb-4 text-[12px] uppercase tracking-[0.25em] text-white/65">{eyebrow}</p>}
-          <h2 className="text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px]">
+          <h2 className={`text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px] ${headingClassName}`}>
             {headingLine1}
             <br />
             <em className="text-accent">{headingLine2}</em>

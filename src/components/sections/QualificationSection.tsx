@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import Container from "@/components/layout/Container";
-import { Eyebrow, SectionBody, SectionH2, SectionMarker } from "@/components/home/SectionHeading";
+import { Eyebrow, SectionBody, SectionH2 } from "@/components/home/SectionHeading";
 import PartnerCards from "@/components/shared/PartnerCards";
 import OxfordAqaLogo from "@/components/shared/OxfordAqaLogo";
 import ChampionSchools from "@/components/sections/ChampionSchools";
@@ -244,7 +244,7 @@ function ProgressionLineMobile() {
 export default function QualificationSection() {
   return (
     <section
-      className="relative overflow-hidden bg-ink py-20 md:py-28"
+      className="relative overflow-hidden bg-ink py-16 md:py-24"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[260px] md:h-[520px] lg:h-[620px]"
@@ -273,11 +273,10 @@ export default function QualificationSection() {
 
       <Container className="relative z-10">
         <div className="h-[260px] md:hidden" aria-hidden="true" />
-        <SectionMarker number="05" variant="dark" />
 
         {/* Top area: title block first, progression line full-width below it —
             stacked at every breakpoint, never side by side. */}
-        <div className="mt-10">
+        <div className="mt-10 md:mt-0">
           <Eyebrow variant="dark">A RECOGNISED QUALIFICATION</Eyebrow>
           <SectionH2 variant="dark" className="mt-4 text-balance">
             The opportunity to turn learning

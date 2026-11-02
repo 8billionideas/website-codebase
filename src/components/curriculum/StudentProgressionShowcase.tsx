@@ -53,21 +53,25 @@ function DeviceImage({ sizes }: { sizes: string }) {
   );
 }
 
+// 1024px+: two columns in the page container, the text about 55% and the laptop and panel about
+// 45% (the device as wide as its column, its right edge on the container's), 56px apart, the
+// device vertically centred against the heading and paragraph. Below that: the text, then the
+// image centred (up to 420px wide).
+// The heading stays on its two lines inside the text column: the column is a size container and
+// the heading scales with it (6.8cqi: "easier to see and understand", the longer line, is about
+// 14.45em wide), so about 39px at 1280px and up, 33px at 1024px.
 export default function StudentProgressionShowcase() {
   return (
     <section className={`relative left-1/2 w-screen -translate-x-1/2 overflow-hidden ${BAND_BACKGROUND}`}>
-      {/* Desktop (1024px+): two columns in the page container, the text on the left and the
-          laptop and panel on the right (up to 560px wide, 51% of the container), 64px apart,
-          vertically centred. Below that: the text, then the image centred (up to 420px wide). */}
-      <Container className="py-14 md:py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_min(560px,51%)] lg:items-center lg:gap-16 lg:py-24">
-        <div className="relative z-10">
-          <h2 className="max-w-[560px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[36px] lg:max-w-[380px] lg:text-[38px]">
+      <Container className="py-14 md:py-20 lg:grid lg:grid-cols-[11fr_9fr] lg:items-center lg:gap-14 lg:py-24">
+        <div className="relative z-10 lg:@container">
+          <h2 className="max-w-[560px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[36px] lg:max-w-none lg:text-[6.8cqi] lg:whitespace-nowrap">
             {HEADING}
           </h2>
-          <p className="mt-5 max-w-[480px] text-[18px] leading-[1.6] text-ink/75 lg:mt-6 lg:max-w-[380px]">{BODY}</p>
+          <p className="mt-5 max-w-[480px] text-[18px] leading-[1.6] text-ink/75 lg:mt-6 lg:max-w-none lg:text-pretty">{BODY}</p>
         </div>
         <div className="mx-auto mt-10 w-full max-w-[420px] lg:mt-0 lg:max-w-none">
-          <DeviceImage sizes="(min-width: 1024px) 840px, 630px" />
+          <DeviceImage sizes="(min-width: 1024px) 720px, 630px" />
         </div>
       </Container>
     </section>

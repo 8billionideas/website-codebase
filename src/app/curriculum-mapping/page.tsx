@@ -33,7 +33,9 @@ export default function CurriculumMappingPage() {
 
       {/* Curriculum mapping: subject-and-stage explorer. The hero's "Explore how it maps
           to your subjects" link scrolls to #mapping. */}
-      <section id="mapping" className="bg-paper py-16 md:py-24">
+      {/* No bottom padding: the progression band below is also paper, and its own top padding is
+          the standard section gap (the two paddings together left a large empty gap). */}
+      <section id="mapping" className="bg-paper pt-16 md:pt-24">
         <Container>
           <CurriculumConnections />
 
