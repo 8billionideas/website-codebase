@@ -6,7 +6,7 @@ export const pricing = {
     headlineLead: "Your school,",
     headlineEmphasis: "your budget",
     intro:
-      "Choose the year groups and pillars you want and see an indicative annual price straight away. Start small and add more as your school grows.",
+      "Choose the year groups and pillars you want and see an estimated price per year straight away. Start small and add more as your school grows.",
     image: {
       src: "/images/pricing/hero.webp",
       alt: "Secondary students working together around a table with notebooks and a laptop",

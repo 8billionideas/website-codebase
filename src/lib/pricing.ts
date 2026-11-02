@@ -486,8 +486,13 @@ export function addOnSummary(addOns: SelectedAddOn[]): string {
     .join("; ");
 }
 
+// The detailed exclusions, for the team's HubSpot message summary only.
 export const PRICING_EXCLUSIONS =
   "Working estimate. Excludes VAT/tax, OxfordAQA entry and assessment fees, OUP products, third-party charges and travel or venue costs. Your formal quote will confirm the exact scope.";
+
+// The same note in plain English, shown on the pricing page and in the quote pop-up.
+export const PRICING_ESTIMATE_NOTE =
+  "This is an estimate. It doesn't include VAT, OxfordAQA exam fees, books from other suppliers or travel. We'll confirm everything in your quote.";
 
 // The full breakdown for the HubSpot message summary (one fact per line). validUntil is for the
 // team only (submitted + 30 calendar days); it isn't shown on the website.

@@ -11,7 +11,7 @@ import {
   LIVE_EXPERIENCE_GROUPS,
   QUOTE_ADD_ONS,
   CC_LIST_RATE,
-  PRICING_EXCLUSIONS,
+  PRICING_ESTIMATE_NOTE,
   addOnCost,
   formatMoney,
   getAddOn,
@@ -139,14 +139,14 @@ function productLabel(selection: QuoteSelection) {
   return selection.product === "Both" ? "Critical Curriculum and International GCSE" : selection.product;
 }
 
-// "Critical Curriculum · 24 units · 20 students · 1 add-on · Year 1 total £5,050"
+// "Critical Curriculum · 24 programmes · 20 students · 1 extra · Total for the first year £5,050"
 // (plus "· Discount code: WELCOME10" when one is entered).
 function recapLine(selection: QuoteSelection, q: QuoteBreakdown, discountCode: string) {
   const parts = [productLabel(selection)];
-  if (q.cc) parts.push(plural(q.cc.units, "unit", "units"));
+  if (q.cc) parts.push(plural(q.cc.units, "programme", "programmes"));
   if (q.gcse) parts.push(plural(q.gcse.students, "student", "students"));
-  parts.push(q.services.length ? plural(q.services.length, "add-on", "add-ons") : "no add-ons");
-  parts.push(`Year 1 total ${formatMoney(q.year1Total)}`);
+  parts.push(q.services.length ? plural(q.services.length, "extra", "extras") : "no extras");
+  parts.push(`Total for the first year ${formatMoney(q.year1Total)}`);
   if (discountCode) parts.push(`Discount code: ${discountCode}`);
   return parts.join(" · ");
 }
@@ -311,7 +311,7 @@ function AddOnCard({
             <span className="text-[15px] font-medium text-ink">{price}</span>{" "}
             <span className="text-[12px] text-ink/60">{addOn.unit}</span>
             {creditPct !== undefined && (
-              <span className="mt-0.5 block text-[12px] font-medium text-ink/70">Up to {creditPct}% credit</span>
+              <span className="mt-0.5 block text-[12px] font-medium text-ink/70">Up to {creditPct}% off with your credit</span>
             )}
           </span>
         </span>
@@ -319,7 +319,7 @@ function AddOnCard({
           <span className="block whitespace-nowrap text-[15px] font-medium leading-[1.35] text-ink">{price}</span>
           <span className="block whitespace-nowrap text-[12px] leading-[1.5] text-ink/60">{addOn.unit}</span>
           {creditPct !== undefined && (
-            <span className="block whitespace-nowrap text-[12px] font-medium leading-[1.5] text-ink/70">Up to {creditPct}% credit</span>
+            <span className="block whitespace-nowrap text-[12px] font-medium leading-[1.5] text-ink/70">Up to {creditPct}% off with your credit</span>
           )}
         </span>
       </label>
@@ -351,7 +351,7 @@ function SummaryCard({ title, rows, total }: { title: string; rows: [string, Rea
           </div>
         ))}
         <div className="flex items-baseline justify-between gap-4 border-t border-ink/10 pt-2">
-          <dt className="font-medium text-ink">Indicative price</dt>
+          <dt className="font-medium text-ink">Your price</dt>
           <dd className="font-medium text-ink">{formatMoney(total)} / year</dd>
         </div>
       </dl>
@@ -359,8 +359,10 @@ function SummaryCard({ title, rows, total }: { title: string; rows: [string, Rea
   );
 }
 
-const ONLY_ONE_BENEFIT = "Only one benefit applies to this combination.";
-const PENDING_REVIEW_NOTE = "Your team will confirm how the combined benefit and add-on credit apply in your formal quote.";
+const ONLY_ONE_BENEFIT = "Only one of these discounts can be used on this order.";
+const PENDING_REVIEW_NOTE = "We'll confirm your discounts in your quote.";
+const BOTH_DISCOUNT = "Discount for choosing both";
+const BOTH_DISCOUNT_NOTE = "Applied once your GCSE students are confirmed.";
 
 // A benefit amount: "−£150", or struck through when the anti-stacking rule drops it.
 function BenefitAmount({ amount, dropped }: { amount: number; dropped: boolean }) {
@@ -390,7 +392,7 @@ function QuoteTotals({ q, live = false }: { q: QuoteBreakdown; live?: boolean })
   return (
     <>
       <dl className="space-y-2 text-[15px] leading-[1.4]">
-        {q.cc && row(`Critical Curriculum (${plural(q.cc.units, "unit", "units")})`, `${formatMoney(q.cc.charge)} / year`)}
+        {q.cc && row(`Critical Curriculum (${plural(q.cc.units, "programme", "programmes")})`, `${formatMoney(q.cc.charge)} / year`)}
         {q.gcse &&
           row(
             `International GCSE (${plural(q.gcse.students, "student", "students")} × ${formatMoney(q.gcse.rate)})`,
@@ -398,29 +400,29 @@ function QuoteTotals({ q, live = false }: { q: QuoteBreakdown; live?: boolean })
           )}
         {x.earned > 0 &&
           row(
-            "Combined benefit (conditional)",
+            BOTH_DISCOUNT,
             <BenefitAmount amount={x.earned} dropped={x.dropped} />,
-            x.dropped ? ONLY_ONE_BENEFIT : "Applies once your GCSE cohort is confirmed and activated."
+            x.dropped ? ONLY_ONE_BENEFIT : BOTH_DISCOUNT_NOTE
           )}
         {q.services.map((a) => row(a.label, formatMoney(a.cost), undefined, a.id))}
         {sc.earned > 0 &&
           row(
-            "Add-on credit",
+            "Credit towards extras",
             <BenefitAmount amount={sc.earned} dropped={sc.dropped} />,
-            sc.dropped ? ONLY_ONE_BENEFIT : "Earned with your Critical Curriculum; usable on eligible add-ons within 6 months of activation."
+            sc.dropped ? ONLY_ONE_BENEFIT : "Comes with your Critical Curriculum. Use it within 6 months of starting."
           )}
       </dl>
       <dl className="mt-3 space-y-1.5 border-t border-ink/10 pt-3 text-[15px] leading-[1.4]">
         <div className="flex items-baseline justify-between gap-4">
-          <dt className="text-ink/80">Annual (recurring)</dt>
+          <dt className="text-ink/80">Total per year</dt>
           <dd className="text-ink">{formatMoney(q.annualRecurring)}</dd>
         </div>
         <div className="flex items-baseline justify-between gap-4">
-          <dt className="text-ink/80">One-off services</dt>
+          <dt className="text-ink/80">One-off extras</dt>
           <dd className="text-ink">{formatMoney(q.oneOff)}</dd>
         </div>
         <div className="flex items-baseline justify-between gap-4 pt-1">
-          <dt className="text-[17px] font-medium text-ink">Year 1 total</dt>
+          <dt className="text-[17px] font-medium text-ink">Total for the first year</dt>
           <dd aria-live={live ? "polite" : undefined} aria-atomic={live || undefined} className="text-[22px] font-medium leading-[1.2] text-ink">
             {formatMoney(q.year1Total)}
           </dd>
@@ -429,7 +431,7 @@ function QuoteTotals({ q, live = false }: { q: QuoteBreakdown; live?: boolean })
       {q.pendingCombinationReview && (
         <p className="mt-3 text-[13px] leading-[1.5] text-ink/65">{PENDING_REVIEW_NOTE}</p>
       )}
-      <p className="mt-2 text-[12px] leading-[1.5] text-ink/55">{PRICING_EXCLUSIONS}</p>
+      <p className="mt-2 text-[12px] leading-[1.5] text-ink/55">{PRICING_ESTIMATE_NOTE}</p>
     </>
   );
 }
@@ -447,7 +449,7 @@ function LineCredit({ line }: { line: QuoteBreakdown["services"][number] | undef
   }
   return (
     <div className="text-right text-[14px] leading-[1.5]">
-      <p className="text-ink/75">Credit applied: −{formatMoney(line.creditApplied)}</p>
+      <p className="text-ink/75">Credit used: −{formatMoney(line.creditApplied)}</p>
       <p className="font-medium text-ink">You pay: {formatMoney(line.net)}</p>
     </div>
   );
@@ -656,19 +658,19 @@ export default function QuoteRequestModal({
         <SummaryCard
           title="Critical Curriculum"
           rows={[
-            ["Year groups × pillars", `${q.cc.yearGroups} × ${q.cc.pillars} = ${plural(q.cc.units, "unit", "units")}`],
+            ["Year groups × pillars", `${q.cc.yearGroups} × ${q.cc.pillars} = ${plural(q.cc.units, "programme", "programmes")}`],
             [
-              `List price (${formatMoney(CC_LIST_RATE)} per unit)`,
+              `Full price (${formatMoney(CC_LIST_RATE)} per programme)`,
               q.cc.saving > 0 ? (
                 <s className="text-ink/45">
-                  <span className="sr-only">List price </span>
+                  <span className="sr-only">Full price </span>
                   {formatMoney(q.cc.list)}
                 </s>
               ) : (
                 formatMoney(q.cc.list)
               ),
             ],
-            ...(q.cc.saving > 0 ? [["Volume rates", `−${formatMoney(q.cc.saving)}`] as [string, ReactNode]] : []),
+            ...(q.cc.saving > 0 ? [["Your saving", `−${formatMoney(q.cc.saving)}`] as [string, ReactNode]] : []),
           ]}
           total={q.cc.charge}
         />
@@ -678,7 +680,7 @@ export default function QuoteRequestModal({
           title="International GCSE"
           rows={[
             ["Students", q.gcse.students.toLocaleString("en-GB")],
-            [`Rate for ${q.gcse.band} students`, `${formatMoney(q.gcse.rate)} per student`],
+            [`Price for ${q.gcse.band} students`, `${formatMoney(q.gcse.rate)} per student`],
           ]}
           total={q.gcse.fee}
         />
@@ -686,11 +688,11 @@ export default function QuoteRequestModal({
       {q.crossProduct.earned > 0 && (
         <div className="rounded-xl border border-ink/10 bg-white p-5 text-[15px] leading-[1.4]">
           <div className="flex items-baseline justify-between gap-4">
-            <span className="font-medium text-ink">Combined benefit (conditional)</span>
+            <span className="font-medium text-ink">{BOTH_DISCOUNT}</span>
             <BenefitAmount amount={q.crossProduct.earned} dropped={q.crossProduct.dropped} />
           </div>
           <p className="mt-1 text-[13px] leading-[1.5] text-ink/60">
-            {q.crossProduct.dropped ? ONLY_ONE_BENEFIT : "Applies once your GCSE cohort is confirmed and activated."}
+            {q.crossProduct.dropped ? ONLY_ONE_BENEFIT : BOTH_DISCOUNT_NOTE}
           </p>
         </div>
       )}
@@ -726,7 +728,7 @@ export default function QuoteRequestModal({
             <div className="mt-3">
               <QuoteTotals q={q} />
             </div>
-            {!q.services.length && <p className="mt-1.5 text-ink/70">No add-ons</p>}
+            {!q.services.length && <p className="mt-1.5 text-ink/70">No extras</p>}
             {values.discountCode.trim() && (
               <p className="mt-1.5 text-ink/70">Discount code: {values.discountCode.trim()}</p>
             )}
@@ -755,13 +757,13 @@ export default function QuoteRequestModal({
               </button>
 
               <fieldset className="mt-8" aria-describedby={id("addons-help")}>
-                <legend className="text-[17px] font-medium leading-[1.3] text-ink">Optional add-ons</legend>
+                <legend className="text-[17px] font-medium leading-[1.3] text-ink">Optional extras</legend>
                 <p id={id("addons-help")} className="mt-1 text-[14px] leading-[1.5] text-ink/60">
-                  Tick any extras you&apos;d like included. Prices are shown below and added to your estimated total.
+                  Tick any extras you&apos;d like. We&apos;ll add their prices to your total.
                 </p>
                 {q.cc && (
                   <p className="mt-2 text-[14px] leading-[1.5] text-ink">
-                    Your Critical Curriculum includes up to {formatMoney(q.serviceCredit.allowance)} towards eligible add-ons.
+                    Your Critical Curriculum comes with up to {formatMoney(q.serviceCredit.allowance)} credit towards extras.
                   </p>
                 )}
                 <div className="mt-4 flex flex-col gap-2">
@@ -839,8 +841,8 @@ export default function QuoteRequestModal({
                 </div>
                 {q.serviceCredit.applied > 0 && (
                   <p aria-live="polite" className="mt-3 text-[14px] leading-[1.5] text-ink">
-                    Credit used: {formatMoney(q.serviceCredit.applied)} · Remaining: {formatMoney(q.serviceCredit.remaining)} (usable on
-                    eligible add-ons within 6 months of activation).
+                    Credit used: {formatMoney(q.serviceCredit.applied)} · Credit left: {formatMoney(q.serviceCredit.remaining)} (use it
+                    within 6 months of starting).
                   </p>
                 )}
               </fieldset>

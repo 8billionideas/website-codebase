@@ -19,7 +19,7 @@ import {
   STUDENTS_MAX,
   DEFAULT_STUDENTS,
   GCSE_BANDS,
-  PRICING_EXCLUSIONS,
+  PRICING_ESTIMATE_NOTE,
   ccNextBand,
   crossProductHint,
   formatMoney,
@@ -263,7 +263,7 @@ function DiscountProgress({
 
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 
-// CC: to scale, 1–78 units, markers where each lower rate starts (10th, 25th, 49th unit).
+// CC: to scale, 1–78 units (shown as programmes), markers where each lower rate starts (10th, 25th, 49th).
 const ccPosition = (v: number) => (Math.min(Math.max(v, 1), CC_UNITS_MAX) - 1) / (CC_UNITS_MAX - 1);
 const CC_MARKERS = CC_BANDS.slice(1).map((b) => ({ at: b.from, label: formatMoney(b.rate) }));
 
@@ -373,15 +373,16 @@ export default function PricingCalculator() {
               <div className="mt-6 -ml-14 sm:ml-0">
                 <p className="text-[15px] text-ink">
                   {plural(cc.yearGroups, "year group", "year groups")} × {plural(cc.pillars, "pillar", "pillars")} ={" "}
-                  <span className="font-medium">{plural(cc.units, "unit", "units")}</span>
+                  <span className="font-medium">{plural(cc.units, "programme", "programmes")}</span>
                 </p>
+                <p className="mt-1 text-[13px] text-ink/60">1 programme = 1 pillar for 1 year group</p>
                 <div className="mt-4">
                   <DiscountProgress
-                    label="Critical Curriculum units"
+                    label="Critical Curriculum programmes"
                     value={cc.units}
                     min={1}
                     max={CC_UNITS_MAX}
-                    valueText={plural(cc.units, "unit", "units")}
+                    valueText={plural(cc.units, "programme", "programmes")}
                     startLabel={formatMoney(CC_LIST_RATE)}
                     markers={CC_MARKERS}
                     position={ccPosition}
@@ -391,16 +392,16 @@ export default function PricingCalculator() {
                 <div id={ccHelpId} aria-live="polite" className="space-y-1 text-[14px] leading-[1.5] text-ink/80">
                   <p>
                     {ccNext
-                      ? `Add ${plural(ccNext.needed, "more unit", "more units")} and every unit from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
-                      : `You've reached our lowest rate: every unit from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
+                      ? `Add ${plural(ccNext.needed, "more programme", "more programmes")} and each one from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
+                      : `You're on our lowest price: each programme from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
                   </p>
                   {cc.saving > 0 && (
                     <p>
-                      You&apos;re saving {formatMoney(cc.saving)} compared with {formatMoney(CC_LIST_RATE)} per unit.
+                      You&apos;re saving {formatMoney(cc.saving)} compared with paying {formatMoney(CC_LIST_RATE)} for each programme.
                     </p>
                   )}
                   <p className="text-[12px] text-ink/55">
-                    Volume rates apply to the units in each band; earlier units stay at their original rate.
+                    Programmes you&apos;ve already added keep their price.
                   </p>
                 </div>
               </div>
@@ -439,13 +440,13 @@ export default function PricingCalculator() {
                 <div id={gcseHelpId} aria-live="polite" className="space-y-1 text-[14px] leading-[1.5] text-ink/80">
                   <p>
                     {gcseNext
-                      ? `Add ${plural(gcseNext.needed, "more student", "more students")} and the whole cohort moves to ${formatMoney(gcseNext.rate)} per student.`
-                      : `You're on our lowest per-student rate: ${formatMoney(GCSE_BANDS[GCSE_BANDS.length - 1].rate)} for the whole cohort.`}
+                      ? `Add ${plural(gcseNext.needed, "more student", "more students")} and the price for all your students drops to ${formatMoney(gcseNext.rate)} each.`
+                      : `You're on our lowest price: ${formatMoney(GCSE_BANDS[GCSE_BANDS.length - 1].rate)} per student.`}
                   </p>
                   {crossHint !== null && (
                     <p>
-                      Add {plural(crossHint, "more student", "more students")} ({CROSS_PRODUCT_MIN_STUDENTS} or more) to qualify
-                      for a combined benefit of up to {formatMoney(CROSS_PRODUCT_CAP)} on your Critical Curriculum.
+                      Add {plural(crossHint, "more GCSE student", "more GCSE students")} ({CROSS_PRODUCT_MIN_STUDENTS} or more) to get a
+                      discount of up to {formatMoney(CROSS_PRODUCT_CAP)} for choosing both.
                     </p>
                   )}
                 </div>
@@ -470,8 +471,8 @@ export default function PricingCalculator() {
             that fits your school.
           </h2>
           <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-ink/70">
-            Choose what you&apos;d like to include and see an indicative price, calculated
-            live. Pricing is simple, transparent and scales with what you need.
+            Choose what you&apos;d like to include and see an estimated price straight away.
+            Our pricing is simple and clear, and grows with what you need.
           </p>
 
           {/* Product selector */}
@@ -518,7 +519,7 @@ export default function PricingCalculator() {
         {/* RIGHT — price panel */}
         <div className="rounded-2xl bg-ink p-9 text-white lg:sticky lg:top-24">
           <p className="text-[12px] uppercase tracking-[0.25em] text-white/70">
-            YOUR INDICATIVE ANNUAL PRICING
+            YOUR ESTIMATED PRICE PER YEAR
           </p>
 
           {cc && (
@@ -544,12 +545,12 @@ export default function PricingCalculator() {
               </p>
 
               <div className="mt-6 flex items-baseline justify-between gap-4 text-[16px]">
-                <span className="text-white/80">{plural(cc.units, "unit", "units")}</span>
+                <span className="text-white/80">{plural(cc.units, "programme", "programmes")}</span>
                 <span className="text-right">
                   {cc.saving > 0 && (
                     <>
                       <s className="mr-2 text-white/50">
-                        <span className="sr-only">List price </span>
+                        <span className="sr-only">Full price </span>
                         {formatMoney(cc.list)}
                       </s>
                     </>
@@ -598,26 +599,26 @@ export default function PricingCalculator() {
           {cc && gcse && quote.crossProduct.applied > 0 && (
             <div className="mt-6 border-t border-white/15 pt-5 text-[16px]">
               <div className="flex items-baseline justify-between gap-4">
-                <span className="text-white/80">Combined benefit (conditional)</span>
+                <span className="text-white/80">Discount for choosing both</span>
                 <span className="text-accent">−{formatMoney(quote.crossProduct.applied)}</span>
               </div>
               <p className="mt-1 text-[13px] leading-[1.5] text-white/60">
-                Applies once your GCSE cohort is confirmed and activated.
+                Applied once your GCSE students are confirmed.
               </p>
             </div>
           )}
 
           <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-white/15 pt-5">
-            <span className="text-[16px] font-medium text-white">Estimated annual total</span>
+            <span className="text-[16px] font-medium text-white">Total per year</span>
             <span aria-live="polite" className="text-[20px] font-medium text-white">
               {formatMoney(quote.annualRecurring)} / year
             </span>
           </div>
-          <p className="mt-3 text-[12px] leading-[1.5] text-white/60">{PRICING_EXCLUSIONS}</p>
+          <p className="mt-3 text-[12px] leading-[1.5] text-white/60">{PRICING_ESTIMATE_NOTE}</p>
 
           <p className="mt-8 text-[15px] leading-[1.6] text-white/80">
-            These are indicative prices based on your current selections. Get in touch for a
-            tailored quote based on your school&apos;s specific needs.
+            These prices are an estimate based on what you&apos;ve chosen. Get in touch for a
+            quote that fits your school.
           </p>
 
           <Button aria-haspopup="dialog" onClick={openQuote} arrow className="mt-6 w-full">
