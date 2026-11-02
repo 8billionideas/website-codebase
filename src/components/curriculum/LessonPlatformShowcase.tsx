@@ -19,11 +19,22 @@ export default function LessonPlatformShowcase() {
   return (
     <PlatformBand
       background="#01102f"
-      headingLine1="Each lesson is already built,"
-      headingLine2="structured and ready to teach"
-      // From xl the heading uses 760px (more than the 620px text column), so it sits on three lines
-      // instead of four; the paragraph and boxes stay 620px wide. The image box narrows to 50% so
-      // the laptop and its labels keep clear of the wider heading (the image stays whole).
+      // From xl: three lines, "Each lesson is already" / "built, structured and" / "ready to teach"
+      // (desktop-only breaks). Below xl it breaks after "built," as before and wraps naturally.
+      heading={
+        <>
+          Each lesson is already
+          <br className="hidden xl:inline" /> built,
+          <br className="xl:hidden" />{" "}
+          <em className="text-accent">
+            structured and
+            <br className="hidden xl:inline" /> ready to teach
+          </em>
+        </>
+      }
+      // From xl the heading uses 760px (more than the 620px text column); the paragraph and boxes
+      // stay 620px wide. The image box narrows to 50% so the laptop and its labels keep clear of
+      // the wider heading (the image stays whole).
       headingClassName="xl:w-[760px] xl:max-w-none"
       imageWidthClassName="w-[50%]"
       body={BODY}

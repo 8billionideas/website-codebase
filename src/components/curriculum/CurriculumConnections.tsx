@@ -76,7 +76,7 @@ function SubjectTabs({
   return (
     // The full-width line sits on the outer wrapper so it spans the row even while the
     // tabs scroll (below lg).
-    <div className="relative mt-10">
+    <div className="relative mt-content">
       <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px bg-ink/10" />
       <div
         role="tablist"
@@ -307,12 +307,12 @@ export default function CurriculumConnections() {
   return (
     <>
       <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{copy.eyebrow}</p>
-      <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+      <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
         {copy.headingLine1}
         <br />
         <em className="text-accent">{copy.headingLine2}</em>
       </h2>
-      <p className="mt-5 max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
+      <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
 
       <SubjectTabs selected={subjectIndex} onSelect={setSubjectIndex} />
 

@@ -87,25 +87,25 @@ export default function Progression() {
   const { eyebrow, headingLine1, headingLine2, intro } = skillsProgressionSection;
 
   return (
-    <section className="bg-paper py-16 md:py-24">
+    <section className="bg-paper py-section">
       <Container>
         {/* Heading block on the left, Years/Grades toggle on the right (below the paragraph on mobile). */}
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
           <div>
             <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-            <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+            <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
               {headingLine1}
               <br />
               <em className="text-accent">{headingLine2}</em>
             </h2>
-            <p className="mt-5 max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+            <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
           </div>
           <LevelModeToggle className="self-start" />
         </div>
 
         {/* Desktop: the timeline grid. Tablet: the same grid scrolling inside its own box,
             with sticky row labels and a fade on the right. */}
-        <div className="relative mt-14 hidden md:block">
+        <div className="relative mt-content hidden md:block">
           <div className="[-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto [&::-webkit-scrollbar]:hidden lg:overflow-visible">
             <div className="min-w-[960px] pb-1 lg:min-w-0">
               <Timeline />
@@ -118,7 +118,7 @@ export default function Progression() {
         </div>
 
         {/* Mobile: one vertical timeline per row. */}
-        <div className="mt-12 flex flex-col gap-12 md:hidden">
+        <div className="mt-content flex flex-col gap-12 md:hidden">
           {progressionRows.map((row) => (
             <div key={row.name}>
               <h3 className="text-[22px] font-normal text-ink">{row.name}</h3>

@@ -57,7 +57,8 @@ export default function Hero() {
           {line1Start}
           <br className="hidden xl:inline" /> {line1End}
           <br className="xl:hidden" />{" "}
-          <em className="text-accent">
+          {/* 768–1279px: the green line is balanced on its own, so "learning" isn't left alone. */}
+          <em className="text-accent md:max-xl:inline-block md:max-xl:text-balance">
             {line2Start}
             <br className="hidden xl:inline" /> {line2End}
           </em>

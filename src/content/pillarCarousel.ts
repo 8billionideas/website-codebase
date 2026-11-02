@@ -41,7 +41,7 @@ export const pillarCarousel = {
           "Students learn how to identify their target customers, create customer profiles and use these insights to design a toy that meets their needs.",
       },
       supportingLine: "Spotting problems, testing ideas and taking initiative",
-      description: "Building an entrepreneurial mindset that turns ideas into action",
+      description: "Building an entrepreneurial mindset that helps students turn their ideas into real action",
       exampleProject:
         "Lightbulb Moments – turning a first idea into something they can actually show.",
       image: {

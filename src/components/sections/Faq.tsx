@@ -123,15 +123,15 @@ export default function Faq({
   }
 
   return (
-    <section className={`${TONE_BG[tone]} py-16 md:py-24`}>
+    <section className={`${TONE_BG[tone]} py-section`}>
       <Container>
         <h2 className="text-h2 text-ink">{headline}</h2>
 
         <div className="flex flex-col lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-12">
-          <ul className="mt-10 divide-y divide-ink/12 border-t border-b border-ink/12">
+          <ul className="mt-content divide-y divide-ink/12 border-t border-b border-ink/12">
             {leftColumn.map(({ faq, index }) => renderQuestion(faq, index))}
           </ul>
-          <ul className="divide-y divide-ink/12 border-b border-ink/12 lg:mt-10 lg:border-t">
+          <ul className="divide-y divide-ink/12 border-b border-ink/12 lg:mt-content lg:border-t">
             {rightColumn.map(({ faq, index }) => renderQuestion(faq, index))}
           </ul>
         </div>

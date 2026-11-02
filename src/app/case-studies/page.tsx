@@ -50,34 +50,45 @@ export default function CaseStudiesPage() {
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 hidden lg:block"
+          className="absolute inset-0 hidden lg:block xl:hidden"
           style={{
             background:
               "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 35%, rgba(255,253,250,0) 65%)",
           }}
           aria-hidden="true"
         />
+        {/* xl+: the heading's first line runs to about 80% of the width, so the paper fade goes
+            further right to keep it readable over the photo. */}
+        <div
+          className="absolute inset-0 hidden xl:block"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(255,253,250,0.95) 0%, rgba(255,253,250,0.85) 55%, rgba(255,253,250,0) 88%)",
+          }}
+          aria-hidden="true"
+        />
         <Container className="relative z-10 w-full py-16 md:py-20">
           <Eyebrow variant="light">CASE STUDIES</Eyebrow>
-          <h1 className="mt-4 max-w-[620px] text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
-            See how schools are bringing
-            <br />
-            <em className="text-accent">future skills to life</em>
+          {/* From xl: two lines (the first about 970px wide, so the 620px cap lifts). At lg, three:
+              "350 schools, over a" / "million students," / "award-winning programmes" (795px). The
+              paragraph sits on three lines from md. Smaller screens wrap naturally. */}
+          <h1 className="mt-eyebrow max-w-[620px] text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px] lg:max-w-none">
+            350 schools, over a
+            <br className="hidden lg:inline xl:hidden" /> million students,
+            <br className="hidden lg:inline" />{" "}
+            <em className="text-accent lg:whitespace-nowrap">award-winning programmes</em>
           </h1>
           <p className="mt-6 max-w-[620px] text-[18px] leading-[1.6] text-ink/75">
-            From single programmes to whole-school partnerships, here&apos;s how
-            schools and organisations around the world are working with
-            8billionideas.
-          </p>
-          <p className="mt-5 text-[13px] uppercase tracking-[0.2em] text-muted">
-            350+ schools · Over 1 million students · Award-winning programmes
+            From single programmes to whole-school partnerships.
+            <br className="hidden md:inline" /> Here&apos;s how schools and organisations around the world
+            <br className="hidden md:inline" /> are working with 8billionideas.
           </p>
         </Container>
       </section>
 
       {/* Featured case study — full-width ink band */}
       {featured && (
-        <div className="bg-ink py-14 md:py-24">
+        <div className="bg-ink py-section">
           <Container>
             <div className="grid grid-cols-1 divide-y divide-white/15 md:grid-cols-[55fr_45fr] md:divide-x md:divide-y-0">
               <div className="md:pr-16">
@@ -188,12 +199,12 @@ export default function CaseStudiesPage() {
       </div>
 
       {/* Testimonials — full-width band, row of quotes */}
-      <div className="bg-accent/[0.08] py-14 md:py-24">
+      <div className="bg-accent/[0.08] py-section">
         <Container>
           <CaseStudyTestimonials
             eyebrow={<Eyebrow variant="light">WHAT PEOPLE SAY</Eyebrow>}
             heading={
-              <SectionH2 variant="light" className="mt-4">
+              <SectionH2 variant="light" className="mt-eyebrow">
                 In their
                 <br />
                 <em className="text-accent">own words</em>

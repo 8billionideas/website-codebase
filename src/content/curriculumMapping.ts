@@ -209,7 +209,6 @@ export const curriculumHero = {
     { value: "8", label: "CORE SKILLS" },
     { value: "Year 1–13", label: "ONE JOURNEY" },
   ],
-  scrollLink: { label: "Explore how it maps to your subjects ↓", href: "#mapping" },
   // When set, the hero gets the same full-width background image treatment
   // as the Case Studies hero. While null, it's a plain paper background.
   heroImage: {

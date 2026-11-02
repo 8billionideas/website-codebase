@@ -23,7 +23,7 @@ export default function CurriculumMappingPage() {
       <CurriculumHero />
 
       {/* Lesson explorer — its own section, above the mapping. */}
-      <div className="bg-paper py-16 md:py-24">
+      <div className="bg-paper py-section">
         <Container>
           <LessonExplorer />
         </Container>
@@ -31,11 +31,8 @@ export default function CurriculumMappingPage() {
 
       <LessonPlatformShowcase />
 
-      {/* Curriculum mapping: subject-and-stage explorer. The hero's "Explore how it maps
-          to your subjects" link scrolls to #mapping. */}
-      {/* No bottom padding: the progression band below is also paper, and its own top padding is
-          the standard section gap (the two paddings together left a large empty gap). */}
-      <section id="mapping" className="bg-paper pt-16 md:pt-24">
+      {/* Curriculum mapping: subject-and-stage explorer. */}
+      <section id="mapping" className="bg-paper py-section">
         <Container>
           <CurriculumConnections />
 
@@ -51,12 +48,8 @@ export default function CurriculumMappingPage() {
         </Container>
       </section>
 
+      {/* Navy band; the paper section below needs no divider. */}
       <StudentProgressionShowcase />
-
-      {/* Both this section and the progression band above use a paper
-          background, so a thin divider keeps them reading as separate
-          sections instead of blending together. */}
-      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
 
       <ImplementationSupportSection />
     </>

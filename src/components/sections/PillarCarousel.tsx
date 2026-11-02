@@ -18,12 +18,10 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { pillarCarousel, type PillarCarouselCard } from "@/content/pillarCarousel";
-import { home } from "@/content/home";
+import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import { useLevelMode } from "@/lib/level-mode";
 import { formatLevelUpper, type LevelMode } from "@/lib/year-grade";
 import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
-
-const { bandTestimonial } = home.proof;
 
 const PILLAR_ICONS: Record<string, LucideIcon> = {
   Entrepreneurship: Lightbulb,
@@ -93,8 +91,13 @@ function BoxContent({ card, mode }: { card: PillarCarouselCard; mode: LevelMode 
   );
 }
 
+// The cards in the shared pillar order (src/content/curriculumMapping.ts PILLARS).
+const cards = [...pillarCarousel.cards].sort(
+  (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
+);
+
 export default function PillarCarousel() {
-  const { eyebrow, headingLine1, headingLine2, subheading, cards } = pillarCarousel;
+  const { eyebrow, headingLine1, headingLine2, subheading } = pillarCarousel;
   const [index, setIndex] = useState(0);
   const card = cards[index];
   const total = cards.length;
@@ -125,17 +128,17 @@ export default function PillarCarousel() {
   }, [index]);
 
   return (
-    <div className="mt-10">
+    <div>
       <div className="text-center">
         <p className="text-caption uppercase tracking-[0.2em] text-muted">
           {eyebrow}
         </p>
-        <h2 className="mx-auto mt-3 max-w-3xl text-balance text-display text-ink">
+        <h2 className="mx-auto mt-eyebrow max-w-3xl text-balance text-display text-ink">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mx-auto mt-4 max-w-[760px] text-body-lg text-muted">{withCriticalCurriculum(subheading)}</p>
+        <p className="mx-auto mt-lead max-w-[760px] text-body-lg text-muted">{withCriticalCurriculum(subheading)}</p>
       </div>
 
       {/* Icon row (above the card) — one line always. Below lg it scrolls horizontally
@@ -144,7 +147,7 @@ export default function PillarCarousel() {
           doesn't fit all eight labels at 1024px even at minimum sizes. */}
       <ul
         ref={rowRef}
-        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-8 flex flex-nowrap items-center gap-4 overflow-x-auto pb-2 [mask-image:linear-gradient(to_right,black_0%,black_92%,transparent_100%)] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-4 lg:overflow-visible lg:pb-0 lg:[mask-image:none] lg:snap-none"
+        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-content flex flex-nowrap items-center gap-4 overflow-x-auto pb-2 [mask-image:linear-gradient(to_right,black_0%,black_92%,transparent_100%)] snap-x snap-mandatory [&::-webkit-scrollbar]:hidden lg:justify-between lg:gap-4 lg:overflow-visible lg:pb-0 lg:[mask-image:none] lg:snap-none"
       >
         {cards.map((c, i) => {
           const Icon = PILLAR_ICONS[c.name] ?? Lightbulb;
@@ -203,7 +206,9 @@ export default function PillarCarousel() {
           <ChevronRight className="h-5 w-5" aria-hidden="true" />
         </button>
 
-        <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16 md:px-14">
+        {/* lg:pb-12: from lg the navy box hangs 48px below the photo; this keeps it inside the
+            section's layout, so the section's bottom padding is measured from the box. */}
+        <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16 md:px-14 lg:pb-12">
           {/* LEFT — text */}
           <div>
             <p className="text-caption font-normal text-accent">
@@ -299,36 +304,6 @@ export default function PillarCarousel() {
             <ChevronRight className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
-      </div>
-
-
-      {/* Bridge image band — full-bleed, breaking out of the Container. From lg the navy box
-          hangs 48px below the card, so the extra margin keeps a 64px gap beneath it. */}
-      <div className="relative left-1/2 mt-16 flex min-h-[320px] w-screen -translate-x-1/2 lg:mt-28 items-center justify-center overflow-hidden md:h-[320px] lg:h-[420px]">
-        <Image
-          src="/images/built-for-life-band.webp"
-          alt=""
-          fill
-          loading="lazy"
-          sizes="100vw"
-          className="object-cover object-[center_60%]"
-        />
-        <div className="absolute inset-0 bg-ink/35" />
-        <figure className="relative mx-auto w-full max-w-[860px] px-6 py-12 text-center text-white md:py-0">
-          <span className="block text-[40px] font-light leading-none text-accent" aria-hidden="true">
-            &ldquo;
-          </span>
-          <blockquote className="mt-3">
-            <p className="text-[22px] font-light italic leading-[1.45] text-balance lg:text-[30px]">
-              {bandTestimonial.excerpt ?? bandTestimonial.quote}
-            </p>
-          </blockquote>
-          <figcaption className="mt-6 flex flex-col items-center">
-            <span className="h-0.5 w-10 bg-accent" aria-hidden="true" />
-            <span className="mt-4 text-[16px] font-medium">{bandTestimonial.name}</span>
-            <span className="mt-1 text-[14px] text-white/70">{bandTestimonial.role}</span>
-          </figcaption>
-        </figure>
       </div>
     </div>
   );

@@ -9,17 +9,17 @@ export default function WhySchoolsChooseIt() {
   const { eyebrow, headingLine1, headingLine2, intro, offersHeading, featured, benefits, closing } = gcse.whySchoolsChoose;
 
   return (
-    <section className="bg-paper py-16 md:py-24">
+    <section className="bg-paper py-section">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+        <h2 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mt-5 max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+        <p className="mt-lead max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
-        <h3 className="mt-10 text-[18px] font-medium leading-[1.4] text-ink">{offersHeading}</h3>
+        <h3 className="mt-content text-[18px] font-medium leading-[1.4] text-ink">{offersHeading}</h3>
 
         {/* From 1024px: the featured card (about 38%) spans two rows beside a 2×2 grid.
             768–1023px: featured full width on top, then the 2×2. Below 768px: stacked. */}

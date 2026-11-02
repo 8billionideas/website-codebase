@@ -31,6 +31,8 @@ export interface CaseStudy {
 // nothing there.
 export const TRUSTPILOT_PROFILE_URL: string | null = null;
 
+// Display order (Website Review 02, S03): The Internship (featured) first, then Harrow, Nord Anglia
+// India, Chelsea and Severn Academies.
 export const caseStudies: CaseStudy[] = [
   {
     slug: "the-internship",
@@ -65,6 +67,33 @@ export const caseStudies: CaseStudy[] = [
     featured: true,
   },
   {
+    slug: "harrow-sustainability450",
+    name: "Harrow Family of Schools – Sustainability450",
+    tag: "Competition",
+    location: "UK and international",
+    years: null,
+    ageGroups: "Pre-Prep to Sixth Form",
+    programme: "Sustainability450 competition",
+    scale: "Every Harrow-branded school worldwide",
+    award: null,
+    headlineFact: "Five university-set challenges",
+    summary:
+      "Sustainability450, a global competition marking Harrow School's 450th anniversary, with challenges set in partnership with five universities.",
+    challenge:
+      "To mark Harrow School's 450th anniversary and the 25th anniversary of the AISL education group, the Harrow Family of Schools wanted to give every student, from Pre-Prep to Sixth Form, the chance to work on real sustainability problems.",
+    whatWeDid:
+      "We created Sustainability450, inviting students across all Harrow-branded schools to come up with 450 unique ideas. Working individually or in groups, students chose from five challenges set with Imperial College London, the University of Southampton, the University of Bath, King Mongkut's Institute of Technology Ladkrabang and the Asian Institute of Technology, and presented their solutions through drawings, experiments, designs, programming or robotics. A hybrid finals day was held at Harrow School in the UK, with international schools joining virtually.",
+    results: null,
+    quote: null,
+    secondaryQuote: null,
+    image: {
+      src: "/images/case-studies/harrow-sustainability450-branded.webp",
+      alt: "The Harrow International School Hong Kong crest over the school building",
+      position: "center 55%",
+    },
+    featured: false,
+  },
+  {
     slug: "nord-anglia-education-india",
     name: "Nord Anglia Education India",
     tag: "Curriculum partnership",
@@ -89,6 +118,35 @@ export const caseStudies: CaseStudy[] = [
       src: "/images/case-studies/nord-anglia-education-india-branded.webp",
       alt: "The Oakridge International School logo, a Nord Anglia Education school, over the school building in Hyderabad",
       position: "center center",
+    },
+    featured: false,
+  },
+  {
+    slug: "chelsea-fc-academy",
+    name: "Chelsea FC Academy",
+    tag: "Curriculum partnership",
+    location: "London, UK",
+    years: null,
+    ageGroups: null,
+    programme: "Personal development programme",
+    scale: null,
+    award: null,
+    headlineFact: null,
+    summary: "Personal development sessions for Chelsea FC Academy players.",
+    challenge: null,
+    whatWeDid:
+      "As part of the Academy's commitment to its players' personal development, 8billionideas delivered sessions built around questioning, critical thinking and discussion, giving players time and space to create, develop and reflect on their ideas. Each programme ended with a celebration of the players' achievements.",
+    results: null,
+    quote: {
+      text: "During the 2025/26 season, we partnered with 8billionideas as part of our commitment to the personal development of our academy players. The sessions were thoughtfully planned and expertly delivered, providing engaging and thought-provoking learning experiences. The facilitators used effective questioning techniques to challenge and inspire every group, encouraging critical thinking and meaningful discussion. The pace of each session gave players the time and space to create, develop, and reflect on their ideas, fostering confidence, collaboration, and creativity. Each programme culminated in a celebration of the players' achievements, recognising their effort, innovation, and personal growth throughout the process.",
+      name: "Sean Walsh",
+      role: "Personal Development Lead, Chelsea FC Academy",
+    },
+    secondaryQuote: null,
+    image: {
+      src: "/images/case-studies/chelsea-fc-academy-branded.webp",
+      alt: "The Chelsea FC crest over the club's academy training building",
+      position: "center 45%",
     },
     featured: false,
   },
@@ -121,62 +179,6 @@ export const caseStudies: CaseStudy[] = [
       src: "/images/case-studies/severn-academies-branded.webp",
       alt: "The Severn Academies Educational Trust logo over one of the trust's school buildings",
       position: "center center",
-    },
-    featured: false,
-  },
-  {
-    slug: "harrow-sustainability450",
-    name: "Harrow Family of Schools – Sustainability450",
-    tag: "Competition",
-    location: "UK and international",
-    years: null,
-    ageGroups: "Pre-Prep to Sixth Form",
-    programme: "Sustainability450 competition",
-    scale: "Every Harrow-branded school worldwide",
-    award: null,
-    headlineFact: "Five university-set challenges",
-    summary:
-      "Sustainability450, a global competition marking Harrow School's 450th anniversary, with challenges set in partnership with five universities.",
-    challenge:
-      "To mark Harrow School's 450th anniversary and the 25th anniversary of the AISL education group, the Harrow Family of Schools wanted to give every student, from Pre-Prep to Sixth Form, the chance to work on real sustainability problems.",
-    whatWeDid:
-      "We created Sustainability450, inviting students across all Harrow-branded schools to come up with 450 unique ideas. Working individually or in groups, students chose from five challenges set with Imperial College London, the University of Southampton, the University of Bath, King Mongkut's Institute of Technology Ladkrabang and the Asian Institute of Technology, and presented their solutions through drawings, experiments, designs, programming or robotics. A hybrid finals day was held at Harrow School in the UK, with international schools joining virtually.",
-    results: null,
-    quote: null,
-    secondaryQuote: null,
-    image: {
-      src: "/images/case-studies/harrow-sustainability450-branded.webp",
-      alt: "The Harrow International School Hong Kong crest over the school building",
-      position: "center 55%",
-    },
-    featured: false,
-  },
-  {
-    slug: "chelsea-fc-academy",
-    name: "Chelsea FC Academy",
-    tag: "Programme",
-    location: "London, UK",
-    years: null,
-    ageGroups: null,
-    programme: "Personal development programme",
-    scale: null,
-    award: null,
-    headlineFact: null,
-    summary: "Personal development sessions for Chelsea FC Academy players.",
-    challenge: null,
-    whatWeDid:
-      "As part of the Academy's commitment to its players' personal development, 8billionideas delivered sessions built around questioning, critical thinking and discussion, giving players time and space to create, develop and reflect on their ideas. Each programme ended with a celebration of the players' achievements.",
-    results: null,
-    quote: {
-      text: "During the 2025/26 season, we partnered with 8billionideas as part of our commitment to the personal development of our academy players. The sessions were thoughtfully planned and expertly delivered, providing engaging and thought-provoking learning experiences. The facilitators used effective questioning techniques to challenge and inspire every group, encouraging critical thinking and meaningful discussion. The pace of each session gave players the time and space to create, develop, and reflect on their ideas, fostering confidence, collaboration, and creativity. Each programme culminated in a celebration of the players' achievements, recognising their effort, innovation, and personal growth throughout the process.",
-      name: "Sean Walsh",
-      role: "Personal Development Lead, Chelsea FC Academy",
-    },
-    secondaryQuote: null,
-    image: {
-      src: "/images/case-studies/chelsea-fc-academy-branded.webp",
-      alt: "The Chelsea FC crest over the club's academy training building",
-      position: "center 45%",
     },
     featured: false,
   },

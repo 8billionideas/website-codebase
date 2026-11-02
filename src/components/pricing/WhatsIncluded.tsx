@@ -35,15 +35,15 @@ export default function WhatsIncluded() {
     pricing.whatsIncluded;
 
   return (
-    <section className="bg-ink py-16 text-white lg:py-24">
+    <section className="bg-ink py-section text-white">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 text-[34px] font-light leading-[1.1] tracking-[-0.01em] text-balance md:text-[52px]">
+        <h2 className="mt-eyebrow text-[34px] font-light leading-[1.1] tracking-[-0.01em] text-balance md:text-[52px]">
           {headingLead} <em className="text-accent">{headingEmphasis}</em>
         </h2>
-        <p className="mt-5 max-w-2xl text-[18px] leading-[1.6] text-white/75">{intro}</p>
+        <p className="mt-lead max-w-2xl text-[18px] leading-[1.6] text-white/75">{intro}</p>
 
-        <ul className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-content grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {core.map((item) => (
             <li key={item.name} className="md:last:col-span-2 lg:last:col-span-1">
               <div className={CARD}>

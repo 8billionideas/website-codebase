@@ -207,16 +207,16 @@ export default function LessonExplorer() {
     <>
       <div className="text-center">
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{copy.eyebrow}</p>
-        <h2 className="mx-auto mt-4 max-w-[1000px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[48px]">
+        <h2 className="mx-auto mt-eyebrow max-w-[1000px] text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[48px]">
           {copy.headingLine1}
           <br />
           <em className="text-accent">{copy.headingLine2}</em>
         </h2>
-        <p className="mx-auto mt-5 max-w-[760px] text-balance text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
+        <p className="mx-auto mt-lead max-w-[760px] text-balance text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
       </div>
 
       {/* Selectors: side by side with a divider from xl, stacked below. */}
-      <div className="mt-12 grid gap-10 xl:grid-cols-[auto_1px_minmax(0,1fr)] xl:gap-8">
+      <div className="mt-content grid gap-10 xl:grid-cols-[auto_1px_minmax(0,1fr)] xl:gap-8">
         <div>
           <div className="flex h-10 items-center justify-between gap-4">
             <p id="lesson-explorer-year-label" className={LABEL}>

@@ -244,7 +244,7 @@ function ProgressionLineMobile() {
 export default function QualificationSection() {
   return (
     <section
-      className="relative overflow-hidden bg-ink py-16 md:py-24"
+      className="relative overflow-hidden bg-ink py-section"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-[260px] md:h-[520px] lg:h-[620px]"
@@ -278,12 +278,12 @@ export default function QualificationSection() {
             stacked at every breakpoint, never side by side. */}
         <div className="mt-10 md:mt-0">
           <Eyebrow variant="dark">A RECOGNISED QUALIFICATION</Eyebrow>
-          <SectionH2 variant="dark" className="mt-4 text-balance">
+          <SectionH2 variant="dark" className="mt-eyebrow text-balance">
             The opportunity to turn learning
             <br />
             <em className="text-accent">into a qualification</em>
           </SectionH2>
-          <SectionBody variant="dark" className="mt-5">
+          <SectionBody variant="dark" className="mt-lead">
             At secondary level, as the teaching and learning partner for the
             OxfordAQA International GCSE Global Skills Projects, we help schools
             give students the opportunity to apply and demonstrate the skills

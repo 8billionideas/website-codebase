@@ -28,22 +28,22 @@ export default function SkillsFramework() {
   const { eyebrow, headingLine1, headingLine2, intro } = skillsSection;
 
   return (
-    <section className="bg-paper py-16 md:py-24">
+    <section className="bg-paper py-section">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+        <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mt-5 max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+        <p className="mt-lead max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
         {/* Each card spans three rows (icon, title, text) on a shared subgrid, so a two-line title
             in one card moves every description in that row down equally: cards in a row stay the
             same height and their descriptions start at the same position.
             At 1024–1279px (narrow 4-column cards) the gap, side padding and text size drop to
             their minimums (12px, 20px, 14px) to keep descriptions to 3 lines where possible. */}
-        <ul className="mt-12 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 lg:grid-cols-4 lg:max-xl:gap-x-3">
+        <ul className="mt-content grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 lg:grid-cols-4 lg:max-xl:gap-x-3">
           {skills.map((skill) => {
             const Icon = ICONS[skill.icon];
             return (

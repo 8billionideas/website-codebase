@@ -41,7 +41,7 @@ function Heading() {
 
 export default function OfficesSection() {
   return (
-    <section className="py-16 md:py-24" style={{ backgroundColor: MAP_NAVY }}>
+    <section className="py-section" style={{ backgroundColor: MAP_NAVY }}>
       {/* Desktop (xl): text column left-aligned with the nav logo (the left padding matches the
           Container's content edge), map column bleeding to the right edge of the screen.
           From xl, not lg: at 1024px the 34% text column is too narrow for the heading. */}

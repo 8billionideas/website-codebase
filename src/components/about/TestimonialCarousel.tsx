@@ -93,7 +93,7 @@ export default function TestimonialCarousel({
   return (
     <section
       aria-label="Testimonials"
-      className="bg-ink py-14 md:py-20"
+      className="bg-ink py-section"
       onTouchStart={(event) => {
         touchStartX.current = event.touches[0].clientX;
       }}

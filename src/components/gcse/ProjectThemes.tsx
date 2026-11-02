@@ -25,7 +25,7 @@ function ProjectRow({
 }) {
   return (
     <div className="bg-paper">
-      <Container className="grid grid-cols-1 gap-8 py-14 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-16">
+      <Container className="grid grid-cols-1 gap-8 py-section lg:grid-cols-2 lg:items-center lg:gap-16">
         <div>
           <p className="text-[12px] uppercase tracking-[0.2em] text-ink/60">{eyebrow}</p>
           <h3 className="mt-3 text-[28px] font-normal leading-[1.2] text-ink md:text-[34px]">
@@ -60,17 +60,18 @@ export default function ProjectThemes() {
   return (
     <section>
       {/* Header band */}
-      <div className="bg-ink py-14 md:py-[72px]">
+      <div className="bg-ink py-section-tight">
         <Container>
           <p className="text-[12px] uppercase tracking-[0.25em] text-accent">
             {projectThemes.eyebrow}
           </p>
-          <h2 className="mt-4 text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-white md:text-[48px]">
+          <h2 className="mt-eyebrow text-balance text-[30px] font-light leading-[1.15] tracking-[-0.01em] text-white md:text-[48px]">
             {projectThemes.headingLine1}
             <br />
-            <em className="text-accent">{projectThemes.headingLine2}</em>
+            {/* Balanced on its own, so "projects" is never left alone. */}
+            <em className="inline-block text-balance text-accent">{projectThemes.headingLine2}</em>
           </h2>
-          <p className="mt-5 max-w-[720px] text-[17px] leading-[1.6] text-white/80">
+          <p className="mt-lead max-w-[720px] text-[17px] leading-[1.6] text-white/80">
             {projectThemes.intro}
           </p>
         </Container>

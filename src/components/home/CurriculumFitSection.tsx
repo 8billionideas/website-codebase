@@ -15,20 +15,20 @@ export default function CurriculumFitSection() {
     home.curriculumFit;
 
   return (
-    <section className="relative overflow-x-hidden bg-paper pt-16 pb-10 md:pt-24 md:pb-16">
-      {/* Bottom padding 40/64px: with the curricula strip's own 24/32px, the space under the last
-          text matches the standard 64/96px section spacing. */}
+    <section className="relative overflow-x-hidden bg-paper py-section">
+      {/* Standard section padding; the curricula strip at the bottom has top padding only, so the
+          space under its text is the section's own bottom padding. */}
       <Container>
         <div className="lg:flex lg:items-start lg:gap-x-12">
           <div className="lg:w-[58%]">
             <div>
               <Eyebrow variant="light">{eyebrow}</Eyebrow>
-              <SectionH2 variant="light" className="mt-4">
+              <SectionH2 variant="light" className="mt-eyebrow">
                 Fits into the curriculum
                 <br />
                 you <em className="text-accent">already teach.</em>
               </SectionH2>
-              <SectionBody variant="light" className="mt-5">
+              <SectionBody variant="light" className="mt-lead">
                 {body}
               </SectionBody>
             </div>
@@ -69,7 +69,7 @@ export default function CurriculumFitSection() {
       <div className="mt-16 h-px w-full bg-ink/15 md:mt-20" aria-hidden="true" />
 
       <Container>
-        <div className="py-6 md:py-8">
+        <div className="pt-6 md:pt-8">
           {/* Desktop: one row, label then six items, evenly spread, dividers between all. */}
           <div className="hidden items-stretch divide-x divide-ink/15 lg:flex">
             <div className="flex flex-col justify-center gap-1 pr-8">

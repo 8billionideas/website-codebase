@@ -6,21 +6,21 @@ import { workWithUsRows } from "@/content/about-work-with-us";
 // centred closing line with a short green rule.
 export default function WorkWithUsSection() {
   return (
-    <section className="bg-paper pt-16 pb-16 md:pt-24 md:pb-24">
+    <section className="bg-paper py-section">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">WHAT IT’S LIKE TO WORK WITH US</p>
-        <h2 className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+        <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
           We want working with us
           <br />
           <em className="text-accent">to feel easy</em>
         </h2>
-        <p className="mt-5 max-w-[760px] text-[18px] leading-[1.6] text-ink/70">
+        <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">
           We know schools have enough complexity already, so we try to be the opposite of that. We stay close,
           communicate clearly and make sure there is always a real person who knows your school and what
           you’re trying to achieve.
         </p>
 
-        <ul className="mt-8 grid list-none grid-cols-1 divide-y divide-ink/12 p-0 md:mt-12 md:grid-cols-3 md:divide-x md:divide-y-0">
+        <ul className="mt-content grid list-none grid-cols-1 divide-y divide-ink/12 p-0 md:grid-cols-3 md:divide-x md:divide-y-0">
           {workWithUsRows.map((row) => (
             <li key={row.number} className="py-6 first:pt-0 last:pb-0 md:px-8 md:py-0 md:first:pl-0 md:last:pr-0">
               <p className="text-[32px] font-light leading-none text-accent">{row.number}</p>

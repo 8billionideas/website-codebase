@@ -1,5 +1,6 @@
 import Hero from "@/components/sections/Hero";
 import CriticalCurriculum from "@/components/sections/CriticalCurriculum";
+import HomeQuoteBand from "@/components/sections/HomeQuoteBand";
 import QualificationSection from "@/components/sections/QualificationSection";
 import CurriculumFitSection from "@/components/home/CurriculumFitSection";
 import SkillsFramework from "@/components/sections/SkillsFramework";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <Hero />
       <CriticalCurriculum />
+      <HomeQuoteBand />
       <SkillsFramework />
       <HowLearningWorks />
       <Progression />

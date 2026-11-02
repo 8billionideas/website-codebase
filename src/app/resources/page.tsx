@@ -131,12 +131,18 @@ export default function ResourcesPage() {
       {/* Hero */}
       <section className="relative isolate overflow-hidden bg-paper xl:flex xl:min-h-[520px] xl:items-center">
         <Container className="relative z-10 w-full py-16 md:py-20 xl:py-24">
-          <div className="max-w-[600px] text-left">
+          {/* From lg the heading sits on three lines: "Free classroom resources" (700px, so the
+              text column is 720px wide there) / "for the skills students" / "need now". Smaller
+              screens wrap naturally. */}
+          <div className="max-w-[600px] text-left lg:max-w-[720px]">
             <p className="text-[12px] uppercase tracking-[0.25em] text-accent">RESOURCES</p>
-            <h1 className="mt-3 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+            <h1 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
               Free classroom resources
               <br />
-              <em className="text-accent">for the skills students need now</em>
+              <em className="text-accent">
+                for the skills students
+                <br className="hidden lg:inline" /> need now
+              </em>
             </h1>
             <p className="mt-6 max-w-[560px] text-[18px] leading-[1.6] text-ink/75">
               Use these free resources to start conversations about careers, future skills and

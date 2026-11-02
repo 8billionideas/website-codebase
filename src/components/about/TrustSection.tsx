@@ -37,31 +37,33 @@ function Stat({ figure, label, text }: { figure: ReactNode; label: string; text:
   );
 }
 
-const FIGURE = "text-[48px] font-light leading-none text-ink md:text-[64px]";
+// One line at every width ("1 million+" is about 4.5em wide): 48px on mobile, then sized to the
+// three columns: 36px at 768px, 52px at 1024px, 64px from 1280px.
+const FIGURE = "whitespace-nowrap text-[48px] font-light leading-none text-ink md:text-[36px] lg:text-[52px] xl:text-[64px]";
 
 export default function TrustSection() {
   return (
     <section aria-labelledby="trust-heading">
       {/* Top part — accent-green at 6% over paper */}
-      <div className="bg-[color-mix(in_srgb,var(--color-accent)_6%,var(--color-paper))] pt-16 pb-14 md:pt-24 md:pb-[72px]">
+      <div className="bg-[color-mix(in_srgb,var(--color-accent)_6%,var(--color-paper))] py-section">
         <Container>
           <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">THE TRUST SCHOOLS PLACE IN US</p>
           <h2
             id="trust-heading"
-            className="mt-4 text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]"
+            className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]"
           >
             We&apos;re proud of the trust
             <br />
             <em className="text-accent">schools place in us</em>
           </h2>
-          <p className="mt-5 max-w-[720px] text-[18px] leading-[1.6] text-ink/70">
+          <p className="mt-lead max-w-[720px] text-[18px] leading-[1.6] text-ink/70">
             Schools don&apos;t choose partners lightly, and we&apos;ve never taken that trust for granted. Every
             partnership, every student reached and every school that chooses to keep working with us matters
             because it tells us that what we&apos;re building is making a difference where it counts.
           </p>
 
           {/* Stats */}
-          <div className="mt-14 grid grid-cols-1 divide-y divide-ink/12 md:grid-cols-3 md:divide-x md:divide-y-0">
+          <div className="mt-content grid grid-cols-1 divide-y divide-ink/12 md:grid-cols-3 md:divide-x md:divide-y-0">
             <Stat
               figure={<p className={FIGURE}>350+</p>}
               label="schools"

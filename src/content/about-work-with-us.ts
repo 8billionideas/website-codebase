@@ -21,7 +21,7 @@ export const workWithUsRows: WorkWithUsRow[] = [
   },
   {
     number: "03",
-    title: "We care about the relationship",
+    title: "We always care",
     text: "For us, a partnership should feel like people working towards the same thing, not a contract that gets handed over once it’s signed.",
     tags: ["Real people", "Long-term support", "Shared goals"],
   },

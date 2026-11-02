@@ -1,11 +1,11 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Eyebrow } from "@/components/home/SectionHeading";
 import Container from "@/components/layout/Container";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 import { curriculumHero } from "@/content/curriculumMapping";
 
 export default function CurriculumHero() {
-  const { eyebrow, headingLead, headingAccent, intro, facts, scrollLink, heroImage } =
+  const { eyebrow, headingLead, headingAccent, intro, facts, heroImage } =
     curriculumHero;
   const hasImage = Boolean(heroImage);
 
@@ -63,7 +63,7 @@ export default function CurriculumHero() {
           {eyebrow}
         </Eyebrow>
         <h1
-          className={`mt-3 max-w-[620px] text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] md:text-[56px] ${
+          className={`mt-eyebrow max-w-[620px] text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] md:text-[56px] ${
             hasImage ? "text-white" : "text-ink"
           }`}
         >
@@ -72,7 +72,7 @@ export default function CurriculumHero() {
           <em className="text-accent">{headingAccent}</em>
         </h1>
         <p
-          className={`mt-4 max-w-[620px] text-[18px] leading-[1.6] ${
+          className={`mt-lead max-w-[620px] text-[18px] leading-[1.6] ${
             hasImage ? "text-white/85" : "text-ink/75"
           }`}
         >
@@ -109,16 +109,13 @@ export default function CurriculumHero() {
           ))}
         </dl>
 
-        <Link
-          href={scrollLink.href}
-          className={
-            hasImage
-              ? "mt-5 inline-block rounded-sm text-[15px] font-medium text-[#A995FF] underline-offset-4 transition-colors duration-200 hover:text-[#C4B5FF] hover:underline focus-visible:text-[#C4B5FF] focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C4B5FF] motion-reduce:transition-none"
-              : "mt-5 inline-block rounded-sm text-[15px] font-medium text-brand underline-offset-4 transition-colors duration-200 hover:text-[#5530E0] hover:underline focus-visible:text-[#5530E0] focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand motion-reduce:transition-none"
-          }
-        >
-          {scrollLink.label}
-        </Link>
+        {/* Primary CTA, as on the other page heroes. */}
+        <div className="mt-8">
+          <DemoTrigger trackingLocation="curriculum_hero" appearance="button" className="w-full md:w-auto">
+            Request a demo
+          </DemoTrigger>
+        </div>
+
       </Container>
     </section>
   );

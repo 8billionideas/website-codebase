@@ -9,17 +9,17 @@ export default function GettingStarted() {
   const { eyebrow, headingLine1, headingLine2, intro, stepsHeading, steps, reassurances } = gcse.gettingStarted;
 
   return (
-    <section className="bg-paper py-16 md:py-24">
+    <section className="bg-paper py-section">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+        <h2 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mt-5 max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+        <p className="mt-lead max-w-[880px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
-        <h3 className="mt-12 text-[26px] font-light leading-[1.2] text-ink md:text-[32px]">{stepsHeading}</h3>
+        <h3 className="mt-content text-[26px] font-light leading-[1.2] text-ink md:text-[32px]">{stepsHeading}</h3>
 
         {/* One ink strip, styled like the Lesson explorer's lesson strip on /curriculum-mapping.
             From lg: five equal columns in a row, separated by thin dividers with a small arrow on

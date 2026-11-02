@@ -6,17 +6,17 @@ export default function ReadyToDeliver() {
   const { eyebrow, headingLine1, headingLine2, intro, reassurance, listHeading, items } = gcse.readyToDeliver;
 
   return (
-    <section className="bg-ink py-16 md:py-24">
+    <section className="bg-ink py-section">
       <Container>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[52fr_48fr] lg:items-center lg:gap-16">
           <div>
             <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-            <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[52px]">
+            <h2 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[52px]">
               {headingLine1}
               <br />
               <em className="text-accent">{headingLine2}</em>
             </h2>
-            <p className="mt-5 text-[17px] leading-[1.6] text-white/80">{intro}</p>
+            <p className="mt-lead text-[17px] leading-[1.6] text-white/80">{intro}</p>
             <p className="mt-6 text-[17px] leading-[1.6] text-white/80">{reassurance}</p>
           </div>
 

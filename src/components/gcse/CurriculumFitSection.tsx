@@ -9,18 +9,18 @@ export default function CurriculumFitSection() {
     gcse.curriculumFit;
 
   return (
-    <section className="bg-paper py-16 md:py-24">
+    <section className="bg-paper py-section">
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+        <h2 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
-        <p className="mt-5 max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
+        <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
 
         {/* Labels, not links. */}
-        <ul className="mt-8 flex list-none flex-wrap gap-2 p-0">
+        <ul className="mt-content flex list-none flex-wrap gap-2 p-0">
           {curricula.map((name) => (
             <li key={name} className="rounded-md border border-ink/25 px-7 py-3 text-[16px] leading-[1.4] text-ink">
               {name}
@@ -67,9 +67,10 @@ export default function CurriculumFitSection() {
           ))}
         </div>
 
-        <p className="mt-6 text-[17px] leading-[1.6]">
-          <span className="font-medium text-ink">{closingLead}</span>
-          <span className="text-ink/60">{closingRest}</span>
+        {/* One style for the whole line (no bold lead-in). */}
+        <p className="mt-6 text-[17px] leading-[1.6] text-ink/60">
+          {closingLead}
+          {closingRest}
         </p>
         {/* PROVISIONAL – wording subject to Lyndsay's confirmation. Same style as the muted part
             of the closing line above. */}

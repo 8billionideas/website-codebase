@@ -55,7 +55,7 @@ export default async function CaseStudyPage({
   const moreCaseStudies = caseStudies.filter((s) => s.slug !== study.slug).slice(0, 3);
 
   return (
-    <div className="bg-paper py-16 md:py-24">
+    <div className="bg-paper py-section">
       <Container>
         <Link
           href="/case-studies"

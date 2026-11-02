@@ -1,11 +1,12 @@
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Container from "@/components/layout/Container";
 import AudienceBoxes, { type AudienceBox } from "@/components/shared/AudienceBoxes";
 
 // Navy platform band (/gcse "Run the whole qualification in one place", /curriculum-mapping
-// "Each lesson is already built, structured and ready to teach"): one layout so the two always
-// match; only the copy, image and band colour differ.
+// "Each lesson is already built, structured and ready to teach" and "Making student progression
+// easier to see and understand"): one layout so they always match; only the copy, image (with
+// its shape and edge fades) and band colour differ.
 // xl+: the text, paragraph and For teachers / For students boxes on the left (up to 620px), the
 // annotated laptop image on the right, vertically centred. Below xl: the text and boxes, then the
 // whole image full width.
@@ -25,29 +26,41 @@ export default function PlatformBand({
   eyebrow,
   headingLine1,
   headingLine2,
+  heading,
   body,
   audiences,
   image,
   children,
   headingClassName = "",
+  headingLine2ClassName = "",
   imageWidthClassName = "w-[53.1%]",
+  imageFade = IMAGE_FADE,
 }: {
   // The image's sampled edge colour, so its faded edges melt into the band.
   background: string;
   eyebrow?: string;
-  headingLine1: string;
+  headingLine1?: string;
   // Italic accent-green second line.
-  headingLine2: string;
+  headingLine2?: string;
+  // Instead of the two lines, when the heading needs its own line breaks.
+  heading?: ReactNode;
   body: string;
-  audiences: AudienceBox[];
-  image: { src: string; alt: string };
+  // The For teachers / For students boxes (none when omitted).
+  audiences?: AudienceBox[];
+  // width and height: the file's size, which also sets the image box's shape (default 1536×1024).
+  image: { src: string; alt: string; width?: number; height?: number };
   // Optional extras under the boxes (e.g. the /gcse platform video, while switched on).
   children?: ReactNode;
   // Optional overrides (the defaults are the /gcse band): the heading's width, and the image
   // box's width from xl (the image keeps its 3:2 box and is never cropped).
   headingClassName?: string;
+  headingLine2ClassName?: string;
   imageWidthClassName?: string;
+  // Edge fades for images framed differently from the annotated laptops.
+  imageFade?: CSSProperties;
 }) {
+  const width = image.width ?? 1536;
+  const height = image.height ?? 1024;
   return (
     <section
       className="relative isolate overflow-hidden xl:flex xl:min-h-[640px] xl:items-center"
@@ -58,8 +71,8 @@ export default function PlatformBand({
           the new 3:2 ratio), right-aligned, vertically centred, clear of the text and boxes. The
           box matches the drawn image, so the fades sit on its edges. */}
       <div
-        className={`absolute top-1/2 right-0 hidden aspect-[3/2] max-h-full -translate-y-1/2 xl:block ${imageWidthClassName}`}
-        style={IMAGE_FADE}
+        className={`absolute top-1/2 right-0 hidden max-h-full -translate-y-1/2 xl:block ${imageWidthClassName}`}
+        style={{ ...imageFade, aspectRatio: `${width} / ${height}` }}
       >
         <Image
           src={image.src}
@@ -78,18 +91,22 @@ export default function PlatformBand({
         }}
         aria-hidden="true"
       />
-      <Container className="relative z-10 w-full py-16 md:py-24">
+      <Container className="relative z-10 w-full py-section">
         <div className="max-w-[620px] text-left">
           {eyebrow && <p className="mb-4 text-[12px] uppercase tracking-[0.25em] text-white/65">{eyebrow}</p>}
           <h2 className={`text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-white md:text-[56px] ${headingClassName}`}>
-            {headingLine1}
-            <br />
-            <em className="text-accent">{headingLine2}</em>
+            {heading ?? (
+              <>
+                {headingLine1}
+                <br />
+                <em className={`text-accent ${headingLine2ClassName}`}>{headingLine2}</em>
+              </>
+            )}
           </h2>
-          <p className="mt-5 text-[18px] leading-[1.6] text-white/80">{body}</p>
+          <p className="mt-lead text-[18px] leading-[1.6] text-white/80">{body}</p>
 
           {/* For teachers / For students: side by side from md, stacked below. */}
-          <AudienceBoxes items={audiences} className="mt-10" />
+          {audiences && <AudienceBoxes items={audiences} className="mt-10" />}
 
           {children}
         </div>
@@ -98,12 +115,12 @@ export default function PlatformBand({
       <Image
         src={image.src}
         alt={image.alt}
-        width={1536}
-        height={1024}
+        width={width}
+        height={height}
         loading="lazy"
         sizes="100vw"
         className="block h-auto w-full xl:hidden"
-        style={IMAGE_FADE}
+        style={imageFade}
       />
     </section>
   );

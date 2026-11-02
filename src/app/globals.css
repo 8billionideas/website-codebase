@@ -24,6 +24,36 @@
   --color-paper: #fffdfa;
   --color-surface: #f4f2ef;
   --color-muted: #6b7280;
+
+  /* Spacing scale (Website Review 02, G01). Section padding and the gaps inside a section's
+     intro, by breakpoint: mobile / tablet (768px+) / desktop (1024px+). Used through the
+     spacing utilities in @theme below (py-section, pt-section, mt-content…).
+     - section: standard section padding, top and bottom: 64 / 80 / 96.
+     - section-tight: compact bands (quote band, logo strip): 48 / 56 / 64.
+     - content: a section's intro (heading or paragraph) to its main content (cards, grids,
+       calculators): 32 / 40 / 48.
+     Fixed: eyebrow → heading 16px (mt-eyebrow), heading → paragraph 20px (mt-lead).
+     Intentional exceptions keep their own values: heroes, full-bleed image bands and the
+     closing "Book a demonstration" band. */
+  --section-y: 4rem;
+  --section-y-tight: 3rem;
+  --content-gap: 2rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --section-y: 5rem;
+    --section-y-tight: 3.5rem;
+    --content-gap: 2.5rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --section-y: 6rem;
+    --section-y-tight: 4rem;
+    --content-gap: 3rem;
+  }
 }
 
 @theme inline {
@@ -35,6 +65,13 @@
   --color-muted: var(--color-muted);
 
   --font-sans: var(--font-poppins), system-ui, sans-serif;
+
+  /* Spacing tokens (see the spacing scale in :root). */
+  --spacing-section: var(--section-y);
+  --spacing-section-tight: var(--section-y-tight);
+  --spacing-content: var(--content-gap);
+  --spacing-eyebrow: 1rem;
+  --spacing-lead: 1.25rem;
 
   /* Type scale — weights follow the site-wide light system: headings 300,
      body/labels 400. See globals.css `@layer base` below for the h1-h6

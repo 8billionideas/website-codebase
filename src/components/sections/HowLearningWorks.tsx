@@ -6,7 +6,7 @@ export default function HowLearningWorks() {
   const { eyebrow, headingLine1, headingLine2, stages } = howLearningWorks;
 
   return (
-    <section className="relative isolate overflow-hidden bg-ink py-16 md:py-24">
+    <section className="relative isolate overflow-hidden bg-ink py-section">
       {/* Large, very faint ring partly off the right edge (decorative). */}
       <div
         aria-hidden="true"
@@ -14,13 +14,13 @@ export default function HowLearningWorks() {
       />
       <Container>
         <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-        <h2 className="mt-4 max-w-[1100px] text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-white md:text-[52px]">
+        <h2 className="mt-eyebrow max-w-[1100px] text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-white md:text-[52px]">
           {headingLine1}
           <br />
           <em className="text-accent">{headingLine2}</em>
         </h2>
 
-        <ul className="mt-14 grid list-none grid-cols-1 gap-8 p-0 md:grid-cols-3 md:gap-12">
+        <ul className="mt-content grid list-none grid-cols-1 gap-8 p-0 md:grid-cols-3 md:gap-12">
           {stages.map((stage) => (
             <li key={stage.title}>
               <div className="flex items-center" aria-hidden="true">

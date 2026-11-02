@@ -114,11 +114,11 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Mission band (ink) */}
-      <section className="bg-ink py-14 md:py-20 lg:py-28">
+      <section className="bg-ink py-section">
         <Container>
           {/* Centred on purpose, for this band only. */}
           <p className="text-center text-[12px] uppercase tracking-[0.25em] text-accent">OUR MISSION</p>
-          <h2 className="mx-auto mt-5 text-balance text-center text-[32px] font-light leading-[1.3] tracking-[-0.01em] text-white md:text-[52px]">
+          <h2 className="mx-auto mt-eyebrow text-balance text-center text-[32px] font-light leading-[1.3] tracking-[-0.01em] text-white md:text-[52px]">
             Give every student on the planet the{" "}
             <em className="text-accent">skills, belief and values</em> to change the world.
           </h2>
@@ -126,17 +126,17 @@ export default function AboutPage() {
       </section>
 
       {/* 3. Why we care */}
-      <section className="bg-paper pt-16 pb-16 md:pt-24 md:pb-24">
+      <section className="bg-paper py-section">
         <Container>
           <p className="text-[12px] uppercase tracking-[0.25em] text-accent">WHY WE CARE</p>
-          <h2 className="mt-4 max-w-[1000px] text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+          <h2 className="mt-eyebrow max-w-[1000px] text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
             We care about the parts of education
             <br />
             <em className="text-accent">that are hardest to measure</em>
           </h2>
 
           {/* Two equal columns with a centred hairline between them from md. */}
-          <div className="relative mt-8 grid grid-cols-1 gap-6 md:mt-12 md:grid-cols-2 md:gap-16">
+          <div className="relative mt-content grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-16">
             <div
               className="absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-ink/12 md:block"
               aria-hidden="true"
@@ -182,10 +182,7 @@ export default function AboutPage() {
       {/* 4. Our story */}
       <OurStorySection />
 
-      {/* Our story (paper) and the trust section's top (a light mint) are both light, so a
-          hairline separates them. */}
-      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
-
+      {/* Our story ends on navy (chapter 06), so no divider before the trust section's mint top. */}
       {/* 5. Trust: mint top part (stats, champion schools) and the ink testimonial band.
           Paper follows the ink band, so no divider after it. */}
       <TrustSection />

@@ -88,28 +88,28 @@ export default function ImplementationSupportSection() {
       </div>
 
       <div
-        className="relative z-10 py-14 lg:py-24"
+        className="relative z-10 py-section"
         style={{ paddingLeft: CONTAINER_SIDE_INSET, paddingRight: CONTAINER_SIDE_INSET }}
       >
         <div className="max-w-[600px]">
           <p className="text-[12px] uppercase tracking-[0.25em] text-ink/70">
             IMPLEMENTATION SUPPORT
           </p>
-          <h2 className="mt-4 text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
+          <h2 className="mt-eyebrow text-balance text-[36px] font-light leading-[1.1] tracking-[-0.01em] text-ink md:text-[56px]">
             The support to make
             <br />
             the curriculum work
             <br />
             <em className="text-accent">in your school</em>
           </h2>
-          <p className="mt-5 text-[18px] leading-[1.6] text-ink/70">
+          <p className="mt-lead text-[18px] leading-[1.6] text-ink/70">
             From implementation through to ongoing delivery, your Partnership Manager
             works alongside your school, with the option to add live launches, staff
             training and in-school delivery where it would make the biggest difference.
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="mt-content grid grid-cols-1 gap-5 lg:grid-cols-2">
           {CARDS.map((card) => (
             <SupportCard key={card.title} {...card} />
           ))}

@@ -207,7 +207,7 @@ export default function ContactSection() {
   const avatars = teamAvatars.slice(0, 3);
 
   return (
-    <section id="contact" className="bg-paper pb-16 md:pb-24">
+    <section id="contact" className="bg-paper pb-section">
       <div className="mx-auto max-w-[1196px] px-6 md:px-12">
         {status === "success" ? (
           <div aria-live="polite" className="flex flex-col items-center py-12 text-center">

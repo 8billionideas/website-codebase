@@ -164,7 +164,7 @@ export default function CaseStudyTestimonials({
         ref={rowRef}
         role="region"
         aria-label="Testimonials"
-        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-14 flex snap-x snap-mandatory items-start overflow-x-auto divide-x divide-ink/12 [&::-webkit-scrollbar]:hidden"
+        className="[-ms-overflow-style:none] [scrollbar-width:none] mt-content flex snap-x snap-mandatory items-start overflow-x-auto divide-x divide-ink/12 [&::-webkit-scrollbar]:hidden"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >

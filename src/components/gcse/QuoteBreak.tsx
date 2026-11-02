@@ -9,7 +9,7 @@ export default function QuoteBreak() {
   const { text, name, role, isPlaceholder } = gcse.quote;
 
   return (
-    <section className="relative isolate overflow-hidden bg-paper py-20 md:py-[120px]">
+    <section className="relative isolate overflow-hidden bg-paper py-section-tight">
       <Image
         src="/images/gcse/quote-background.webp"
         alt=""
