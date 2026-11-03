@@ -23,25 +23,25 @@ export const metadata: Metadata = {
 const H2 = "text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] md:text-[52px]";
 const BODY = "text-[18px] leading-[1.6]";
 
-// The lesson mock-up, or a mint "Image coming soon" block (4/3) until there is one.
+// The workshop video's thumbnail as a rounded 16:9 card. It's a preview (the video comes with the
+// download), so it links to the form, scrolling smoothly (scroll-smooth on <html>).
 function LessonImage() {
-  if (CV_WORKSHOP_IMAGE) {
-    return (
+  if (!CV_WORKSHOP_IMAGE) return null;
+  return (
+    <a
+      href="#download"
+      className="relative block aspect-video w-full overflow-hidden rounded-2xl shadow-[0_8px_24px_rgba(22,33,61,0.12)] focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-paper"
+    >
+      <span className="sr-only">Go to the download form</span>
       <Image
         src={CV_WORKSHOP_IMAGE.src}
         alt={cvWorkshopResource.alt}
-        width={CV_WORKSHOP_IMAGE.width}
-        height={CV_WORKSHOP_IMAGE.height}
+        fill
         preload
         sizes="(min-width: 1024px) 560px, 100vw"
-        className="h-auto w-full"
+        className="object-cover"
       />
-    );
-  }
-  return (
-    <div className="flex aspect-[4/3] w-full items-center justify-center bg-accent/[0.12]">
-      <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">Image coming soon</p>
-    </div>
+    </a>
   );
 }
 

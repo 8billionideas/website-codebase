@@ -4,12 +4,13 @@ import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
-import { KITS, closingImage, type Resource } from "@/lib/resources";
+import { KITS, KIT_DOWNLOADS, closingImage, type Resource } from "@/lib/resources";
 import Button from "@/components/ui/Button";
 import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
 import Link from "next/link";
 import { MONEY_MASTERS_IMAGE, moneyMastersResource } from "@/content/money-masters";
 import MoneyMastersRequestTrigger from "@/components/money-masters/MoneyMastersRequest";
+import KitDownloadTrigger from "@/components/resources/KitDownload";
 import { CV_WORKSHOP_IMAGE, cvWorkshopResource } from "@/content/cv-workshop";
 
 export const metadata: Metadata = {
@@ -53,7 +54,7 @@ const RESOURCES: Resource[] = [
     cta: cvWorkshopResource.cta,
     url: cvWorkshopResource.url,
     image: CV_WORKSHOP_IMAGE
-      ? { src: CV_WORKSHOP_IMAGE.src, alt: cvWorkshopResource.alt, position: "center center", fit: "contain" }
+      ? { src: CV_WORKSHOP_IMAGE.src, alt: cvWorkshopResource.alt, position: "center center", fit: "photo" }
       : null,
   },
 ];
@@ -71,6 +72,29 @@ function TypeLabel({ children }: { children: string }) {
 }
 
 function KitImage({ kit }: { kit: Resource }) {
+  if (kit.image?.fit === "photo") {
+    // A full photo (the First CV Workshop's video thumbnail), not a cut-out product: a rounded 16:9
+    // card with a soft shadow and no blend, in the same frame and as wide as the products' 13:10 box,
+    // so the four rows look the same size.
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-paper p-8 [container-type:size]">
+        <div
+          className="relative overflow-hidden rounded-2xl shadow-[0_8px_24px_rgba(22,33,61,0.12)]"
+          style={{ width: "min(100cqw, 520px, 130cqh)", aspectRatio: "16 / 9" }}
+        >
+          <Image
+            src={kit.image.src}
+            alt={kit.image.alt}
+            fill
+            loading="lazy"
+            sizes="(min-width: 1024px) 520px, 100vw"
+            className="object-cover"
+            style={{ objectPosition: kit.image.position }}
+          />
+        </div>
+      </div>
+    );
+  }
   if (kit.image?.fit === "contain") {
     // Whole product visible, padded off the edges. Every resource image uses the same 13:10 box,
     // the largest that fits the frame up to 520×400 (the frame is a size container, so the box keeps
@@ -188,14 +212,19 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
         {/* With a second button, the two stack 12px apart at the same width: the wider label's from
             sm (a grid as wide as its widest button), full width below. */}
         <div className={EXTRA_ACTIONS[kit.slug] ? "mt-6 grid w-full gap-3 sm:w-max" : "mt-6"}>
-          <Button
-            href={kit.url}
-            {...(isInternal(kit.url) ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-            arrow
-            className={EXTRA_ACTIONS[kit.slug] ? "w-full" : undefined}
-          >
-            {kit.cta}
-          </Button>
+          {/* The kits' button opens the download pop-up (the HubSpot resources form); the others link. */}
+          {KIT_DOWNLOADS[kit.slug] ? (
+            <KitDownloadTrigger kitSlug={kit.slug} kitName={kit.title} label={kit.cta} />
+          ) : (
+            <Button
+              href={kit.url}
+              {...(isInternal(kit.url) ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+              arrow
+              className={EXTRA_ACTIONS[kit.slug] ? "w-full" : undefined}
+            >
+              {kit.cta}
+            </Button>
+          )}
           {EXTRA_ACTIONS[kit.slug]}
         </div>
       </div>

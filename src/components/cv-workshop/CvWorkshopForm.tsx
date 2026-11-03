@@ -3,7 +3,12 @@
 import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent } from "react";
 import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { CV_WORKSHOP_OPT_IN_TEXT, isCvWorkshopFormConfigured, submitCvWorkshopDownload } from "@/lib/hubspot";
+import {
+  CV_WORKSHOP_RESOURCE_NAME,
+  DOWNLOAD_OPT_IN_TEXT,
+  isResourcesFormConfigured,
+  submitCvWorkshopDownload,
+} from "@/lib/hubspot";
 import { trackEvent } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site-config";
 import { cvWorkshopDownload } from "@/content/cv-workshop";
@@ -38,8 +43,9 @@ function validate(name: FieldName, value: string): string | undefined {
 const INPUT =
   "h-11 w-full rounded-full border bg-white px-4 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-ink/45 focus:border-accent focus:ring-[3px] focus:ring-accent/20";
 
-// /cv-workshop download form (#download): submits to the CV HubSpot form (shared helper, EU fallback),
-// whose workflow emails the download link. The success message replaces the form.
+// /cv-workshop download form (#download): submits to the HubSpot resources form, like the kits' pop-up
+// on /resources (shared helper, EU fallback), whose workflow emails the download link. The success
+// message replaces the form.
 export default function CvWorkshopForm() {
   const uid = useId();
   const id = (name: string) => `${uid}-${name}`;
@@ -69,7 +75,7 @@ export default function CvWorkshopForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting" || !isCvWorkshopFormConfigured) return;
+    if (status === "submitting" || !isResourcesFormConfigured) return;
 
     const nextErrors: Errors = {};
     for (const name of ORDER) nextErrors[name] = validate(name, values[name]);
@@ -97,7 +103,7 @@ export default function CvWorkshopForm() {
         marketingOptIn: optIn,
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
-      trackEvent("generate_lead", { form_name: "resource_download", resource: "cv_workshop" });
+      trackEvent("generate_lead", { form_name: CV_WORKSHOP_RESOURCE_NAME, resource: "cv_workshop" });
       setSubmittedName(firstName);
       setStatus("success");
     } catch {
@@ -179,7 +185,7 @@ export default function CvWorkshopForm() {
           />
         </span>
         <span>
-          <span className="font-medium text-ink">{cvWorkshopDownload.optInLead}</span> {CV_WORKSHOP_OPT_IN_TEXT}
+          <span className="font-medium text-ink">{cvWorkshopDownload.optInLead}</span> {DOWNLOAD_OPT_IN_TEXT}
         </span>
       </label>
 
@@ -191,7 +197,11 @@ export default function CvWorkshopForm() {
 
       {status === "error" && (
         <p role="alert" className="rounded-lg bg-[#B42318]/[0.08] px-4 py-3 text-[14px] text-[#B42318]">
-          Something went wrong sending your details. Please try again.
+          Something went wrong sending your details. Please try again, or email{" "}
+          <a href={`mailto:${siteConfig.email}`} className="font-medium underline underline-offset-2">
+            {siteConfig.email}
+          </a>
+          .
         </p>
       )}
 
@@ -201,12 +211,12 @@ export default function CvWorkshopForm() {
           size="form"
           arrow
           loading={status === "submitting"}
-          disabled={status === "submitting" || !isCvWorkshopFormConfigured}
-          aria-describedby={!isCvWorkshopFormConfigured ? id("not-connected") : undefined}
+          disabled={status === "submitting" || !isResourcesFormConfigured}
+          aria-describedby={!isResourcesFormConfigured ? id("not-connected") : undefined}
         >
           {status === "submitting" ? "Sending…" : cvWorkshopDownload.submit}
         </Button>
-        {!isCvWorkshopFormConfigured && (
+        {!isResourcesFormConfigured && (
           <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/60">
             Downloads aren&apos;t connected yet – please email{" "}
             <a href={`mailto:${siteConfig.email}`} className="text-ink underline underline-offset-2">

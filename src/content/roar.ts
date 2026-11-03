@@ -60,15 +60,6 @@ export const roarTeachers = {
     { emoji: "🎥", label: "Module 4:", text: "Creating an advert (poster and jingle)" },
     { emoji: "🥳", label: "Finals:", text: "In-school Finals and National Awards Day" },
   ],
-  photo: {
-    src: "/images/roar/wash-it-right-prototype.webp",
-    alt: "The Wash It Right prototype: a paper model of a washing machine with a programme dial and a label scanner",
-    width: 536,
-    height: 685,
-    captionLead: "In-school finalists’ prototype at Woodland Meeds School.",
-    captionTitle: "Wash It Right",
-    captionText: "a washing machine which scans the washing labels to ensure you wash clothes on the right programme",
-  },
 };
 
 export const roarFinals = {

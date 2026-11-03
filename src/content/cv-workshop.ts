@@ -1,10 +1,13 @@
 // First CV Workshop: the fourth resource on /resources and its landing page, /cv-workshop, with the
 // download form connected to the HubSpot form from the old page (page.8billionideas.com/cv-lesson).
 
-// TODO: Add the lesson mock-up (the video and activity book) when one is made. The old page has
-// only the video thumbnail, so /resources and /cv-workshop show a mint "Image coming soon" block
-// until then. The alt text is cvWorkshopResource.alt.
-export const CV_WORKSHOP_IMAGE: { src: string; width: number; height: number } | null = null;
+// The workshop video's thumbnail (1920×1080, WebP at 1600×900): a full photo, shown as a rounded 16:9
+// card on /resources and in the /cv-workshop hero. The alt text is cvWorkshopResource.alt.
+export const CV_WORKSHOP_IMAGE: { src: string; width: number; height: number } | null = {
+  src: "/images/resources/cv-workshop.webp",
+  width: 1600,
+  height: 900,
+};
 
 // Confirm this figure is current.
 export const SHOW_CAREER_LEADERS_STAT = true;
@@ -23,8 +26,8 @@ export const cvWorkshopResource = {
   ],
   cta: "Find out more",
   url: "/cv-workshop",
-  // Alt text for the image, once there is one.
-  alt: "First CV Workshop: video workshop and printable activity book by 8billionideas",
+  // Alt text for CV_WORKSHOP_IMAGE.
+  alt: "First CV Workshop video by 8billionideas: a presenter introducing the Curriculum Vitae lesson",
 };
 
 export const cvWorkshopHero = {

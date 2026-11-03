@@ -65,8 +65,8 @@ export default function CaseStudiesPage() {
         </Container>
       </section>
 
-      {/* Case study rows — image and text alternate sides on desktop. Esher College (The
-          Internship) is first, as a normal row. */}
+      {/* Case study rows — image and text alternate sides on desktop, in the data file's order
+          (Harrow, Nord Anglia India, Esher College, Chelsea, Severn Academies). */}
       <div>
         {caseStudies.map((study, i) => {
           const imageOnRight = i % 2 === 1;

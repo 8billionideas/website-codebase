@@ -25,6 +25,7 @@ export const footerPartners: { label: string; href: string | null }[] = [
   { label: "Money Masters (with Zoud)", href: "/money-masters" },
   { label: "Minerva Virtual Academy", href: "/minerva" },
   { label: "ROAR with Lions Clubs", href: "/roar" },
+  { label: "GEC Academy", href: "/gec-academy" },
   { label: "CityFibre", href: SHOW_CITYFIBRE_LINK ? CITYFIBRE_URL : null },
 ];
 

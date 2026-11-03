@@ -46,7 +46,6 @@ function SignUpButton() {
 }
 
 export default function RoarPage() {
-  const { photo } = roarTeachers;
   return (
     <div className="bg-paper">
       {/* 1. Hero: the Lions Roar and 8billionideas logos, then the introduction. */}
@@ -115,37 +114,35 @@ export default function RoarPage() {
         </Container>
       </section>
 
-      {/* 5. Teachers: what to know and the five steps, beside the Wash It Right prototype. Same mint
-          band as the impact section above, so no top padding: the gap is that section's own. */}
+      {/* 5. Teachers: what to know, then the five steps as cards (five across from 1280px, 3 + 2
+          centred at 1024–1279px, two columns from 640px, one below). Same mint band as the impact
+          section above, so no top padding: the gap is that section's own. */}
       <section className="bg-accent/[0.06] pb-section">
-        <Container className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-16">
-          <div>
+        <Container>
+          <div className="max-w-[760px]">
             <h2 className={`${H2} text-ink`}>{roarTeachers.heading}</h2>
             <div className={`mt-lead space-y-4 ${BODY} text-ink/75`}>
               {roarTeachers.paragraphs.map((paragraph) => (
                 <p key={paragraph.slice(0, 30)}>{paragraph}</p>
               ))}
             </div>
-            <h3 className="mt-content text-[20px] font-normal text-ink">{roarTeachers.modulesIntro}</h3>
-            <ol className="mt-5 list-none space-y-3 p-0">
-              {roarTeachers.modules.map((step) => (
-                <li key={step.label} className="flex items-start gap-4 rounded-xl border border-ink/10 bg-white px-5 py-4">
-                  <span className="text-[22px] leading-none" aria-hidden="true">
-                    {step.emoji}
-                  </span>
-                  <p className="text-[16px] leading-[1.5] text-ink">
-                    <span className="font-medium">{step.label}</span> {step.text}
-                  </p>
-                </li>
-              ))}
-            </ol>
           </div>
-          <figure>
-            <Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" className="h-auto w-full rounded-2xl" />
-            <figcaption className="mt-4 text-[15px] leading-[1.5] text-ink/70">
-              {photo.captionLead} <span className="font-medium text-ink">{photo.captionTitle}</span> – {photo.captionText}
-            </figcaption>
-          </figure>
+          <h3 className="mt-content text-[20px] font-normal text-ink">{roarTeachers.modulesIntro}</h3>
+          <ol className="mt-5 flex list-none flex-wrap justify-center gap-4 p-0">
+            {roarTeachers.modules.map((step) => (
+              <li
+                key={step.label}
+                className="w-full rounded-xl border border-ink/10 bg-white p-6 sm:w-[calc((100%-16px)/2)] lg:w-[calc((100%-32px)/3)] xl:w-[calc((100%-64px)/5)]"
+              >
+                <span className="block text-[28px] leading-none" aria-hidden="true">
+                  {step.emoji}
+                </span>
+                <p className="mt-4 text-[16px] leading-[1.5] text-ink">
+                  <span className="font-medium">{step.label}</span> {step.text}
+                </p>
+              </li>
+            ))}
+          </ol>
         </Container>
       </section>
 

@@ -33,46 +33,9 @@ export interface CaseStudy {
 // nothing there.
 export const TRUSTPILOT_PROFILE_URL: string | null = null;
 
-// Display order: Esher College (The Internship) first, then Harrow, Nord Anglia India, Chelsea and
-// Severn Academies.
+// Display order: Harrow, Nord Anglia India, Esher College (The Internship), Chelsea and Severn
+// Academies.
 export const caseStudies: CaseStudy[] = [
-  {
-    slug: "the-internship",
-    name: "The Internship – Esher Sixth Form College",
-    tag: "Programme",
-    location: "Esher, UK",
-    years: null,
-    ageGroups: "Sixth form",
-    programme: "The Internship",
-    scale: "Almost 1,000 students",
-    award: "Sixth Form Colleges Association Enterprise and Employability Award",
-    headlineFact: "Award-winning · almost 1,000 students",
-    summary:
-      "A virtual three-day internship giving sixth formers meaningful work experience at scale, and winner of the Sixth Form Colleges Association's Enterprise and Employability Award.",
-    challenge:
-      "Careers leaders are often stretched thin, trying to find meaningful work placements for hundreds of students at once. Cat Jayne Elmes, Work Experience and Alumni Coordinator at Esher Sixth Form College, knew this challenge well, and her input helped shape the programme.",
-    whatWeDid:
-      "Together we created The Internship, a virtual three-day work experience programme. Students tackle real business problems through activities such as fundraising, website building and concept design, hear from guest speakers from around the world, and receive a certificate they can add to LinkedIn or to university and job applications.",
-    results:
-      "The programme reached almost 500 registrations in its first months and has welcomed almost 1,000 students. It also won the Sixth Form Colleges Association's Enterprise and Employability Award.",
-    quote: {
-      text: "'The Internship' is a brilliant opportunity. Not only to get a meaningful work experience, to hit those Gatsby Benchmarks, and also to hit the numbers in college.",
-      name: "Cat Jayne Elmes",
-      role: "Work Experience and Alumni Coordinator, Esher Sixth Form College",
-    },
-    secondaryQuote: {
-      text: "It definitely helped with team work skills and presenting skills because it was something I had no interest in before, I always avoided it.",
-      name: "Year 11 Student",
-      role: "The Internship",
-    },
-    image: {
-      src: "/images/case-studies/esher-college.webp",
-      alt: "Esher Sixth Form College campus with the college logo",
-      // Centred, so the college logo in the middle stays whole at every card and banner size.
-      position: "center center",
-    },
-    card: { name: "Esher College", label: "The Internship" },
-  },
   {
     slug: "harrow-sustainability450",
     name: "Harrow Family of Schools – Sustainability450",
@@ -125,6 +88,43 @@ export const caseStudies: CaseStudy[] = [
       alt: "The Oakridge International School logo, a Nord Anglia Education school, over the school building in Hyderabad",
       position: "center center",
     },
+  },
+  {
+    slug: "the-internship",
+    name: "The Internship – Esher Sixth Form College",
+    tag: "Programme",
+    location: "Esher, UK",
+    years: null,
+    ageGroups: "Sixth form",
+    programme: "The Internship",
+    scale: "Almost 1,000 students",
+    award: "Sixth Form Colleges Association Enterprise and Employability Award",
+    headlineFact: "Award-winning · almost 1,000 students",
+    summary:
+      "A virtual three-day internship giving sixth formers meaningful work experience at scale, and winner of the Sixth Form Colleges Association's Enterprise and Employability Award.",
+    challenge:
+      "Careers leaders are often stretched thin, trying to find meaningful work placements for hundreds of students at once. Cat Jayne Elmes, Work Experience and Alumni Coordinator at Esher Sixth Form College, knew this challenge well, and her input helped shape the programme.",
+    whatWeDid:
+      "Together we created The Internship, a virtual three-day work experience programme. Students tackle real business problems through activities such as fundraising, website building and concept design, hear from guest speakers from around the world, and receive a certificate they can add to LinkedIn or to university and job applications.",
+    results:
+      "The programme reached almost 500 registrations in its first months and has welcomed almost 1,000 students. It also won the Sixth Form Colleges Association's Enterprise and Employability Award.",
+    quote: {
+      text: "'The Internship' is a brilliant opportunity. Not only to get a meaningful work experience, to hit those Gatsby Benchmarks, and also to hit the numbers in college.",
+      name: "Cat Jayne Elmes",
+      role: "Work Experience and Alumni Coordinator, Esher Sixth Form College",
+    },
+    secondaryQuote: {
+      text: "It definitely helped with team work skills and presenting skills because it was something I had no interest in before, I always avoided it.",
+      name: "Year 11 Student",
+      role: "The Internship",
+    },
+    image: {
+      src: "/images/case-studies/esher-college.webp",
+      alt: "Esher Sixth Form College campus with the college logo",
+      // Centred, so the college logo in the middle stays whole at every card and banner size.
+      position: "center center",
+    },
+    card: { name: "Esher College", label: "The Internship" },
   },
   {
     slug: "chelsea-fc-academy",

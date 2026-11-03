@@ -11,9 +11,9 @@ const HUBSPOT_DEFAULTS = {
   moneyMastersFormId: null as string | null,
   // The ROAR sign-up form (as embedded on page.8billionideas.com/roar-2026).
   roarFormId: "51b30d26-843b-4ed3-8944-70ca0654709b",
-  // The First CV Workshop download form (as embedded on page.8billionideas.com/cv-lesson); its
-  // HubSpot workflow emails the download link.
-  cvWorkshopFormId: "561208a7-c30b-4c1f-ba6c-4303592604af",
+  // The resources download form: Future Jobs Kit 2.0 and My First Job Kit (the /resources pop-up)
+  // and the First CV Workshop (/cv-workshop). Its HubSpot workflow emails the download link.
+  resourcesFormId: "0c0e6eaf-3138-47bb-aad0-401744bf07f5",
 };
 
 // NEXT_PUBLIC_ variables are inlined at build time, so each is read by its full name.
@@ -31,15 +31,16 @@ export const HUBSPOT_MONEY_MASTERS_FORM_ID =
 
 export const HUBSPOT_ROAR_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_ROAR_FORM_ID || HUBSPOT_DEFAULTS.roarFormId;
 
-export const HUBSPOT_CV_WORKSHOP_FORM_ID =
-  process.env.NEXT_PUBLIC_HUBSPOT_CV_WORKSHOP_FORM_ID || HUBSPOT_DEFAULTS.cvWorkshopFormId || "";
+
+export const HUBSPOT_RESOURCES_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_RESOURCES_FORM_ID || HUBSPOT_DEFAULTS.resourcesFormId || "";
 
 export const isHubspotConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_DEMO_FORM_ID);
 export const isContactFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CONTACT_FORM_ID);
 export const isQuoteFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_QUOTE_FORM_ID);
 export const isMoneyMastersFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_MONEY_MASTERS_FORM_ID);
 export const isRoarFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_ROAR_FORM_ID);
-export const isCvWorkshopFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CV_WORKSHOP_FORM_ID);
+export const isResourcesFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_RESOURCES_FORM_ID);
 
 // Forms API v3 submission hosts. HubSpot's Forms API v3 reference documents only the standard
 // host, so it's tried first. For EU accounts, a 404 there ("form not found") is retried once at
@@ -89,10 +90,12 @@ function readHubspotCookie(): string | undefined {
 
 // Posts to the HubSpot Forms API. Empty values are left out. A key can name the record type
 // as HubSpot does ("0-2/name" is the company's Name); plain keys are contact properties.
+// context overrides the page URL and name HubSpot records (they default to the current page).
 export async function submitHubspotForm(
   formId: string,
   values: Record<string, string | undefined>,
-  legalConsentOptions?: HubspotLegalConsentOptions
+  legalConsentOptions?: HubspotLegalConsentOptions,
+  context?: { pageUri?: string; pageName?: string }
 ): Promise<boolean> {
   const fields = Object.entries(values)
     .filter(([, value]) => value)
@@ -104,8 +107,8 @@ export async function submitHubspotForm(
   const body = JSON.stringify({
     fields,
     context: {
-      pageUri: window.location.href,
-      pageName: document.title,
+      pageUri: context?.pageUri ?? window.location.href,
+      pageName: context?.pageName ?? document.title,
       ...(hutk ? { hutk } : {}),
     },
     ...(legalConsentOptions ? { legalConsentOptions } : {}),
@@ -184,9 +187,9 @@ export function submitRoarSignUp(request: RoarSignUp): Promise<boolean> {
   );
 }
 
-// First CV Workshop download (/resources): the form's three contact fields, by their internal names
+// A download request: the resources form's three contact fields, by their internal names
 // ("0-1/firstname", "0-1/lastname", "0-1/email"), plus its one optional marketing checkbox.
-export interface CvWorkshopDownload {
+export interface ResourceDownload {
   firstname: string;
   lastname: string;
   email: string;
@@ -194,31 +197,61 @@ export interface CvWorkshopDownload {
   marketingOptIn: boolean;
 }
 
-// The form's consent settings: processing consent is implicit (the small print, no checkbox), and
-// the opt-in is the communication checkbox for subscription type 7269415.
-export const CV_WORKSHOP_SUBSCRIPTION_TYPE_ID = 7269415;
-export const CV_WORKSHOP_PROCESSING_TEXT =
+// The resources form's consent settings: processing consent is implicit (the small print, no
+// checkbox), and the opt-in is the communication checkbox for subscription type 7269415.
+export const DOWNLOAD_SUBSCRIPTION_TYPE_ID = 7269415;
+export const DOWNLOAD_PROCESSING_TEXT =
   "We’ll use your details to send your download. You can unsubscribe at any time. See our Privacy Policy.";
-export const CV_WORKSHOP_OPT_IN_TEXT =
+export const DOWNLOAD_OPT_IN_LEAD = "Want to hear from us?";
+export const DOWNLOAD_OPT_IN_TEXT =
   "Send me updates from 8billionideas, including programmes, events, resources for schools and our newsletter.";
 
-export function submitCvWorkshopDownload({ marketingOptIn, ...contact }: CvWorkshopDownload): Promise<boolean> {
-  return submitHubspotForm(
-    HUBSPOT_CV_WORKSHOP_FORM_ID,
-    { "0-1/firstname": contact.firstname, "0-1/lastname": contact.lastname, "0-1/email": contact.email },
-    {
-      consent: {
-        consentToProcess: true,
-        text: CV_WORKSHOP_PROCESSING_TEXT,
-        // The subscription is only sent when the box is ticked.
-        ...(marketingOptIn
-          ? {
-              communications: [
-                { value: true, subscriptionTypeId: CV_WORKSHOP_SUBSCRIPTION_TYPE_ID, text: CV_WORKSHOP_OPT_IN_TEXT },
-              ],
-            }
-          : {}),
-      },
-    }
-  );
+function downloadConsent(marketingOptIn: boolean): HubspotLegalConsentOptions {
+  return {
+    consent: {
+      consentToProcess: true,
+      text: DOWNLOAD_PROCESSING_TEXT,
+      // The subscription is only sent when the box is ticked.
+      ...(marketingOptIn
+        ? { communications: [{ value: true, subscriptionTypeId: DOWNLOAD_SUBSCRIPTION_TYPE_ID, text: DOWNLOAD_OPT_IN_TEXT }] }
+        : {}),
+    },
+  };
+}
+
+const downloadFields = (contact: { firstname: string; lastname: string; email: string }) => ({
+  "0-1/firstname": contact.firstname,
+  "0-1/lastname": contact.lastname,
+  "0-1/email": contact.email,
+});
+
+// All three downloads go to the resources form. The form has no field saying which resource was
+// asked for yet, so the resource goes in the page context: its URL and "{resource} download".
+// TODO: when the HubSpot admin adds the hidden resource field to the form, send it from both
+// functions below.
+function submitResourceDownload(
+  { marketingOptIn, ...contact }: ResourceDownload,
+  context: { path: string; resourceName: string }
+): Promise<boolean> {
+  return submitHubspotForm(HUBSPOT_RESOURCES_FORM_ID, downloadFields(contact), downloadConsent(marketingOptIn), {
+    pageUri: `${window.location.origin}${context.path}`,
+    pageName: `${context.resourceName} download`,
+  });
+}
+
+// First CV Workshop (the /cv-workshop form).
+export const CV_WORKSHOP_RESOURCE_NAME = "First CV Workshop";
+
+export function submitCvWorkshopDownload(request: ResourceDownload): Promise<boolean> {
+  return submitResourceDownload(request, { path: "/cv-workshop", resourceName: CV_WORKSHOP_RESOURCE_NAME });
+}
+
+// Future Jobs Kit 2.0 / My First Job Kit (the /resources pop-up): the kit's row on /resources.
+export interface KitDownload extends ResourceDownload {
+  kitSlug: string;
+  kitName: string;
+}
+
+export function submitKitDownload({ kitSlug, kitName, ...request }: KitDownload): Promise<boolean> {
+  return submitResourceDownload(request, { path: `/resources#${kitSlug}`, resourceName: kitName });
 }

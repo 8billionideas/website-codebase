@@ -13,8 +13,9 @@ export type Resource = {
     src: string;
     alt: string;
     position: string;
-    // "cover" (default) fills the frame; "contain" shows the whole image.
-    fit?: "cover" | "contain";
+    // "cover" (default) fills the frame; "contain" shows the whole image; "photo" shows a full
+    // photo as a rounded 16:9 card, as wide as the "contain" images' box.
+    fit?: "cover" | "contain" | "photo";
     // "contain" only: the share of the frame the image may use (default 1), to balance products
     // whose files have different amounts of white space around them.
     scale?: number;
@@ -84,4 +85,18 @@ export const closingImage: ClosingImage | null = {
   src: "/images/resources/closing.webp",
   alt: "A smiling secondary student working in a classroom with classmates",
   position: "right center",
+};
+
+// The kits' "Download free resource" pop-up (the HubSpot resources form; its workflow emails the
+// download link). resource: the value sent with the generate_lead event.
+export const KIT_DOWNLOADS: Record<string, { key: "futureJobsKit" | "myFirstJobKit"; resource: string }> = {
+  "future-jobs-kit": { key: "futureJobsKit", resource: "future_jobs_kit" },
+  "my-first-job-kit": { key: "myFirstJobKit", resource: "my_first_job_kit" },
+};
+
+// Direct PDF links for the pop-up's success message. When one is set, a "Download now" button also
+// appears there (opening the PDF in a new tab); null shows only the "check your inbox" message.
+export const KIT_DOWNLOAD_URLS: Record<"futureJobsKit" | "myFirstJobKit", string | null> = {
+  futureJobsKit: null,
+  myFirstJobKit: null,
 };

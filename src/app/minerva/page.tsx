@@ -206,13 +206,15 @@ export default function MinervaPage() {
         </Container>
       </section>
 
-      {/* 2–3. What students learn, the partnership video and the positioning line. */}
+      {/* 2–3. What students learn, the partnership video and the positioning line: centred rows,
+          spaced by the content gap. The cards are all the same height (auto-rows-fr); the paragraph
+          spans the container, as wide as the card grid. */}
       <section className="bg-paper py-section">
-        <Container>
+        <Container className="text-center">
           <h2 className={`${H2} text-ink`}>{minervaOutcomes.heading}</h2>
-          <ul className="mt-content grid list-none grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-content grid list-none auto-rows-fr grid-cols-1 gap-5 p-0 sm:grid-cols-2 lg:grid-cols-4">
             {minervaOutcomes.items.map((item) => (
-              <li key={item.title} className="rounded-xl border border-ink/10 bg-white p-6">
+              <li key={item.title} className="flex flex-col items-center rounded-xl border border-ink/10 bg-white p-6">
                 <IconBadge icon={ICONS[item.icon]} />
                 <h3 className="mt-5 text-[20px] font-normal leading-[1.3] text-ink">{item.title}</h3>
                 <p className="mt-2 text-[15px] leading-[1.6] text-ink/70">{item.text}</p>
@@ -222,9 +224,9 @@ export default function MinervaPage() {
           <YouTube
             id={minervaVideos.partnership.id}
             title={minervaVideos.partnership.title}
-            className="mt-content aspect-video max-w-[960px] rounded-2xl"
+            className="mx-auto mt-content aspect-video max-w-[960px] rounded-2xl"
           />
-          <p className="mt-content max-w-[900px] text-balance text-[22px] font-light leading-[1.45] text-ink md:text-[26px]">
+          <p className="mt-content text-pretty text-[18px] leading-[1.6] text-ink md:text-[21px]">
             {minervaOutcomes.positioning}
           </p>
         </Container>
