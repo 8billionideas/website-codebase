@@ -19,4 +19,9 @@ export interface Testimonial {
   name: string;
   role: string;
   sourceUrl?: string | null;
+  // The school or organisation, from the attribution (shown in the /about carousel's tile when
+  // there's no logo).
+  school?: string;
+  // The school's logo for the /about carousel tile (width and height: the file's size).
+  logo?: { src: string; alt: string; width: number; height: number } | null;
 }

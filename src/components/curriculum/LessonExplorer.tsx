@@ -19,7 +19,7 @@ import { formatLevel, formatLevelShort, formatLevelUpper, type LevelMode } from 
 
 const YEARS = Array.from({ length: 13 }, (_, i) => i + 1);
 // Selected on every page load (only the Years/Grades mode is remembered between visits).
-const DEFAULT_LESSON_EXPLORER_YEAR = 10;
+const DEFAULT_LESSON_EXPLORER_YEAR = 12;
 const DEFAULT_PILLAR: PillarName = "Entrepreneurship";
 
 // Same flag as the homepage pillar cards (Sustainability and Technology).

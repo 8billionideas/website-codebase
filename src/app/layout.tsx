@@ -49,8 +49,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <DemoModalProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
-          {/* /resources and /contact have their own closing sections instead. */}
-          <HideOnRoutes routes={["/resources", "/contact"]}>
+          {/* /resources and /contact have their own closing sections instead; /money-masters ends with
+              the footer. */}
+          <HideOnRoutes routes={["/resources", "/contact", "/money-masters"]}>
             <BookDemoSection />
           </HideOnRoutes>
           <Footer />

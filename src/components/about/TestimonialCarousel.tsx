@@ -73,13 +73,60 @@ function Slide({
   );
 }
 
+// Logo width as a share of the tile's padded inner box (76% × 51% of a 4/3 tile, so 1.49:1), so
+// every logo covers about the same area (48% of the box): the widest (about 3:1) fill the width,
+// squarer ones are narrower and take more of the height.
+function logoWidthPercent(width: number, height: number) {
+  return Math.min(100, Math.sqrt((0.48 * (width / height)) / 1.49) * 100);
+}
+
+// The white tile beside the quote: the active testimonial's school logo, or the school's name
+// when there's no logo yet. Every tile's content sits in the same place and cross-fades.
+function SchoolTile({ testimonials, index }: { testimonials: Testimonial[]; index: number }) {
+  return (
+    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-white shadow-[0_8px_24px_rgba(0,0,0,0.18)] lg:aspect-[4/3]">
+      {testimonials.map((testimonial, i) => (
+        <div
+          key={testimonial.name}
+          aria-hidden={i !== index}
+          className={`absolute inset-0 flex items-center justify-center p-[12%] transition-opacity duration-300 motion-reduce:transition-none ${
+            i === index ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {testimonial.logo ? (
+            <div
+              className="relative h-full"
+              style={{ width: `${logoWidthPercent(testimonial.logo.width, testimonial.logo.height)}%` }}
+            >
+              {/* multiply: any off-white in the logo file disappears into the white tile. The small
+                  files are served as they are (unoptimized), at their full resolution. */}
+              <Image
+                src={testimonial.logo.src}
+                alt={testimonial.logo.alt}
+                fill
+                unoptimized
+                loading="lazy"
+                className="object-contain mix-blend-multiply"
+              />
+            </div>
+          ) : (
+            <p className="line-clamp-3 text-center text-[20px] font-medium leading-[1.3] text-ink">
+              {testimonial.school}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // Full-width ink band, one testimonial at a time. No autoplay; wraps at the ends.
 export default function TestimonialCarousel({
   testimonials,
   image = null,
 }: {
   testimonials: Testimonial[];
-  // Optional photo on the left (above on smaller screens). null shows a blank placeholder.
+  // Optional photo on the left (above on smaller screens). null shows the school logo tile.
   image?: { src: string; alt: string } | null;
 }) {
   const [index, setIndex] = useState(0);
@@ -105,8 +152,8 @@ export default function TestimonialCarousel({
       }}
     >
       <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[34%_minmax(0,1fr)] lg:items-center lg:gap-14">
-        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl lg:aspect-[4/3]">
-          {image ? (
+        {image ? (
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl lg:aspect-[4/3]">
             <Image
               src={image.src}
               alt={image.alt}
@@ -115,10 +162,10 @@ export default function TestimonialCarousel({
               sizes="(min-width: 1024px) 34vw, 100vw"
               className="object-cover"
             />
-          ) : (
-            <div aria-hidden="true" className="h-full w-full bg-white/[0.08]" />
-          )}
-        </div>
+          </div>
+        ) : (
+          <SchoolTile testimonials={testimonials} index={index} />
+        )}
 
         <div className="min-w-0">
           <div className="grid" aria-live="polite">

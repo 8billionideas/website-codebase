@@ -35,6 +35,7 @@ export default function PlatformBand({
   headingLine2ClassName = "",
   imageWidthClassName = "w-[53.1%]",
   imageFade = IMAGE_FADE,
+  imageBoxStyle,
 }: {
   // The image's sampled edge colour, so its faded edges melt into the band.
   background: string;
@@ -58,6 +59,9 @@ export default function PlatformBand({
   imageWidthClassName?: string;
   // Edge fades for images framed differently from the annotated laptops.
   imageFade?: CSSProperties;
+  // Overrides for the xl image box's position (e.g. a right offset that lines the artwork up with
+  // the container's right edge).
+  imageBoxStyle?: CSSProperties;
 }) {
   const width = image.width ?? 1536;
   const height = image.height ?? 1024;
@@ -72,7 +76,7 @@ export default function PlatformBand({
           box matches the drawn image, so the fades sit on its edges. */}
       <div
         className={`absolute top-1/2 right-0 hidden max-h-full -translate-y-1/2 xl:block ${imageWidthClassName}`}
-        style={{ ...imageFade, aspectRatio: `${width} / ${height}` }}
+        style={{ ...imageFade, aspectRatio: `${width} / ${height}`, ...imageBoxStyle }}
       >
         <Image
           src={image.src}

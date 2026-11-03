@@ -30,11 +30,17 @@ export default function StudentProgressionShowcase() {
       background="#01102f"
       headingLine1="Making student progression"
       headingLine2="easier to see and understand"
-      // As the lesson band: from xl the heading is 760px wide. The green line is balanced on its
-      // own at every width ("easier to see" / "and understand"), so "understand" isn't left alone.
-      headingClassName="xl:w-[760px] xl:max-w-none"
+      // The heading stays inside the 620px text column: from lg it's 44px ("Making student
+      // progression" is 755px at 56px, 593px at 44px), on three lines. The green line is balanced
+      // on its own at every width ("easier to see" / "and understand").
+      headingClassName="lg:text-[44px]"
       headingLine2ClassName="inline-block text-balance"
-      imageWidthClassName="w-[50%]"
+      // xl: the laptop and panel (x 25.6–92.5% of the image) end at the container's right edge and
+      // start 56px right of the text column. The page container's content is 1104px wide from
+      // 1200px, so that leaves 428px for them: a 640px image box, its right edge 48px (7.5% of
+      // 640px) past the container's right edge, where the image is only its dark edge.
+      imageWidthClassName="w-[640px]"
+      imageBoxStyle={{ right: "calc(max((100% - 75rem) / 2, 0px) + 3rem - 48px)" }}
       imageFade={IMAGE_FADE}
       body={BODY}
       image={IMAGE}

@@ -32,10 +32,9 @@ export default function LessonPlatformShowcase() {
           </em>
         </>
       }
-      // From xl the heading uses 760px (more than the 620px text column); the paragraph and boxes
-      // stay 620px wide. The image box narrows to 50% so the laptop and its labels keep clear of
-      // the wider heading (the image stays whole).
-      headingClassName="xl:w-[760px] xl:max-w-none"
+      // The heading stays inside the 620px text column (its three lines are at most 599px at
+      // 56px). The image box is 50% wide, so the laptop and labels start 84px (1440px) / 67px
+      // (1280px) to the right of the text column (the image stays whole).
       imageWidthClassName="w-[50%]"
       body={BODY}
       audiences={gcse.platform.audiences}

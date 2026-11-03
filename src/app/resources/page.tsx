@@ -7,6 +7,8 @@ import DemoTrigger from "@/components/demo/DemoTrigger";
 import { KITS, closingImage, type Resource } from "@/lib/resources";
 import Button from "@/components/ui/Button";
 import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
+import Link from "next/link";
+import { MONEY_MASTERS_IMAGE, moneyMastersResource } from "@/content/money-masters";
 
 export const metadata: Metadata = {
   title: "Resources | 8billionideas",
@@ -20,26 +22,58 @@ const INSET_LEFT = "lg:pl-[calc(48px_+_max(0px,(100vw_-_1200px)/2))]";
 const INSET_RIGHT = "lg:pr-[calc(48px_+_max(0px,(100vw_-_1200px)/2))]";
 
 
+// The kits, then Money Masters (the card game, with its own page) in the same row format.
+const RESOURCES: Resource[] = [
+  ...KITS,
+  {
+    slug: "money-masters",
+    type: moneyMastersResource.type,
+    title: moneyMastersResource.title,
+    description: moneyMastersResource.description,
+    tags: null,
+    included: null,
+    cta: moneyMastersResource.cta,
+    url: moneyMastersResource.url,
+    // The card set fills about 94% of its file and is squarer (1.12:1) than the kits' images
+    // (about 1.31:1), so it's drawn at 95% to give it the same visible area as the others.
+    image: MONEY_MASTERS_IMAGE
+      ? { ...MONEY_MASTERS_IMAGE, position: "center center", fit: "contain", scale: 0.95 }
+      : null,
+  },
+];
+
+// Links to pages on this site open in the same tab; the kits' downloads open in a new one.
+const isInternal = (url: string) => url.startsWith("/");
+
 function TypeLabel({ children }: { children: string }) {
   return <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{children}</p>;
 }
 
 function KitImage({ kit }: { kit: Resource }) {
   if (kit.image?.fit === "contain") {
-    // Whole product visible, padded off the edges. Product shots sit on
-    // white, so multiply blends the white into the paper frame.
+    // Whole product visible, padded off the edges. Every resource image uses the same 13:10 box,
+    // the largest that fits the frame up to 520×400 (the frame is a size container, so the box keeps
+    // its shape at every width), centred in its column and against the text; scale balances products
+    // whose files carry different amounts of empty space. Product shots on white blend into the
+    // paper frame with multiply (transparent ones are unaffected).
+    const scale = kit.image.scale ?? 1;
     return (
-      <div className="absolute inset-0 bg-paper p-8">
-        <div className="relative h-full w-full">
-          <Image
-            src={kit.image.src}
-            alt={kit.image.alt}
-            fill
-            loading="lazy"
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-contain mix-blend-multiply"
-            style={{ objectPosition: kit.image.position }}
-          />
+      <div className="absolute inset-0 flex items-center justify-center bg-paper p-8 [container-type:size]">
+        <div
+          className="flex items-center justify-center"
+          style={{ width: "min(100cqw, 520px, 130cqh)", aspectRatio: "13 / 10" }}
+        >
+          <div className="relative" style={{ width: `${scale * 100}%`, height: `${scale * 100}%` }}>
+            <Image
+              src={kit.image.src}
+              alt={kit.image.alt}
+              fill
+              loading="lazy"
+              sizes="(min-width: 1024px) 520px, 100vw"
+              className="object-contain mix-blend-multiply"
+              style={{ objectPosition: kit.image.position }}
+            />
+          </div>
         </div>
       </div>
     );
@@ -76,7 +110,15 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
           imageLeft ? "" : "lg:order-2"
         }`}
       >
-        <KitImage kit={kit} />
+        {/* On site (Money Masters): the image is a link too; the button is the same link, so the image
+            is skipped by keyboard and screen readers. */}
+        {isInternal(kit.url) ? (
+          <Link href={kit.url} tabIndex={-1} aria-hidden="true" className="absolute inset-0 block">
+            <KitImage kit={kit} />
+          </Link>
+        ) : (
+          <KitImage kit={kit} />
+        )}
       </div>
 
       <div
@@ -116,7 +158,11 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
           </div>
         )}
         <div className="mt-6">
-          <Button href={kit.url} target="_blank" rel="noopener noreferrer" arrow>
+          <Button
+            href={kit.url}
+            {...(isInternal(kit.url) ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+            arrow
+          >
             {kit.cta}
           </Button>
         </div>
@@ -165,9 +211,10 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {/* Kit rows — full width, alternating image side on desktop */}
-      <div className="divide-y divide-ink/10 border-y border-ink/10">
-        {KITS.map((kit, i) => (
+      {/* Resource rows — full width, alternating image side on desktop; from lg every row takes the
+          tallest row's height, so the three match. */}
+      <div className="divide-y divide-ink/10 border-y border-ink/10 lg:grid lg:auto-rows-fr">
+        {RESOURCES.map((kit, i) => (
           <KitRow key={kit.slug} kit={kit} index={i} />
         ))}
       </div>

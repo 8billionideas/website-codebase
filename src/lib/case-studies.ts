@@ -22,7 +22,9 @@ export interface CaseStudy {
   results: string | null;
   quote: CaseStudyQuote | null;
   secondaryQuote: CaseStudyQuote | null;
-  featured: boolean;
+  // Card-only title and label (the /case-studies rows and "More case studies" cards); the detail
+  // page keeps name and tag.
+  card?: { name: string; label: string };
   image: { src: string; alt: string; position: string } | null;
 }
 
@@ -31,8 +33,8 @@ export interface CaseStudy {
 // nothing there.
 export const TRUSTPILOT_PROFILE_URL: string | null = null;
 
-// Display order (Website Review 02, S03): The Internship (featured) first, then Harrow, Nord Anglia
-// India, Chelsea and Severn Academies.
+// Display order: Esher College (The Internship) first, then Harrow, Nord Anglia India, Chelsea and
+// Severn Academies.
 export const caseStudies: CaseStudy[] = [
   {
     slug: "the-internship",
@@ -64,7 +66,7 @@ export const caseStudies: CaseStudy[] = [
       role: "The Internship",
     },
     image: null,
-    featured: true,
+    card: { name: "Esher College", label: "The Internship" },
   },
   {
     slug: "harrow-sustainability450",
@@ -91,7 +93,6 @@ export const caseStudies: CaseStudy[] = [
       alt: "The Harrow International School Hong Kong crest over the school building",
       position: "center 55%",
     },
-    featured: false,
   },
   {
     slug: "nord-anglia-education-india",
@@ -119,7 +120,6 @@ export const caseStudies: CaseStudy[] = [
       alt: "The Oakridge International School logo, a Nord Anglia Education school, over the school building in Hyderabad",
       position: "center center",
     },
-    featured: false,
   },
   {
     slug: "chelsea-fc-academy",
@@ -148,7 +148,6 @@ export const caseStudies: CaseStudy[] = [
       alt: "The Chelsea FC crest over the club's academy training building",
       position: "center 45%",
     },
-    featured: false,
   },
   {
     slug: "severn-academies",
@@ -180,18 +179,9 @@ export const caseStudies: CaseStudy[] = [
       alt: "The Severn Academies Educational Trust logo over one of the trust's school buildings",
       position: "center center",
     },
-    featured: false,
   },
 ];
 
 export function getCaseStudyBySlug(slug: string): CaseStudy | undefined {
   return caseStudies.find((study) => study.slug === slug);
-}
-
-export function getFeaturedCaseStudy(): CaseStudy | undefined {
-  return caseStudies.find((study) => study.featured);
-}
-
-export function getOtherCaseStudies(): CaseStudy[] {
-  return caseStudies.filter((study) => !study.featured);
 }

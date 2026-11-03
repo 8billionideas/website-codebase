@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import Container from "@/components/layout/Container";
 import TestimonialCarousel from "@/components/about/TestimonialCarousel";
-import { gcseSchools } from "@/content/schools";
+import { aboutOnlySchools, gcseSchools, type ChampionSchool } from "@/content/schools";
 import { home } from "@/content/home";
 import type { Testimonial } from "@/content/types";
 import { testimonialImage } from "@/content/about-work-with-us";
@@ -19,6 +19,50 @@ const TESTIMONIAL_ORDER = [
   "Adrian McLean",
   "Sean Walsh",
 ];
+
+// The "Trusted by" strip: the champion schools plus the About-only logos, in an order that mixes
+// wide wordmarks, crests and square marks along each row (rows of seven from lg).
+const TRUST_LOGO_ORDER = [
+  // Row 1
+  "sotogrande-international-school",
+  "wellington-college-bangkok",
+  "dubai-british-school-mira",
+  "cranleigh-abu-dhabi",
+  "kings-college-school-panama",
+  "queens-qatar",
+  "dukes-education",
+  // Row 2
+  "british-college-of-gava",
+  "british-school-lisbon",
+  "dubai-british-school-emirates-hills",
+  "north-gate-british-school",
+  "noya-british-school",
+  "kings-college-school-cascais",
+  "kings-college-school-wimbledon",
+];
+const ALL_SCHOOLS = [...gcseSchools, ...aboutOnlySchools];
+const TRUST_LOGOS = TRUST_LOGO_ORDER.map((slug) => ALL_SCHOOLS.find((school) => school.slug === slug)!);
+
+// Optical sizing in a 15:8 cell: every logo is scaled to the same visible area (42% of the cell),
+// then capped to the cell, so wide wordmarks are limited by width and crests by height. WEIGHT
+// nudges logos whose file area doesn't match how heavy they look (1 = no change).
+const CELL_W = 150;
+const CELL_H = 80;
+const TARGET_AREA = CELL_W * CELL_H * 0.42;
+const WEIGHT: Record<string, number> = {
+  "sotogrande-international-school": 0.9, // bold, saturated wordmark
+  "british-school-lisbon": 0.85, // solid navy circle
+  "dukes-education": 0.95, // heavy wordmark
+  "kings-college-school-wimbledon": 1.25, // fine lines and small lettering
+  "north-gate-british-school": 1.12, // pale, open mark
+  "wellington-college-bangkok": 1.1, // fine serif lettering (capped by the cell's height)
+};
+
+function logoWidthPercent({ slug, logo }: ChampionSchool) {
+  const area = TARGET_AREA * (WEIGHT[slug] ?? 1) ** 2;
+  const scale = Math.min(Math.sqrt(area / (logo.width * logo.height)), CELL_W / logo.width, CELL_H / logo.height);
+  return `${((logo.width * scale) / CELL_W) * 100}%`;
+}
 
 function orderedTestimonials(): Testimonial[] {
   const all = [...home.proof.aboutOnlyTestimonials, ...home.proof.testimonials];
@@ -92,10 +136,15 @@ export default function TrustSection() {
               </p>
               <span className="h-px flex-1 bg-ink/12" aria-hidden="true" />
             </div>
-            <ul className="mt-8 grid list-none grid-cols-2 items-center gap-x-6 gap-y-8 p-0 sm:grid-cols-4 xl:grid-cols-8">
-              {gcseSchools.map((school) => (
-                <li key={school.slug} className="flex h-11 items-center justify-center">
-                  {school.logo?.src ? (
+            {/* Two even rows of seven from lg, four per row from md, three from sm, two on phones;
+                every row centred. Each cell is 15:8 (about 150×80 at 1440px). */}
+            <ul className="mt-8 flex list-none flex-wrap justify-center gap-x-4 gap-y-6 p-0 md:gap-x-6 lg:gap-x-4">
+              {TRUST_LOGOS.map((school) => (
+                <li
+                  key={school.slug}
+                  className="w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-4.5rem)/4)] lg:w-[calc((100%-6rem)/7)]"
+                >
+                  <div className="flex aspect-[15/8] w-full items-center justify-center transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                     <Image
                       src={school.logo.src}
                       alt={school.logo.alt}
@@ -103,12 +152,10 @@ export default function TrustSection() {
                       height={school.logo.height}
                       unoptimized
                       loading="lazy"
-                      className="h-11 w-auto max-w-full object-contain opacity-80 mix-blend-multiply transition-opacity hover:opacity-100"
+                      className="max-h-full object-contain mix-blend-multiply"
+                      style={{ width: logoWidthPercent(school), height: "auto" }}
                     />
-                  ) : (
-                    // No logo file yet: the school's name, same height, so the row stays tidy.
-                    <span className="text-center text-[14px] text-ink/70">{school.name}</span>
-                  )}
+                  </div>
                 </li>
               ))}
             </ul>

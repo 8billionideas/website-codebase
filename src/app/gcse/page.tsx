@@ -11,6 +11,7 @@ import ReadyToDeliver from "@/components/gcse/ReadyToDeliver";
 import ProjectThemes from "@/components/gcse/ProjectThemes";
 import QuoteBreak from "@/components/gcse/QuoteBreak";
 import DemoTrigger from "@/components/demo/DemoTrigger";
+import QuoteBand from "@/components/shared/QuoteBand";
 import PlatformBand from "@/components/shared/PlatformBand";
 import { withCriticalCurriculum } from "@/components/shared/CriticalCurriculumName";
 
@@ -106,8 +107,12 @@ export default function GcsePage() {
       {/* 02. Curriculum fit */}
       <CurriculumFitSection />
 
-      {/* Thin divider between the two light sections. */}
-      <div className="h-px w-full bg-ink/[0.08]" aria-hidden="true" />
+      {/* Quote band (the homepage band's component). Photo and navy, so no divider either side. */}
+      <QuoteBand
+        quote="When we introduced the Global Skills Project at DBS Emirates Hills, the response from parents and students was incredible. Families immediately understood the value of developing these essential skills while working towards a recognised GCSE. With the large majority of our Year 9 students signing up to complete the GCSE qualification, the enthusiasm has been overwhelming. Seeing students so engaged in their learning, exploring their own interests has been fantastic. Our collaboration with 8billionideas, alongside their resources and hands-on support, helped us move quickly from the initial idea to launching the qualification, bringing our vision to life in a short space of time."
+        name="Julia Maltby"
+        role="Deputy Head of Secondary, DBS Emirates Hills"
+      />
 
       {/* 03. How the qualification works */}
       <HowQualificationWorks />

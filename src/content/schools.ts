@@ -90,3 +90,53 @@ export const gcseSchools: ChampionSchool[] = [
     },
   },
 ];
+
+// Shown only in the /about trust section's logo strip (with gcseSchools); the homepage champion
+// schools carousel uses gcseSchools alone.
+export const aboutOnlySchools: ChampionSchool[] = [
+  {
+    name: "Cranleigh Abu Dhabi",
+    slug: "cranleigh-abu-dhabi",
+    logo: { src: "/images/schools/cranleigh-abu-dhabi.webp", alt: "Cranleigh Abu Dhabi logo", width: 800, height: 233 },
+  },
+  {
+    name: "Dukes Education",
+    slug: "dukes-education",
+    logo: { src: "/images/schools/dukes-education.webp", alt: "Dukes Education logo", width: 800, height: 260 },
+  },
+  {
+    name: "Wellington College International School Bangkok",
+    slug: "wellington-college-bangkok",
+    logo: {
+      src: "/images/schools/wellington-college-bangkok.webp",
+      alt: "Wellington College International School Bangkok logo",
+      width: 638,
+      height: 716,
+    },
+  },
+  {
+    name: "Dubai British School Emirates Hills",
+    slug: "dubai-british-school-emirates-hills",
+    logo: {
+      src: "/images/schools/dubai-british-school-emirates-hills.webp",
+      alt: "Dubai British School Emirates Hills logo",
+      width: 676,
+      height: 374,
+    },
+  },
+  {
+    name: "King's College School Wimbledon",
+    slug: "kings-college-school-wimbledon",
+    logo: {
+      src: "/images/schools/kings-college-school-wimbledon.webp",
+      alt: "King's College School Wimbledon logo",
+      width: 800,
+      height: 454,
+    },
+  },
+  {
+    name: "British School Lisbon",
+    slug: "british-school-lisbon",
+    logo: { src: "/images/schools/british-school-lisbon.webp", alt: "British School Lisbon logo", width: 344, height: 392 },
+  },
+];

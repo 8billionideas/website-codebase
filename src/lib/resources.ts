@@ -15,6 +15,9 @@ export type Resource = {
     position: string;
     // "cover" (default) fills the frame; "contain" shows the whole image.
     fit?: "cover" | "contain";
+    // "contain" only: the share of the frame the image may use (default 1), to balance products
+    // whose files have different amounts of white space around them.
+    scale?: number;
   } | null;
 };
 
@@ -58,10 +61,14 @@ export const KITS: Resource[] = [
     cta: "Download free resource",
     url: "https://page.8billionideas.com/my-first-job-kit",
     image: {
-      src: "/images/resources/my-first-job-kit.webp",
-      alt: "The My First Job Kit box with example job cards",
+      // 2026 mockup (my-first-job-kit-v2, 1600×1225, trimmed to a 4% margin); the old file is kept.
+      src: "/images/resources/my-first-job-kit-v2.webp",
+      alt: "My First Job Kit by 8billionideas: a box of 50 job cards with a Vet card in front",
       position: "center center",
       fit: "contain",
+      // Its artwork fills 92.6% × 90.3% of the file, the Future Jobs Kit's 87.5% × 79.3% (the files
+      // are the same shape), so 91% of the frame gives both products about the same area.
+      scale: 0.91,
     },
   },
 ];

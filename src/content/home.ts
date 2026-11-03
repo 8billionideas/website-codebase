@@ -1,5 +1,9 @@
 import { CtaLink, NamedItem, Testimonial } from "./types";
 
+// Confirm permission to use the Chelsea FC crest (or the Chelsea FC Foundation logo) before launch.
+// When false, Sean Walsh's testimonial shows the school-name tile instead.
+export const SHOW_CHELSEA_LOGO = true;
+
 export interface FaqItem {
   question: string;
   answer: string;
@@ -90,6 +94,10 @@ export const home = {
         name: "Sean Walsh",
         role: "Personal Development Lead, Chelsea FC Academy",
         sourceUrl: "https://www.trustpilot.com/reviews/6a75c84fe22994d14de9eb90",
+        school: "Chelsea FC Academy",
+        logo: SHOW_CHELSEA_LOGO
+          ? { src: "/images/schools/chelsea-fc.webp", alt: "Chelsea FC crest", width: 800, height: 800 }
+          : null,
       },
       {
         quote:
@@ -97,6 +105,8 @@ export const home = {
         name: "Fatema Kashief",
         role: "Teaching and Learning Lead, Pristine Private School",
         sourceUrl: "https://www.trustpilot.com/reviews/6a2fe5f97cdf5236789c8c33",
+        school: "Pristine Private School",
+        logo: { src: "/images/schools/pristine-private-school.webp", alt: "Pristine Private School logo", width: 328, height: 318 },
       },
       {
         quote:
@@ -104,6 +114,8 @@ export const home = {
         name: "Andrew Elias",
         role: "Director of Marketing & Communications, Chatsworth Schools",
         sourceUrl: "https://www.trustpilot.com/reviews/6890ba1eccbe471e8a1dcf6e",
+        school: "Chatsworth Schools",
+        logo: { src: "/images/schools/chatsworth-schools.webp", alt: "Chatsworth Schools logo", width: 424, height: 152 },
       },
       {
         quote:
@@ -111,6 +123,8 @@ export const home = {
         name: "Anita Gleave",
         role: "CEO, Chatsworth Schools",
         sourceUrl: null,
+        school: "Chatsworth Schools",
+        logo: { src: "/images/schools/chatsworth-schools.webp", alt: "Chatsworth Schools logo", width: 424, height: 152 },
       },
       {
         quote:
@@ -118,6 +132,8 @@ export const home = {
         name: "Adrian McLean",
         role: "Trust Lead, Severn Academies Educational Trust",
         sourceUrl: null,
+        school: "Severn Academies Educational Trust",
+        logo: { src: "/images/schools/severn-academies.webp", alt: "Severn Academies Educational Trust logo", width: 726, height: 361 },
       },
     ] as Testimonial[],
 
@@ -130,6 +146,8 @@ export const home = {
         name: "Silas Edmonds",
         role: "Principal, Ewell Castle School",
         sourceUrl: null,
+        school: "Ewell Castle School",
+        logo: { src: "/images/schools/ewell-castle-school.webp", alt: "Ewell Castle School logo", width: 489, height: 158 },
       },
       {
         quote:
@@ -137,6 +155,8 @@ export const home = {
         name: "Tom Penny",
         role: "Assistant Principal, International School of Stuttgart",
         sourceUrl: null,
+        school: "International School of Stuttgart",
+        logo: { src: "/images/schools/international-school-stuttgart.webp", alt: "International School Stuttgart logo", width: 880, height: 437 },
       },
       {
         quote:
@@ -144,6 +164,8 @@ export const home = {
         name: "Adele O'Doherty",
         role: "Principal, EEP",
         sourceUrl: null,
+        school: "EEP",
+        logo: { src: "/images/schools/egypt-education-platform.webp", alt: "Egypt Education Platform (EEP) logo", width: 390, height: 131 },
       },
     ] as Testimonial[],
 
