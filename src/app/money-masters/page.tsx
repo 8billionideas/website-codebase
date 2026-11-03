@@ -5,11 +5,13 @@ import { ExternalLink } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import MoneyMastersImage from "@/components/money-masters/MoneyMastersImage";
+import MoneyMastersRequestTrigger from "@/components/money-masters/MoneyMastersRequest";
 import {
   MONEY_MASTERS_GREEN,
   moneyMastersIntro,
   moneyMastersIntroCta,
   moneyMastersLogos,
+  moneyMastersRequest,
   moneyMastersSurveys,
   moneyMastersVideos,
   type MoneyMastersVideo,
@@ -154,6 +156,21 @@ export default function MoneyMastersPage() {
               </li>
             ))}
           </ul>
+        </Container>
+      </section>
+
+      {/* Request the cards: a compact card, then the footer. */}
+      <section className="bg-paper pb-section">
+        <Container>
+          <div className="mx-auto max-w-[760px] rounded-2xl border border-ink/10 bg-white p-6 text-center md:p-8">
+            <h2 className="text-balance text-[26px] font-light leading-[1.2] tracking-[-0.01em] text-ink md:text-[32px]">
+              {moneyMastersRequest.ctaHeading}
+            </h2>
+            <p className="mt-3 text-[16px] leading-[1.6] text-ink/70">{moneyMastersRequest.ctaLine}</p>
+            <div className="mt-6">
+              <MoneyMastersRequestTrigger />
+            </div>
+          </div>
         </Container>
       </section>
     </div>

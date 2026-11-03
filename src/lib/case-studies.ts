@@ -65,7 +65,12 @@ export const caseStudies: CaseStudy[] = [
       name: "Year 11 Student",
       role: "The Internship",
     },
-    image: null,
+    image: {
+      src: "/images/case-studies/esher-college.webp",
+      alt: "Esher Sixth Form College campus with the college logo",
+      // Centred, so the college logo in the middle stays whole at every card and banner size.
+      position: "center center",
+    },
     card: { name: "Esher College", label: "The Internship" },
   },
   {

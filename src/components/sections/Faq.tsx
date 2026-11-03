@@ -109,9 +109,11 @@ export default function Faq({
                 <p>
                   <Link
                     href={faq.link.href}
+                    {...(faq.link.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="font-medium text-ink underline decoration-transparent underline-offset-2 transition-colors hover:decoration-ink"
                   >
                     {faq.link.label}
+                    {faq.link.newTab && <span className="sr-only"> (opens in a new tab)</span>}
                   </Link>
                 </p>
               )}

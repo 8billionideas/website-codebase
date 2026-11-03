@@ -1,7 +1,7 @@
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { Metadata } from "next";
-import { Check, FileDown } from "lucide-react";
+import { Check } from "lucide-react";
 import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { KITS, closingImage, type Resource } from "@/lib/resources";
@@ -9,6 +9,8 @@ import Button from "@/components/ui/Button";
 import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
 import Link from "next/link";
 import { MONEY_MASTERS_IMAGE, moneyMastersResource } from "@/content/money-masters";
+import MoneyMastersRequestTrigger from "@/components/money-masters/MoneyMastersRequest";
+import { CV_WORKSHOP_IMAGE, cvWorkshopResource } from "@/content/cv-workshop";
 
 export const metadata: Metadata = {
   title: "Resources | 8billionideas",
@@ -22,7 +24,8 @@ const INSET_LEFT = "lg:pl-[calc(48px_+_max(0px,(100vw_-_1200px)/2))]";
 const INSET_RIGHT = "lg:pr-[calc(48px_+_max(0px,(100vw_-_1200px)/2))]";
 
 
-// The kits, then Money Masters (the card game, with its own page) in the same row format.
+// The kits, then Money Masters (the card game) and the First CV Workshop (each with its own page), all
+// in the same row format.
 const RESOURCES: Resource[] = [
   ...KITS,
   {
@@ -40,7 +43,25 @@ const RESOURCES: Resource[] = [
       ? { ...MONEY_MASTERS_IMAGE, position: "center center", fit: "contain", scale: 0.95 }
       : null,
   },
+  {
+    slug: "cv-workshop",
+    type: cvWorkshopResource.type,
+    title: cvWorkshopResource.title,
+    description: cvWorkshopResource.description,
+    tags: cvWorkshopResource.tags,
+    included: cvWorkshopResource.included,
+    cta: cvWorkshopResource.cta,
+    url: cvWorkshopResource.url,
+    image: CV_WORKSHOP_IMAGE
+      ? { src: CV_WORKSHOP_IMAGE.src, alt: cvWorkshopResource.alt, position: "center center", fit: "contain" }
+      : null,
+  },
 ];
+
+// A second green button under a resource's button (Money Masters: the request pop-up).
+const EXTRA_ACTIONS: Record<string, ReactNode> = {
+  "money-masters": <MoneyMastersRequestTrigger label="Request your cards" className="w-full" />,
+};
 
 // Links to pages on this site open in the same tab; the kits' downloads open in a new one.
 const isInternal = (url: string) => url.startsWith("/");
@@ -91,10 +112,16 @@ function KitImage({ kit }: { kit: Resource }) {
       />
     );
   }
+  // No image yet: a mint 4/3 "Image coming soon" block in the same frame, sized like the product
+  // images' box (the largest that fits, up to 520px wide).
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-ink/[0.06] px-6 text-center">
-      <FileDown className="h-12 w-12 text-accent" strokeWidth={1.25} aria-hidden="true" />
-      <p className="text-[16px] font-normal text-accent">{kit.title}</p>
+    <div className="absolute inset-0 flex items-center justify-center bg-paper p-8 [container-type:size]">
+      <div
+        className="flex items-center justify-center bg-accent/[0.12]"
+        style={{ width: "min(100cqw, 520px, 133.33cqh)", aspectRatio: "4 / 3" }}
+      >
+        <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">Image coming soon</p>
+      </div>
     </div>
   );
 }
@@ -104,13 +131,14 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
   const imageLeft = index % 2 === 0;
 
   return (
-    <article className="grid grid-cols-1 lg:grid-cols-2">
+    // id: the footer's resource links jump here (scroll-mt clears the sticky nav).
+    <article id={kit.slug} className="grid scroll-mt-24 grid-cols-1 lg:grid-cols-2">
       <div
         className={`relative h-[240px] overflow-hidden lg:h-auto lg:min-h-[380px] ${
           imageLeft ? "" : "lg:order-2"
         }`}
       >
-        {/* On site (Money Masters): the image is a link too; the button is the same link, so the image
+        {/* On site (Money Masters, First CV Workshop): the image is a link too; the button is the same link, so the image
             is skipped by keyboard and screen readers. */}
         {isInternal(kit.url) ? (
           <Link href={kit.url} tabIndex={-1} aria-hidden="true" className="absolute inset-0 block">
@@ -157,14 +185,18 @@ function KitRow({ kit, index }: { kit: Resource; index: number }) {
             </ul>
           </div>
         )}
-        <div className="mt-6">
+        {/* With a second button, the two stack 12px apart at the same width: the wider label's from
+            sm (a grid as wide as its widest button), full width below. */}
+        <div className={EXTRA_ACTIONS[kit.slug] ? "mt-6 grid w-full gap-3 sm:w-max" : "mt-6"}>
           <Button
             href={kit.url}
             {...(isInternal(kit.url) ? {} : { target: "_blank", rel: "noopener noreferrer" })}
             arrow
+            className={EXTRA_ACTIONS[kit.slug] ? "w-full" : undefined}
           >
             {kit.cta}
           </Button>
+          {EXTRA_ACTIONS[kit.slug]}
         </div>
       </div>
     </article>
@@ -212,7 +244,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Resource rows — full width, alternating image side on desktop; from lg every row takes the
-          tallest row's height, so the three match. */}
+          tallest row's height, so they all match. */}
       <div className="divide-y divide-ink/10 border-y border-ink/10 lg:grid lg:auto-rows-fr">
         {RESOURCES.map((kit, i) => (
           <KitRow key={kit.slug} kit={kit} index={i} />

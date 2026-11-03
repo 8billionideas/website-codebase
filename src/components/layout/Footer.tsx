@@ -6,8 +6,7 @@ import { openCookieSettings } from "@/lib/consent";
 import Container from "@/components/layout/Container";
 import Logo from "@/components/layout/Logo";
 import LoginModal from "@/components/layout/LoginModal";
-import DemoTrigger from "@/components/demo/DemoTrigger";
-import { siteConfig, type SocialNetwork } from "@/lib/site-config";
+import { footerPartners, siteConfig, type SocialNetwork } from "@/lib/site-config";
 
 const FOCUS_RING =
   "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink";
@@ -55,7 +54,8 @@ function FooterColumn({ heading, children }: { heading: string; children: ReactN
 export default function Footer() {
   const [loginOpen, setLoginOpen] = useState(false);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
-  const { email, phone, social, legal, externalKits } = siteConfig;
+  const { email, phone, social, legal } = siteConfig;
+  const partners = footerPartners.filter((partner): partner is { label: string; href: string } => Boolean(partner.href));
   const legalLinks = legal.filter((link): link is { label: string; url: string } => Boolean(link.url));
   const year = new Date().getFullYear();
 
@@ -63,9 +63,8 @@ export default function Footer() {
     // The top hairline keeps the footer from merging with a dark band above it.
     <footer className="border-t border-white/10 bg-ink text-white">
       <Container className="pt-14 pb-8 md:pt-20">
-        {/* Desktop (xl, as the nav): brand | three link columns | CTA, with the link and CTA
-            columns sized to their content. Below xl the brand and CTA run full width. */}
-        <div className="grid grid-cols-1 gap-12 xl:grid-cols-[25%_minmax(0,1fr)_auto] xl:gap-8">
+        {/* Desktop (xl, as the nav): brand | four link columns; stacked below xl. */}
+        <div className="grid grid-cols-1 gap-12 xl:grid-cols-[25%_minmax(0,1fr)] xl:gap-8">
           {/* Brand */}
           <div>
             {/* Same 40px box as the old logo, so the spacing below is unchanged. */}
@@ -106,32 +105,39 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Link columns: 2-up on mobile (Explore + About, then Resources), 3-up from md. */}
+          {/* Four link columns: 2 × 2 below xl, one row from xl. */}
           <nav
             aria-label="Footer"
-            className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-8 md:grid-cols-3 xl:flex xl:justify-between xl:gap-6"
+            className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-8 xl:flex xl:justify-between xl:gap-6"
           >
             <FooterColumn heading="Explore">
               <li><Link href="/curriculum-mapping" className={COLUMN_LINK}>Our Curriculum</Link></li>
               <li><Link href="/gcse" className={COLUMN_LINK}>Qualifications</Link></li>
-              <li><Link href="/case-studies" className={COLUMN_LINK}>Case Studies</Link></li>
               <li><Link href="/pricing" className={COLUMN_LINK}>Pricing</Link></li>
-              <li><Link href="/resources" className={COLUMN_LINK}>Resources</Link></li>
-            </FooterColumn>
-            <FooterColumn heading="About">
-              <li><Link href="/about" className={COLUMN_LINK}>About 8billionideas</Link></li>
-              <li><Link href="/contact" className={COLUMN_LINK}>Contact us</Link></li>
+              <li><Link href="/case-studies" className={COLUMN_LINK}>Case Studies</Link></li>
             </FooterColumn>
             <FooterColumn heading="Resources">
-              <li><Link href="/resources" className={COLUMN_LINK}>Free Resources</Link></li>
-              {externalKits.filter((kit) => kit.inFooter).map((kit) => (
-                <li key={kit.label}>
-                  <a href={kit.url} target="_blank" rel="noopener noreferrer" className={COLUMN_LINK}>
-                    {kit.label}
-                    <NewTabNote />
-                  </a>
+              <li><Link href="/resources#future-jobs-kit" className={COLUMN_LINK}>Future Jobs Kit 2.0</Link></li>
+              <li><Link href="/resources#my-first-job-kit" className={COLUMN_LINK}>My First Job Kit</Link></li>
+              <li><Link href="/cv-workshop" className={COLUMN_LINK}>First CV Workshop</Link></li>
+            </FooterColumn>
+            <FooterColumn heading="Partnerships">
+              {partners.map((partner) => (
+                <li key={partner.label}>
+                  {partner.href.startsWith("/") ? (
+                    <Link href={partner.href} className={COLUMN_LINK}>{partner.label}</Link>
+                  ) : (
+                    <a href={partner.href} target="_blank" rel="noopener noreferrer" className={COLUMN_LINK}>
+                      {partner.label}
+                      <NewTabNote />
+                    </a>
+                  )}
                 </li>
               ))}
+            </FooterColumn>
+            <FooterColumn heading="Company">
+              <li><Link href="/about" className={COLUMN_LINK}>About us</Link></li>
+              <li><Link href="/contact" className={COLUMN_LINK}>Contact us</Link></li>
               <li>
                 <button
                   ref={loginButtonRef}
@@ -140,21 +146,12 @@ export default function Footer() {
                   onClick={() => setLoginOpen(true)}
                   className={`cursor-pointer text-left ${COLUMN_LINK}`}
                 >
-                  Login
+                  Log in
                 </button>
               </li>
             </FooterColumn>
           </nav>
 
-          {/* CTA — divider above it below xl, beside it from xl */}
-          <div className="border-t border-white/12 pt-10 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-8">
-            <p className="max-w-[240px] text-[12px] uppercase leading-[1.8] tracking-[0.2em] text-accent">
-              Ready to see what this could look like in your school?
-            </p>
-            <DemoTrigger trackingLocation="footer" appearance="button" className="mt-6 w-full md:w-auto">
-              Request a demo
-            </DemoTrigger>
-          </div>
         </div>
 
         <div className="mt-14 h-px w-full bg-white/12" aria-hidden="true" />

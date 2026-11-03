@@ -1,6 +1,8 @@
 export interface HomepageFaqLink {
   label: string;
   href: string;
+  // Opens in a new tab (e.g. a PDF).
+  newTab?: boolean;
 }
 
 export interface HomepageFaq {

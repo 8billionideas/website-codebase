@@ -7,7 +7,7 @@ import {
   type ConsentChoice,
 } from "@/lib/analytics";
 
-// Shared cookie-consent state for the banner, the GA loader and the newsletter pop-up.
+// Shared cookie-consent state for the banner and the GA loader.
 // ready: the stored choice has been read (client only). choice: the visitor's current choice, or
 // null until they make one. bannerOpen: the cookie banner is showing. gaAllowed: analytics consent
 // has been granted at some point in this page view, so the GA tag stays loaded once it has loaded.

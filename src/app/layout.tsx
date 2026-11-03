@@ -5,7 +5,6 @@ import Footer from "@/components/layout/Footer";
 import DemoModalProvider from "@/components/demo/DemoModalProvider";
 import BookDemoSection from "@/components/shared/BookDemoSection";
 import HideOnRoutes from "@/components/shared/HideOnRoutes";
-import NewsletterPopup from "@/components/shared/NewsletterPopup";
 import Script from "next/script";
 import CookieBanner from "@/components/analytics/CookieBanner";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
@@ -49,14 +48,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <DemoModalProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
-          {/* /resources and /contact have their own closing sections instead; /money-masters ends with
-              the footer. */}
-          <HideOnRoutes routes={["/resources", "/contact", "/money-masters"]}>
+          {/* /resources and /contact have their own closing sections instead; /money-masters, /minerva,
+              /roar and /cv-workshop end with the footer. */}
+          <HideOnRoutes routes={["/resources", "/contact", "/money-masters", "/minerva", "/roar", "/cv-workshop"]}>
             <BookDemoSection />
           </HideOnRoutes>
           <Footer />
-          {/* Site-wide newsletter sign-up pop-up (timing and rules in the component). */}
-          <NewsletterPopup />
         </DemoModalProvider>
       </body>
     </html>

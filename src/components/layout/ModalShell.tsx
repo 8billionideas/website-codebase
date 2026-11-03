@@ -8,7 +8,7 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]):not([tabindex="-1"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 // Shared overlay, panel, focus trap, Escape, scroll lock and enter animation for
-// the site's modals (Login, Request a demo, the quote and newsletter pop-ups).
+// the site's modals (Login, Request a demo, the quote and request pop-ups).
 // variant "sheet": below 768px the panel is a bottom sheet (full width, rounded top corners, at
 // most 85% of the screen tall and scrollable) that slides up; from 768px a centred dialog.
 export default function ModalShell({

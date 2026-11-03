@@ -15,6 +15,19 @@ function kitUrl(slug: string): string {
   return kit.url;
 }
 
+// TODO: Add when the CityFibre landing page is built.
+export const SHOW_CITYFIBRE_LINK = false;
+export const CITYFIBRE_URL: string | null = null;
+
+// The footer's Partnerships column: one line per partner page (e.g. MVA or OxfordAQA later).
+// Shown only with an href; site paths open in the same tab, full URLs in a new one.
+export const footerPartners: { label: string; href: string | null }[] = [
+  { label: "Money Masters (with Zoud)", href: "/money-masters" },
+  { label: "Minerva Virtual Academy", href: "/minerva" },
+  { label: "ROAR with Lions Clubs", href: "/roar" },
+  { label: "CityFibre", href: SHOW_CITYFIBRE_LINK ? CITYFIBRE_URL : null },
+];
+
 export const siteConfig = {
   email: "hello@8billionideas.com",
   phone: null as string | null,

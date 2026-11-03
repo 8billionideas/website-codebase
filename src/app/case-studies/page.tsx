@@ -18,16 +18,6 @@ export const metadata: Metadata = {
 // Symmetric, so the same value works as either padding-left or padding-right.
 const CONTAINER_SIDE_INSET = "calc(48px + max(0px, (100vw - 1200px) / 2))";
 
-// TODO: replace with the school's photo when supplied (currently Esher College).
-// A neutral mint block for a case study without a photo yet.
-function ImagePlaceholder({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex h-full w-full items-center justify-center bg-accent/[0.12] ${className}`}>
-      <p className="text-[12px] uppercase tracking-[0.25em] text-ink/60">Image coming soon</p>
-    </div>
-  );
-}
-
 export default function CaseStudiesPage() {
   const testimonials = home.proof.testimonials;
 
@@ -94,7 +84,7 @@ export default function CaseStudiesPage() {
                 }`}
               >
                 <div className="h-full w-full transition-transform duration-300 group-hover:scale-[1.03]">
-                  {study.image ? (
+                  {study.image && (
                     <Image
                       src={study.image.src}
                       alt={study.image.alt}
@@ -103,8 +93,6 @@ export default function CaseStudiesPage() {
                       className="object-cover"
                       style={{ objectPosition: study.image.position }}
                     />
-                  ) : (
-                    <ImagePlaceholder />
                   )}
                 </div>
               </div>

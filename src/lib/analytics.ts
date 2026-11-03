@@ -95,7 +95,7 @@ export function clearAnalyticsCookies() {
 
 // ---- Events. Only these parameters can be sent, so names, emails, schools and other personal
 // data can never reach Google Analytics; any string containing "@" is dropped too.
-const ALLOWED_PARAMS = new Set(["form_name", "location", "role", "value", "currency", "product", "resource_name", "transport_type"]);
+const ALLOWED_PARAMS = new Set(["form_name", "location", "role", "value", "currency", "product", "resource", "resource_name", "transport_type"]);
 
 export type EventParams = Record<string, string | number>;
 

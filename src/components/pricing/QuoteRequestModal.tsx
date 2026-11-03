@@ -26,7 +26,6 @@ import {
   type QuoteBreakdown,
   type SelectedAddOn,
 } from "@/lib/pricing";
-import { markFormSubmitted } from "@/lib/newsletter-popup";
 import { trackEvent } from "@/lib/analytics";
 
 // Quote requests are submitted to the HubSpot Contact form (see HUBSPOT_QUOTE_FORM_ID).
@@ -139,7 +138,7 @@ function productLabel(selection: QuoteSelection) {
 }
 
 // "Critical Curriculum · 24 programmes · 20 students · 1 extra · Total for the first year £5,050"
-// (plus "· Discount code: WELCOME10" when one is entered).
+// (plus "· Discount code: …" when one is entered).
 function recapLine(selection: QuoteSelection, q: QuoteBreakdown, discountCode: string) {
   const parts = [productLabel(selection)];
   if (q.cc) parts.push(plural(q.cc.units, "programme", "programmes"));
@@ -652,7 +651,6 @@ export default function QuoteRequestModal({
         ...pendingFieldValues(selectedAddOns, discountCode),
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
-      markFormSubmitted();
       trackEvent("generate_lead", { form_name: "quote_request", value: q.year1Total / 100, currency: "GBP", product: selection.product });
       setSubmittedName(firstName);
       setStatus("success");
@@ -951,7 +949,7 @@ export default function QuoteRequestModal({
                     autoCapitalize="characters"
                     spellCheck={false}
                     maxLength={30}
-                    placeholder="e.g. WELCOME10"
+                    placeholder="e.g. your offer code"
                     value={values.discountCode}
                     onChange={(e) => update("discountCode", e.target.value.toUpperCase())}
                     className={`mt-2 border-ink/15 ${INPUT}`}

@@ -91,3 +91,16 @@ export const moneyMastersSurveys = [
   { title: "Zoud survey (under 13)", href: "https://www.surveymonkey.com/r/S77CRZ9", cta: "Complete the survey" },
   { title: "Zoud survey (13+)", href: "https://www.surveymonkey.com/r/66D2ZFB", cta: "Complete the survey" },
 ];
+
+// "Request Money Masters" pop-up (/money-masters and /resources).
+export const moneyMastersRequest = {
+  heading: "Request Money Masters",
+  line: "Money Masters is available to schools across the UAE through our partnership with Zoud. Tell us a little about your school and we'll be in touch.",
+  submit: "Request the cards",
+  smallPrint: "We'll only use your details to respond to your request.",
+  // The /money-masters call-to-action card.
+  ctaHeading: "Want Money Masters for your school?",
+  ctaLine: "Available to schools across the UAE through Zoud and 8billionideas.",
+};
+
+export const EMIRATES = ["Abu Dhabi", "Dubai", "Sharjah", "Ajman", "Umm Al Quwain", "Ras Al Khaimah", "Fujairah"];
