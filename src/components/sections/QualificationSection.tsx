@@ -363,27 +363,6 @@ export default function QualificationSection() {
         </div>
 
         <ChampionSchools />
-
-        {/* Bottom-right tagline — desktop. In flow (not pinned to the corner) so it sits
-            below the champion schools strip instead of over it. */}
-        <div className="mt-12 hidden items-start justify-end gap-4 md:flex">
-          <div className="mt-1 h-12 w-px bg-white/40" aria-hidden="true" />
-          <div className="space-y-1 text-caption uppercase tracking-[0.15em] text-white/50">
-            <p>MORE CONFIDENT</p>
-            <p>MORE CAPABLE</p>
-            <p>A BRIGHTER FUTURE</p>
-          </div>
-        </div>
-
-        {/* Bottom tagline — mobile, below the CTA, left-aligned */}
-        <div className="mt-12 flex items-start gap-4 text-left md:hidden">
-          <div className="mt-1 h-12 w-px bg-white/40" aria-hidden="true" />
-          <div className="space-y-1 text-caption uppercase tracking-[0.15em] text-white/50">
-            <p>MORE CONFIDENT</p>
-            <p>MORE CAPABLE</p>
-            <p>A BRIGHTER FUTURE</p>
-          </div>
-        </div>
       </Container>
     </section>
   );

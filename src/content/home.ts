@@ -51,8 +51,6 @@ export const home = {
     eyebrow: "FITS YOUR WORLD",
     body: "8billionideas works alongside the subjects and timetable you already have, whichever curriculum you follow – British, IB, American, Indian or another international curriculum. You choose the year groups, pillars and time slots, and our Curriculum Mapping tool will help show where the lessons link to what you already teach.",
     cta: { label: "Explore curriculum mapping", href: "/curriculum-mapping" } as CtaLink,
-    ctaTagline: ["SAME LEARNING.", "BRIGHTER FUTURES."],
-    imageTagline: ["DIFFERENT", "CURRICULA.", "A BRIGHTER", "TOMORROW."],
     worksAcrossLabel: ["WORKS ACROSS", "CURRICULUMS"],
     curriculums: ["BRITISH", "IB", "AMERICAN", "INDIAN", "INTERNATIONAL", "AND MORE"],
   },

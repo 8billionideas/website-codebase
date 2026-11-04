@@ -18,10 +18,6 @@ const MUTED_COLOR: Record<SectionVariant, string> = {
   light: "text-ink/55",
   dark: "text-white/55",
 };
-const LINE_COLOR: Record<SectionVariant, string> = {
-  light: "bg-ink",
-  dark: "bg-white",
-};
 
 export function Eyebrow({
   children,
@@ -70,26 +66,5 @@ export function SectionBody({
     <p className={`max-w-[560px] text-[18px] leading-[1.6] ${BODY_COLOR[variant]} ${className}`}>
       {children}
     </p>
-  );
-}
-
-export function Tagline({
-  lines,
-  variant,
-  className = "",
-}: {
-  lines: string[];
-  variant: SectionVariant;
-  className?: string;
-}) {
-  return (
-    <div className={`flex items-start gap-4 ${className}`}>
-      <div className={`mt-1 h-12 w-px opacity-40 ${LINE_COLOR[variant]}`} aria-hidden="true" />
-      <div className={`space-y-1 text-[12px] uppercase tracking-[0.25em] ${MUTED_COLOR[variant]}`}>
-        {lines.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
-    </div>
   );
 }

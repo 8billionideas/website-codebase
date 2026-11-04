@@ -37,7 +37,7 @@ export const skills: Skill[] = [
 // Homepage "How learning works" band (between Sections 3 and 4).
 export const howLearningWorks = {
   eyebrow: "HOW LEARNING WORKS",
-  headingLine1: "Students discover, develop and apply these skills",
+  headingLine1: "Students explore, apply, evaluate and create",
   headingLine2: "throughout their learning journey.",
   // The four areas of learning (the same four as the "Skills that grow with students" tabs).
   stages: [
