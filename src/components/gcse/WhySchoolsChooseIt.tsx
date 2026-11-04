@@ -6,7 +6,7 @@ const ICONS: Record<string, LucideIcon> = { FileText, Users, CalendarDays, Star 
 
 // /gcse 09: why schools choose the qualification – a featured card and four benefits.
 export default function WhySchoolsChooseIt() {
-  const { eyebrow, headingLine1, headingLine2, intro, offersHeading, featured, benefits, closing } = gcse.whySchoolsChoose;
+  const { eyebrow, headingLine1, headingLine2, intro, offersHeading, featured, benefits } = gcse.whySchoolsChoose;
 
   return (
     <section className="bg-paper py-section">
@@ -40,8 +40,6 @@ export default function WhySchoolsChooseIt() {
             );
           })}
         </div>
-
-        <p className="mt-8 max-w-[880px] text-[17px] leading-[1.6] text-ink/70">{closing}</p>
       </Container>
     </section>
   );

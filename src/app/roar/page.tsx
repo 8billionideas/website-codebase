@@ -134,10 +134,7 @@ export default function RoarPage() {
                 key={step.label}
                 className="w-full rounded-xl border border-ink/10 bg-white p-6 sm:w-[calc((100%-16px)/2)] lg:w-[calc((100%-32px)/3)] xl:w-[calc((100%-64px)/5)]"
               >
-                <span className="block text-[28px] leading-none" aria-hidden="true">
-                  {step.emoji}
-                </span>
-                <p className="mt-4 text-[16px] leading-[1.5] text-ink">
+                <p className="text-[16px] leading-[1.5] text-ink">
                   <span className="font-medium">{step.label}</span> {step.text}
                 </p>
               </li>

@@ -63,8 +63,7 @@ const PENDING_HUBSPOT_FIELDS: Record<
   | "cpdPrice"
   | "onlineExperiencePrice"
   | "liveExperiencePrice"
-  | "assemblyPrice"
-  | "discountCode",
+  | "assemblyPrice",
   string | null
 > = {
   cpdQuantity: null,
@@ -76,7 +75,6 @@ const PENDING_HUBSPOT_FIELDS: Record<
   onlineExperiencePrice: null,
   liveExperiencePrice: null,
   assemblyPrice: null,
-  discountCode: null,
 };
 
 // The Contact form's internal values for "What can we help with?".
@@ -97,10 +95,10 @@ export interface QuoteSelection {
 }
 
 type FieldName = "firstname" | "lastname" | "company" | "jobtitle" | "email";
-type Values = Record<FieldName, string> & { message: string; discountCode: string };
+type Values = Record<FieldName, string> & { message: string };
 type Errors = Partial<Record<FieldName, string>>;
 
-const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "", message: "", discountCode: "" };
+const EMPTY: Values = { firstname: "", lastname: "", company: "", jobtitle: "", email: "", message: "" };
 // Display order, also used to focus the first invalid field on submit.
 const ORDER: FieldName[] = ["firstname", "lastname", "email", "company", "jobtitle"];
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -138,14 +136,12 @@ function productLabel(selection: QuoteSelection) {
 }
 
 // "Critical Curriculum · 24 programmes · 20 students · 1 extra · Total for the first year £5,050"
-// (plus "· Discount code: …" when one is entered).
-function recapLine(selection: QuoteSelection, q: QuoteBreakdown, discountCode: string) {
+function recapLine(selection: QuoteSelection, q: QuoteBreakdown) {
   const parts = [productLabel(selection)];
   if (q.cc) parts.push(plural(q.cc.units, "programme", "programmes"));
   if (q.gcse) parts.push(plural(q.gcse.students, "student", "students"));
   parts.push(q.services.length ? plural(q.services.length, "extra", "extras") : "no extras");
   parts.push(`Total for the first year ${formatMoney(q.year1Total)}`);
-  if (discountCode) parts.push(`Discount code: ${discountCode}`);
   return parts.join(" · ");
 }
 
@@ -163,18 +159,16 @@ export function quoteMessage(
   selection: QuoteSelection,
   q: QuoteBreakdown,
   notes: string,
-  discountCode: string,
   submittedAt: string,
   validUntil: string
 ) {
   const lines = ["Quote request via website", `Product: ${productLabel(selection)}`, ...quoteBreakdownLines(q, submittedAt, validUntil)];
-  if (discountCode) lines.push(`Discount code: ${discountCode}`);
   const summary = lines.join("\n");
   return notes ? `${notes}\n\n${summary}` : summary;
 }
 
 // Values for the not-yet-created HubSpot properties, keyed by their (future) field names.
-function pendingFieldValues(addOns: SelectedAddOn[], discountCode: string): Record<string, string | undefined> {
+function pendingFieldValues(addOns: SelectedAddOn[]): Record<string, string | undefined> {
   const values: Record<string, string | undefined> = {};
   const set = (key: keyof typeof PENDING_HUBSPOT_FIELDS, value: string | undefined) => {
     const name = PENDING_HUBSPOT_FIELDS[key];
@@ -201,7 +195,6 @@ function pendingFieldValues(addOns: SelectedAddOn[], discountCode: string): Reco
       set("liveExperiencePrice", cost);
     }
   }
-  set("discountCode", discountCode);
   return values;
 }
 
@@ -581,7 +574,7 @@ export default function QuoteRequestModal({
 
   function update(name: keyof Values, value: string) {
     setValues((prev) => ({ ...prev, [name]: value }));
-    if (name !== "message" && name !== "discountCode" && errors[name]) {
+    if (name !== "message" && errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
     }
   }
@@ -618,8 +611,6 @@ export default function QuoteRequestModal({
     const submittedAt = new Date();
     setStatus("submitting");
     try {
-      // Optional, not validated, and it doesn't change any prices.
-      const discountCode = values.discountCode.trim();
       const hasAddOns = selectedAddOns.length > 0;
       const ok = await submitHubspotForm(HUBSPOT_QUOTE_FORM_ID, {
         [HUBSPOT_FIELDS.firstname]: firstName,
@@ -633,7 +624,6 @@ export default function QuoteRequestModal({
           selection,
           q,
           values.message.trim(),
-          discountCode,
           isoWithOffset(submittedAt),
           isoWithOffset(new Date(submittedAt.getTime() + 30 * 24 * 60 * 60 * 1000)).slice(0, 10)
         ),
@@ -648,7 +638,7 @@ export default function QuoteRequestModal({
         // One-off services after any training credit.
         [HUBSPOT_FIELDS.addOnsPrice]: hasAddOns ? poundsValue(q.oneOff) : undefined,
         [HUBSPOT_FIELDS.total]: poundsValue(q.year1Total),
-        ...pendingFieldValues(selectedAddOns, discountCode),
+        ...pendingFieldValues(selectedAddOns),
       });
       if (!ok) throw new Error("HubSpot rejected the submission");
       trackEvent("generate_lead", { form_name: "quote_request", value: q.year1Total / 100, currency: "GBP", product: selection.product });
@@ -775,9 +765,6 @@ export default function QuoteRequestModal({
               <QuoteTotals q={q} />
             </div>
             {!q.services.length && <p className="mt-1.5 text-ink/70">No extras</p>}
-            {values.discountCode.trim() && (
-              <p className="mt-1.5 text-ink/70">Discount code: {values.discountCode.trim()}</p>
-            )}
           </div>
 
           <Button onClick={onClose} className="mt-8">
@@ -937,24 +924,6 @@ export default function QuoteRequestModal({
                     className={`mt-2 resize-y rounded-2xl border-ink/15 py-3 leading-[1.5] ${INPUT_BASE}`}
                   />
                 </div>
-                <div>
-                  <label htmlFor={id("discountCode")} className="block text-[14px] font-medium text-ink/80">
-                    Discount code (optional)
-                  </label>
-                  <input
-                    id={id("discountCode")}
-                    name="discountCode"
-                    type="text"
-                    autoComplete="off"
-                    autoCapitalize="characters"
-                    spellCheck={false}
-                    maxLength={30}
-                    placeholder="e.g. your offer code"
-                    value={values.discountCode}
-                    onChange={(e) => update("discountCode", e.target.value.toUpperCase())}
-                    className={`mt-2 border-ink/15 ${INPUT}`}
-                  />
-                </div>
 
                 {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
                 <div aria-hidden="true" className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
@@ -969,7 +938,7 @@ export default function QuoteRequestModal({
                 )}
 
                 <div className="mt-1">
-                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, q, values.discountCode.trim())}</p>
+                  <p className="mb-3 text-[13px] leading-[1.5] text-ink/60">{recapLine(selection, q)}</p>
                   <Button
                     type="submit"
                     size="form"

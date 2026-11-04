@@ -16,7 +16,7 @@ export const roarHero = {
 };
 
 export const roarWhy = {
-  heading: "Why does this matter? 🌎",
+  heading: "Why does this matter?",
   paragraphs: [
     "ROAR enables young minds to think about the world in which they live. To inspire them to work in teams and use their imaginations to think of ideas that can change the world for the better.",
     "Lions want to be a part of that future by assisting schools, teachers and the children to think big and to dream big with ideas that will benefit all of us in this ever changing world.",
@@ -54,16 +54,16 @@ export const roarTeachers = {
   ],
   modulesIntro: "Here are the fun modules of the competition to look forward to:",
   modules: [
-    { emoji: "💎", label: "Module 1:", text: "Finding a problem to solve" },
-    { emoji: "💡", label: "Module 2:", text: "Generating ideas and finding a solution" },
-    { emoji: "🛠️", label: "Module 3:", text: "Creating a prototype" },
-    { emoji: "🎥", label: "Module 4:", text: "Creating an advert (poster and jingle)" },
-    { emoji: "🥳", label: "Finals:", text: "In-school Finals and National Awards Day" },
+    { label: "Module 1:", text: "Finding a problem to solve" },
+    { label: "Module 2:", text: "Generating ideas and finding a solution" },
+    { label: "Module 3:", text: "Creating a prototype" },
+    { label: "Module 4:", text: "Creating an advert (poster and jingle)" },
+    { label: "Finals:", text: "In-school Finals and National Awards Day" },
   ],
 };
 
 export const roarFinals = {
-  heading: "🏆 Competition finals explained",
+  heading: "Competition finals explained",
   cards: [
     {
       title: "In-school Final",

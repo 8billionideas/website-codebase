@@ -40,8 +40,8 @@ export const KITS: Resource[] = [
     cta: "Download free resource",
     url: "https://page.8billionideas.com/future-jobs-kit-2.0",
     image: {
-      src: "/images/resources/future-jobs-kit.webp",
-      alt: "The Future Jobs Kit 2.0 box with example job cards",
+      src: "/images/resources/future-jobs-kit-2-mockup.webp",
+      alt: "Future Jobs Kit 2.0 by 8billionideas: a box of illustrated future job cards, including a Commercial Space Pilot card.",
       position: "center center",
       fit: "contain",
     },

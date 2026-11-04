@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import PlatformBand from "@/components/shared/PlatformBand";
 
 // The cleaned "Student progression" dashboard on a dark-blue background ("SkillsForSuccess"
@@ -19,11 +20,35 @@ const IMAGE_FADE = {
 } as const;
 
 const BODY =
-  "Each programme starts and ends with a simple assessment, giving you a clearer view of how students' understanding develops over time and how that progress builds across the year.";
+  "Understanding how students develop is just as important as the learning itself. Our approach helps schools identify students’ starting points, recognise how their understanding develops and build a clearer picture of their progress throughout the learning journey.";
+
+const CARDS = [
+  {
+    title: "Understanding starting points",
+    text: "Identify what students already know and understand before developing their skills further.",
+  },
+  {
+    title: "Recognising progress",
+    text: "See how students’ understanding develops and recognise the progress they make through learning.",
+  },
+];
+
+// xl: the image box (--box) sized so the laptop and panel (x 25.6–92.5% of the image, 66.9% of the
+// box) start 56px right of the 620px text column and end at least 16px inside the band's right
+// edge, up to 780px wide (22% larger than the earlier 640px box). The page container's content is
+// centred from 1200px and starts 552px left of centre, so the 620px text column ends at 50% + 68px.
+// The box is placed by its left edge: 50% + 68px + 56px, minus the 25.6% of the box before the
+// artwork. Width 780px from 1340px; at 1280px it's 747px.
+const IMAGE_BOX: CSSProperties = {
+  ["--box" as string]: "min(780px, calc((50% - 140px) / 0.669))",
+  width: "var(--box)",
+  left: "calc(50% + 124px - 0.256 * var(--box))",
+  right: "auto",
+};
 
 // Our Curriculum "Making student progression easier to see and understand": a navy band with the
-// lesson platform band's layout, scale and padding (PlatformBand with the same overrides as
-// LessonPlatformShowcase), without the For teachers / For students boxes.
+// lesson platform band's layout and padding (PlatformBand), with two outlined cards under the
+// paragraph in place of the For teachers / For students boxes.
 export default function StudentProgressionShowcase() {
   return (
     <PlatformBand
@@ -35,15 +60,21 @@ export default function StudentProgressionShowcase() {
       // on its own at every width ("easier to see" / "and understand").
       headingClassName="lg:text-[44px]"
       headingLine2ClassName="inline-block text-balance"
-      // xl: the laptop and panel (x 25.6–92.5% of the image) end at the container's right edge and
-      // start 56px right of the text column. The page container's content is 1104px wide from
-      // 1200px, so that leaves 428px for them: a 640px image box, its right edge 48px (7.5% of
-      // 640px) past the container's right edge, where the image is only its dark edge.
-      imageWidthClassName="w-[640px]"
-      imageBoxStyle={{ right: "calc(max((100% - 75rem) / 2, 0px) + 3rem - 48px)" }}
+      imageWidthClassName=""
+      imageBoxStyle={IMAGE_BOX}
       imageFade={IMAGE_FADE}
       body={BODY}
       image={IMAGE}
-    />
+    >
+      {/* Two outlined cards: side by side from md (equal heights), stacked below. */}
+      <ul className="mt-content grid list-none grid-cols-1 gap-content p-0 md:grid-cols-2">
+        {CARDS.map((card) => (
+          <li key={card.title} className="rounded-xl border border-white/25 bg-white/[0.04] p-6">
+            <h3 className="text-[18px] font-medium leading-[1.35] text-white">{card.title}</h3>
+            <p className="mt-2 text-[15px] leading-[1.6] text-white/80">{card.text}</p>
+          </li>
+        ))}
+      </ul>
+    </PlatformBand>
   );
 }

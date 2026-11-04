@@ -214,8 +214,6 @@ export const gcse = {
         text: "Broaden your school's qualification offering with an additional pathway that connects classroom learning to real-world topics and challenges.",
       },
     ],
-    closing:
-      "Give students another opportunity to demonstrate what they can do, while building on the curriculum your school already offers.",
   },
 
   projectThemes: {

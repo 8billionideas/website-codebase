@@ -1,6 +1,16 @@
 "use client";
 
-import { Fragment, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
 import { BookOpen, GraduationCap, Minus, Plus, Tag, type LucideIcon } from "lucide-react";
 import {
   YEAR_GROUPS_MIN,
@@ -93,6 +103,95 @@ function StepShell({
   );
 }
 
+// Press-and-hold repeat for the − / + buttons. Pointer (mouse, touch, pen): one step on press, then
+// after 400ms a step every 100ms, and from 2s every 50ms with the fast step size. It stops on
+// release, pointer leave or cancel, blur and at the limits (step returns false). Keyboard: Enter
+// and Space step on every keydown, so holding either repeats with the system's key repeat. The
+// click that follows a pointer press or key press is skipped; a click with neither (assistive
+// tech) steps once.
+const HOLD_DELAY_MS = 400;
+const HOLD_INTERVAL_MS = 100;
+const HOLD_FAST_AFTER_MS = 2000;
+const HOLD_FAST_INTERVAL_MS = 50;
+// No text selection, double-tap zoom or long-press callout while a finger holds the button.
+const STEP_BUTTON =
+  "flex h-12 w-12 shrink-0 touch-manipulation select-none items-center justify-center text-ink transition-opacity [-webkit-touch-callout:none]";
+
+function useHoldToRepeat(step: (fast: boolean) => boolean) {
+  const stepRef = useRef(step);
+  useEffect(() => {
+    stepRef.current = step;
+  });
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipClick = useRef(false);
+
+  function stop() {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  }
+  // Cleared after the click event that follows the release.
+  function releaseClick() {
+    setTimeout(() => {
+      skipClick.current = false;
+    }, 0);
+  }
+  useEffect(() => stop, []);
+
+  return {
+    onPointerDown(e: ReactPointerEvent<HTMLButtonElement>) {
+      if (e.button !== 0 || e.currentTarget.disabled) return;
+      skipClick.current = true;
+      stop();
+      if (!stepRef.current(false)) return;
+      const start = Date.now();
+      const tick = () => {
+        const fast = Date.now() - start >= HOLD_DELAY_MS + HOLD_FAST_AFTER_MS;
+        if (stepRef.current(fast)) timer.current = setTimeout(tick, fast ? HOLD_FAST_INTERVAL_MS : HOLD_INTERVAL_MS);
+        else timer.current = null;
+      };
+      timer.current = setTimeout(tick, HOLD_DELAY_MS);
+    },
+    onPointerUp() {
+      stop();
+      releaseClick();
+    },
+    onPointerLeave() {
+      stop();
+      releaseClick();
+    },
+    onPointerCancel() {
+      stop();
+      releaseClick();
+    },
+    onBlur() {
+      stop();
+      skipClick.current = false;
+    },
+    onKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      skipClick.current = true;
+      stepRef.current(false);
+    },
+    onKeyUp(e: KeyboardEvent<HTMLButtonElement>) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      releaseClick();
+    },
+    onClick() {
+      if (skipClick.current) {
+        skipClick.current = false;
+        return;
+      }
+      stepRef.current(false);
+    },
+    // No long-press menu on touch screens.
+    onContextMenu(e: ReactMouseEvent) {
+      e.preventDefault();
+    },
+  };
+}
+
 function PillStepper({
   value,
   min,
@@ -100,6 +199,7 @@ function PillStepper({
   label,
   onChange,
   editable = false,
+  fastStep = 1,
 }: {
   value: number;
   min: number;
@@ -107,23 +207,38 @@ function PillStepper({
   label: string;
   onChange: (next: number) => void;
   editable?: boolean;
+  // Step size once a press has been held for 2 seconds.
+  fastStep?: number;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
+  // The latest value, updated as soon as a step is taken, so repeated steps never use a stale one.
+  const valueRef = useRef(value);
+  useEffect(() => {
+    valueRef.current = value;
+  }, [value]);
 
-  function decrement() {
-    onChange(Math.max(min, value - 1));
+  function stepBy(delta: number) {
+    const next = Math.min(max, Math.max(min, valueRef.current + delta));
+    if (next === valueRef.current) return false;
+    valueRef.current = next;
+    onChange(next);
+    return next > min && next < max;
   }
-  function increment() {
-    onChange(Math.min(max, value + 1));
-  }
+  const decreaseHold = useHoldToRepeat((fast) => stepBy(fast ? -fastStep : -1));
+  const increaseHold = useHoldToRepeat((fast) => stepBy(fast ? fastStep : 1));
+  // Arrow keys step by one (holding repeats with the system's key repeat). While the number field is
+  // being edited, they step from the typed number and the field shows each new value.
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === "ArrowUp" || e.key === "ArrowRight") {
-      e.preventDefault();
-      increment();
-    } else if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
-      e.preventDefault();
-      decrement();
+    const delta =
+      e.key === "ArrowUp" || e.key === "ArrowRight" ? 1 : e.key === "ArrowDown" || e.key === "ArrowLeft" ? -1 : 0;
+    if (!delta) return;
+    e.preventDefault();
+    if (draft !== null) {
+      const typed = parseInt(draft, 10);
+      if (!Number.isNaN(typed)) valueRef.current = Math.min(max, Math.max(min, typed));
     }
+    stepBy(delta);
+    if (draft !== null) setDraft(String(valueRef.current));
   }
 
   const displayValue = draft ?? value.toLocaleString("en-GB");
@@ -133,10 +248,10 @@ function PillStepper({
       <div className="inline-flex items-center divide-x divide-ink/15 rounded-full border border-ink/15">
         <button
           type="button"
-          onClick={decrement}
+          {...decreaseHold}
           disabled={value <= min}
           aria-label={`Decrease ${label}`}
-          className="flex h-12 w-12 shrink-0 items-center justify-center text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-30"
+          className={`${STEP_BUTTON} disabled:cursor-not-allowed disabled:opacity-30`}
         >
           <Minus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
         </button>
@@ -173,10 +288,10 @@ function PillStepper({
         )}
         <button
           type="button"
-          onClick={increment}
+          {...increaseHold}
           disabled={value >= max}
           aria-label={`Increase ${label}`}
-          className="flex h-12 w-12 shrink-0 items-center justify-center text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-30"
+          className={`${STEP_BUTTON} disabled:cursor-not-allowed disabled:opacity-30`}
         >
           <Plus className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
         </button>
@@ -409,16 +524,11 @@ export default function PricingCalculator() {
               label={pillars === 1 ? "pillar per year group" : "pillars per year group"}
               onChange={setPillars}
             />
-            <p className="mt-3 text-[13px] text-ink/60">Sustainability and Technology are coming soon.</p>
-            {/* Below 640px the units line, bar and messages use the full width (not the step's
-                56px indent), so the bar's rate labels have room. */}
+            {/* Below 640px the note, bar and message use the full width (not the step's 56px
+                indent), so the bar's rate labels have room. */}
             {cc && (
               <div className="mt-6 -ml-14 sm:ml-0">
-                <p className="text-[15px] text-ink">
-                  {plural(cc.yearGroups, "year group", "year groups")} × {plural(cc.pillars, "pillar", "pillars")} ={" "}
-                  <span className="font-medium">{plural(cc.units, "programme", "programmes")}</span>
-                </p>
-                <p className="mt-1 text-[13px] text-ink/60">1 programme = 1 pillar for 1 year group</p>
+                <p className="text-[13px] text-ink/60">1 programme = 1 pillar for 1 year group</p>
                 <div className="mt-4">
                   <DiscountProgress
                     label="Critical Curriculum programmes"
@@ -432,21 +542,11 @@ export default function PricingCalculator() {
                     describedBy={ccHelpId}
                   />
                 </div>
-                <div id={ccHelpId} aria-live="polite" className="space-y-1 text-[14px] leading-[1.5] text-ink/80">
-                  <p>
-                    {ccNext
-                      ? `Add ${plural(ccNext.needed, "more programme", "more programmes")} and each one from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
-                      : `You're on our lowest price: each programme from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
-                  </p>
-                  {cc.saving > 0 && (
-                    <p>
-                      You&apos;re saving {formatMoney(cc.saving)} compared with paying {formatMoney(CC_LIST_RATE)} for each programme.
-                    </p>
-                  )}
-                  <p className="text-[12px] text-ink/55">
-                    Programmes you&apos;ve already added keep their price.
-                  </p>
-                </div>
+                <p id={ccHelpId} aria-live="polite" className="text-[14px] leading-[1.5] text-ink/80">
+                  {ccNext
+                    ? `Add ${plural(ccNext.needed, "more programme", "more programmes")} and each one from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
+                    : `You're on our lowest price: each programme from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
+                </p>
               </div>
             )}
           </StepShell>
@@ -466,6 +566,7 @@ export default function PricingCalculator() {
               label="students"
               onChange={setStudents}
               editable
+              fastStep={5}
             />
             {gcse && (
               <div className="mt-6 -ml-14 sm:ml-0">
