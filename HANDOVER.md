@@ -90,7 +90,7 @@ Platform login links (Student, Teacher, Admin) live in `src/lib/config.ts`.
 
 ## Go-live steps
 
-1. Import the GitHub repo into the company Vercel account (framework: Next.js; defaults are fine).
+1. Import the GitHub repo `8billionideas/website-codebase` into the company Vercel account (framework: Next.js; defaults are fine).
 2. Add environment variables if any are needed (see above) – at minimum `NEXT_PUBLIC_DISABLE_ANALYTICS=true` for **Preview** only.
 3. Deploy `main` and test on the `*.vercel.app` URL: pages, Lesson Explorer, pricing calculator, and each form (they submit to the live HubSpot forms, so use clearly marked test details and delete the test contacts afterwards).
 4. Merge `go-live-prep` into `main` (Vercel redeploys automatically). Check `/robots.txt`, `/sitemap.xml` and a few old URLs from the redirect list.
