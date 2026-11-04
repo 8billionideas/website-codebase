@@ -15,8 +15,8 @@ The marketing website for 8billionideas: *The Critical Curriculum* (eight pillar
 
 ## Branches
 
-- `main` – the site as it is now. It is still set up for pre-launch: every page is `noindex` and `robots.txt` blocks all crawlers.
-- `go-live-prep` – the go-live changes, ready to merge on launch day (see "Go-live steps"): the canonical domain (`https://www.8billionideas.com`) for canonical URLs, `sitemap.xml` and `robots.txt`; indexing switched on (except /minerva, /money-masters and /gec-academy); redirects from the old site's URLs; the hosting notes in `CLAUDE.md`; an updated `.env.example`.
+- `main` – the live site, on https://www.8billionideas.com. Every push to `main` deploys to Production.
+- `go-live-prep` – has been merged into `main`. It brought the canonical domain (`https://www.8billionideas.com`) for canonical URLs, `sitemap.xml` and `robots.txt`; indexing switched on (except /minerva, /money-masters and /gec-academy); redirects from the old site's URLs; the hosting notes in `CLAUDE.md`; an updated `.env.example`. The branch is kept on GitHub for reference; there's no need to work on it.
 
 ## Run it locally
 
