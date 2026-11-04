@@ -17,7 +17,7 @@ import {
   ChevronRight,
   type LucideIcon,
 } from "lucide-react";
-import { pillarCarousel, type ResolvedPillarCard } from "@/content/pillarCarousel";
+import { pillarCarousel, type PillarCarouselCard } from "@/content/pillarCarousel";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
 import { useLevelMode } from "@/lib/level-mode";
 import { formatLevelUpper, type LevelMode } from "@/lib/year-grade";
@@ -50,7 +50,7 @@ const EXAMPLE_PROJECT_ICONS: Record<string, LucideIcon> = {
 
 // The navy box's content for one pillar: its example lesson (left-aligned), or, for pillars
 // without one, the centred icon and supporting line.
-function BoxContent({ card, mode }: { card: ResolvedPillarCard; mode: LevelMode }) {
+function BoxContent({ card, mode }: { card: PillarCarouselCard; mode: LevelMode }) {
   const Icon = EXAMPLE_PROJECT_ICONS[card.name] ?? Lightbulb;
   const lesson = card.exampleLesson;
 
@@ -91,12 +91,12 @@ function BoxContent({ card, mode }: { card: ResolvedPillarCard; mode: LevelMode 
   );
 }
 
-// The cards (with their Lesson Explorer examples resolved on the server; see CriticalCurriculum),
-// in the shared pillar order (src/content/curriculumMapping.ts PILLARS).
-export default function PillarCarousel({ cards: unsorted }: { cards: ResolvedPillarCard[] }) {
-  const cards = [...unsorted].sort(
-    (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
-  );
+// The cards in the shared pillar order (src/content/curriculumMapping.ts PILLARS).
+const cards = [...pillarCarousel.cards].sort(
+  (x, y) => PILLARS.indexOf(x.name as PillarName) - PILLARS.indexOf(y.name as PillarName)
+);
+
+export default function PillarCarousel() {
   const { eyebrow, headingLine1, headingLine2, subheading } = pillarCarousel;
   const [index, setIndex] = useState(0);
   const card = cards[index];

@@ -135,6 +135,10 @@ function ProgrammePanel({
             {copy.proposed.post}
           </p>
         </>
+      ) : programme.type === "live" ? (
+        // Delivered live: the same heading and text as a "Programme details coming soon" slot, with
+        // the programme's name and its own text (no lesson list or count).
+        <NoticeText heading={programme.name} {...programme.text} />
       ) : (
         <>
           <h3 className="mt-2 text-[28px] font-normal leading-[1.2] text-ink md:text-[36px]">{programme.name}</h3>
@@ -157,6 +161,26 @@ function ProgrammePanel({
   );
 }
 
+// The heading and text of a "Coming soon" slot, its link phrase opening the "Get in touch"
+// (Request a demo) pop-up. Also used for live-delivered programmes.
+function NoticeText({ heading, pre, linkLabel, post }: { heading: string; pre: string; linkLabel: string; post: string }) {
+  return (
+    <>
+      <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink">{heading}</h3>
+      <p className="mt-3 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
+        {pre}
+        <DemoTrigger
+          trackingLocation="lesson_explorer"
+          className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
+        >
+          {linkLabel}
+        </DemoTrigger>
+        {post}
+      </p>
+    </>
+  );
+}
+
 // A "Coming soon" slot: no programme for this year and pillar yet.
 function ComingSoonPanel({ year, pillar, mode }: { year: number; pillar: PillarName; mode: LevelMode }) {
   return (
@@ -164,17 +188,7 @@ function ComingSoonPanel({ year, pillar, mode }: { year: number; pillar: PillarN
       <p className="text-[12px] uppercase leading-[1.5] tracking-[0.2em] text-ink/70">
         {formatLevelUpper(year, mode)} · {pillar.toUpperCase()}
       </p>
-      <h3 className="mt-3 text-[28px] font-light leading-[1.2] text-ink">{copy.missing.heading}</h3>
-      <p className="mt-3 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
-        {copy.missing.pre(pillar)}
-        <DemoTrigger
-          trackingLocation="lesson_explorer"
-          className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
-        >
-          {copy.missing.linkLabel}
-        </DemoTrigger>
-        {copy.missing.post}
-      </p>
+      <NoticeText heading={copy.missing.heading} pre={copy.missing.pre(pillar)} linkLabel={copy.missing.linkLabel} post={copy.missing.post} />
     </div>
   );
 }

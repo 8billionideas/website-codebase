@@ -52,7 +52,15 @@ export interface ProposedProgramme extends ProgrammeBase {
   internalNote: string;
 }
 
-export type Programme = StandardProgramme | GroupedProgramme | ProposedProgramme;
+// Delivered live by our team, so there's no lesson list: shown in the same panel as a "Programme
+// details coming soon" slot, with the programme's name as the heading and this text, whose link
+// phrase opens the same "Get in touch" (Request a demo) pop-up.
+export interface LiveProgramme extends ProgrammeBase {
+  type: "live";
+  text: { pre: string; linkLabel: string; post: string };
+}
+
+export type Programme = StandardProgramme | GroupedProgramme | ProposedProgramme | LiveProgramme;
 
 // Proposed six-part sequences stay hidden ("Programme details coming soon") until sign-off.
 export const SHOW_PROPOSED_SEQUENCES = false;
@@ -963,6 +971,18 @@ export const programmes: Programme[] = [
       { number: 6, title: "Communicating Your Leadership Style", description: "Practise expressing your leadership approach clearly to others." },
     ],
   },
+  // Wellbeing: delivered live (November 2026).
+  {
+    year: 11,
+    pillar: "Wellbeing",
+    name: "Thrive",
+    type: "live",
+    text: {
+      pre: "This programme is recommended to be delivered fully live by our expert facilitation team. If you’re interested in bringing Thrive to your school, ",
+      linkLabel: "get in touch",
+      post: " to discuss delivery options.",
+    },
+  },
   {
     year: 11,
     pillar: "Financial Literacy",
@@ -1035,20 +1055,19 @@ export const programmes: Programme[] = [
       { number: 6, title: "Recognising the Value of Others", description: "Explore ways to champion contributions across diverse communities." },
     ],
   },
+  // Wellbeing: supplied separately from the source document (November 2026).
   {
     year: 12,
     pillar: "Wellbeing",
-    name: "Thrive",
-    type: "proposed",
+    name: "Heart and Mind",
+    type: "standard",
     lessons: [
-      { number: 1, title: "Positive Psychology 101: How To Be Happy", description: "Explore the science behind happiness and personal fulfilment." },
-      { number: 2, title: "Active & Passive Consumption", description: "Evaluate your screen habits and set healthier digital boundaries." },
-      { number: 3, title: "Personality Power", description: "Identify your personal strengths and values through personality assessments." },
-      { number: 4, title: "Finding Your Passion", description: "Explore your interests and create a roadmap towards personal fulfilment." },
-      { number: 5, title: "The Power Of Flow", description: "Discover how flow influences concentration, motivation and meaningful engagement." },
-      { number: 6, title: "How To Be Creative", description: "Practise creative thinking techniques and showcase your Well Rounded project." },
+      { number: 1, title: "Expressing", description: "Explore emotions and begin creating a personal wellbeing journal." },
+      { number: 2, title: "Challenging", description: "Discover techniques for challenging and reframing negative thoughts." },
+      { number: 3, title: "Appreciating", description: "Explore gratitude and its role in emotional wellbeing." },
+      { number: 4, title: "Finish the Project", description: "Complete your journal using the techniques you’ve explored." },
+      { number: 5, title: "Showcase", description: "Present your journal and reflect on your learning." },
     ],
-    internalNote: "Website grouping: original Project Showcase is incorporated into How To Be Creative. Original platform has 7 lessons.",
   },
   {
     year: 12,

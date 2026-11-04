@@ -5,15 +5,6 @@ export interface PillarExampleLesson {
   description: string;
 }
 
-// An example lesson taken from the Lesson Explorer (src/content/lesson-explorer.ts) instead of
-// written here, so the two can't drift apart: the pillar's programme for that year, and the lesson
-// by its title. Resolved on the server (src/lib/pillar-example-lessons.ts); the build fails if the
-// lesson isn't in the explorer.
-export interface PillarExplorerLesson {
-  year: number;
-  fromExplorer: string;
-}
-
 export interface PillarCarouselCard {
   name: string;
   description: string;
@@ -22,9 +13,8 @@ export interface PillarCarouselCard {
   // Short line shown under the icon in the card's navy box. Now only shown for pillars without
   // an example lesson (the "Coming soon" ones); kept on every card in case it's needed again.
   supportingLine: string;
-  // Example lesson shown in the card's navy box: written here, or taken from the Lesson Explorer.
-  // null shows the icon and supporting line instead.
-  exampleLesson: PillarExampleLesson | PillarExplorerLesson | null;
+  // Example lesson shown in the card's navy box. null shows the icon and supporting line instead.
+  exampleLesson: PillarExampleLesson | null;
   image?: { src: string; alt: string; position: string } | null;
   // Optional real photo for the navy box. When set, it replaces the
   // pillar's icon; the supporting line still shows.
@@ -33,11 +23,6 @@ export interface PillarCarouselCard {
   // programme as coming soon on the curriculum page.
   comingSoon?: boolean;
 }
-
-// A card as the carousel renders it, with any Lesson Explorer example resolved.
-export type ResolvedPillarCard = Omit<PillarCarouselCard, "exampleLesson"> & {
-  exampleLesson: PillarExampleLesson | null;
-};
 
 export const pillarCarousel = {
   eyebrow: "THE CURRICULUM",
@@ -142,8 +127,12 @@ export const pillarCarousel = {
     },
     {
       name: "Financial Literacy",
-      // Year 7 Demystifying Money's "Moving Out", as in the Lesson Explorer.
-      exampleLesson: { year: 7, fromExplorer: "Moving Out" },
+      exampleLesson: {
+        year: 7,
+        title: "Moving Out",
+        description:
+          "Students navigate real-life financial decisions, learning how to balance income, rent, bills and everyday expenses while understanding the financial responsibilities of independent living.",
+      },
       supportingLine: "Budgeting, saving and making informed money decisions",
       description:
         "Helping students understand the role money plays in everyday life and the choices that come with it",
