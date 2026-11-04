@@ -27,7 +27,7 @@ export const gcse = {
     headingLine1: "Turn future skills into",
     headingLine2: "a recognised qualification",
     subline:
-      "Students earn an International GCSE through two practical projects on topics such as sustainability, technology and entrepreneurship. OxfordAQA develops and awards the qualification. As its teaching and learning partner, 8billionideas provides the structured lessons, resources and platform to deliver it – building on the skills students develop through The Critical Curriculum.",
+      "Students earn an International GCSE through two practical projects exploring topics such as sustainability, technology and entrepreneurship. OxfordAQA develops and awards the qualification, with 8billionideas acting as OxfordAQA's teaching and learning partner for Global Skills Projects. We provide the structured lessons, resources and platform that support schools in delivering the qualification, building on the skills students develop through The Critical Curriculum.",
     // Set to a date string (e.g. "September 2027") to show a small pill
     // above the H1. Leave null to render nothing.
     launchDate: null as string | null,
@@ -114,7 +114,7 @@ export const gcse = {
     headingLine1: "You don't have to build a",
     headingLine2: "new course from scratch",
     intro:
-      "Introducing a new qualification can mean planning lessons, creating resources and working out how everything fits together. As OxfordAQA's teaching and learning partner, we've already developed the teaching materials and learning structure to help your school deliver the qualification without having to build the course itself.",
+      "Introducing a new qualification can mean planning lessons, creating resources and working out how everything fits together. As OxfordAQA's teaching and learning partner for Global Skills Projects, 8billionideas has already developed the teaching materials and learning structure to help your school deliver the qualification without having to build the course itself.",
     reassurance: "You can focus on teaching and supporting your students, rather than developing the course yourself.",
     listHeading: "What we've already prepared for your school",
     items: [
@@ -123,6 +123,12 @@ export const gcse = {
       { number: "03", title: "Resources for teachers and students", line: "Videos, activities and materials to support teaching and learning." },
       { number: "04", title: "Guidance throughout the projects", line: "Practical resources to support project work from start to finish." },
     ],
+    // The callout at the foot of the section; "Talk to us" opens the Request a demo pop-up.
+    registration: {
+      heading: "Need help with centre registration?",
+      body: "We can also guide schools through the OxfordAQA centre registration and approval process where required.",
+      cta: "Talk to us",
+    },
   },
 
   // 07: how a school gets set up.
@@ -269,7 +275,7 @@ export const gcse = {
     group: {
       eyebrow: "YEAR 2 · 40%",
       title: "Group Project",
-      line: "Students work together on a shared sustainability challenge, using the UN Sustainable Development Goals to help shape their project.",
+      line: "Students work together on a student-led sustainability project, identifying a challenge that matters to them and developing solutions collaboratively.",
       focusLabel: "PROJECT FOCUS",
       focus: "A collaborative project based on a real-world sustainability issue.",
       image: {
@@ -307,11 +313,11 @@ export const gcse = {
     // Set to true once a real platform video is ready. While false, no
     // "See the platform" button or video area renders — no placeholder.
     showPlatformVideo: false,
-    // The annotated laptop (1536×1024), shown whole as the band's background. The earlier
-    // platform image is kept.
+    // The annotated laptop (1536×1024, from "Global Skills Project Interface Mockup.png"), shown
+    // whole as the band's background. The earlier images (platform-annotated, platform) are kept.
     image: {
-      src: "/images/gcse/platform-annotated.webp",
-      alt: "The 8billionideas platform on a laptop showing the Global Skills Project course introduction, with labels pointing to the teaching video, lesson objectives, student activities, the starting assessment, and the end assessment and certification",
+      src: "/images/gcse/global-skills-projects-platform-mockup.webp",
+      alt: "The 8billionideas platform showing a Global Skills Projects lesson, with an 8-minute teaching video, 10 pages of student activities, lesson objectives, a starting assessment, and an end assessment and certification.",
     },
   },
 

@@ -1,9 +1,10 @@
 import Container from "@/components/layout/Container";
+import DemoTrigger from "@/components/demo/DemoTrigger";
 import { gcse } from "@/content/gcse";
 
 // /gcse 04: "You don't have to build a new course from scratch" – what's already prepared.
 export default function ReadyToDeliver() {
-  const { eyebrow, headingLine1, headingLine2, intro, reassurance, listHeading, items } = gcse.readyToDeliver;
+  const { eyebrow, headingLine1, headingLine2, intro, reassurance, listHeading, items, registration } = gcse.readyToDeliver;
 
   return (
     <section className="bg-ink py-section">
@@ -32,6 +33,22 @@ export default function ReadyToDeliver() {
               ))}
             </ol>
           </div>
+        </div>
+
+        {/* Centre registration: one row (text left, button right) from md, stacked below. */}
+        <div className="mt-content flex flex-col gap-6 rounded-lg border border-white/10 bg-white/[0.06] px-6 py-section-tight md:flex-row md:items-center md:justify-between md:gap-10 md:px-10">
+          <div className="max-w-[640px]">
+            <h3 className="text-[20px] font-normal leading-[1.3] text-white">{registration.heading}</h3>
+            <p className="mt-2 text-[16px] leading-[1.6] text-white/80">{registration.body}</p>
+          </div>
+          <DemoTrigger
+            trackingLocation="gcse_centre_registration"
+            appearance="button"
+            variant="outline-dark"
+            className="w-full md:w-auto"
+          >
+            {registration.cta}
+          </DemoTrigger>
         </div>
       </Container>
     </section>

@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useDemoModal } from "@/components/demo/DemoModalProvider";
-import Button from "@/components/ui/Button";
+import Button, { type ButtonProps } from "@/components/ui/Button";
 import { trackEvent } from "@/lib/analytics";
 
 // Opens the Request a demo modal. appearance="button" renders the shared green
@@ -17,6 +17,7 @@ export default function DemoTrigger({
   returnFocusTo,
   appearance = "plain",
   arrow = true,
+  variant,
   trackingLocation,
 }: {
   className?: string;
@@ -27,6 +28,7 @@ export default function DemoTrigger({
   appearance?: "plain" | "button";
   // Only used with appearance="button".
   arrow?: boolean;
+  variant?: ButtonProps["variant"];
   // Where the trigger is, for the demo_click event ("nav", "hero", "pricing"…).
   trackingLocation: string;
 }) {
@@ -40,7 +42,14 @@ export default function DemoTrigger({
 
   if (appearance === "button") {
     return (
-      <Button aria-haspopup="dialog" aria-label={ariaLabel} onClick={handleClick} arrow={arrow} className={className}>
+      <Button
+        aria-haspopup="dialog"
+        aria-label={ariaLabel}
+        onClick={handleClick}
+        arrow={arrow}
+        variant={variant}
+        className={className}
+      >
         {children}
       </Button>
     );

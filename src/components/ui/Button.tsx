@@ -6,10 +6,11 @@ import { ArrowRight, Loader2 } from "lucide-react";
 // turning white (with a thin border and soft shadow) on hover. Inline text
 // links are not buttons and don't use this. variant="outline" (an ink outline on
 // a transparent background) is for a secondary choice shown beside a green
-// button at equal size, e.g. the cookie banner's Reject.
+// button at equal size, e.g. the cookie banner's Reject. variant="outline-dark" (a white outline
+// with white text) is the same secondary style for navy sections.
 
 type Size = "default" | "form" | "small";
-type Variant = "solid" | "outline";
+type Variant = "solid" | "outline" | "outline-dark";
 
 interface CommonProps {
   children: ReactNode;
@@ -43,16 +44,20 @@ const SIZE_CLASSES: Record<Size, string> = {
 
 const VARIANT_CLASSES: Record<Variant, string> = {
   solid: [
-    "border-transparent bg-accent",
+    "border-transparent bg-accent text-ink",
     "not-disabled:hover:border-ink/15 not-disabled:hover:bg-white not-disabled:hover:shadow-[0_4px_14px_rgba(22,33,61,0.10)]",
     "not-disabled:active:bg-white/90",
   ].join(" "),
-  outline: "border-ink bg-transparent not-disabled:hover:bg-ink/[0.05] not-disabled:active:bg-ink/10",
+  outline: "border-ink bg-transparent text-ink not-disabled:hover:bg-ink/[0.05] not-disabled:active:bg-ink/10",
+  "outline-dark": [
+    "border-white/60 bg-transparent text-white focus-visible:ring-offset-ink",
+    "not-disabled:hover:border-white not-disabled:hover:bg-white/10 not-disabled:active:bg-white/15",
+  ].join(" "),
 };
 
 export function buttonClasses(size: Size = "default", className = "", variant: Variant = "solid") {
   return [
-    "group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border text-center font-medium text-ink",
+    "group inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border text-center font-medium",
     "transition-[background-color,border-color,box-shadow] duration-150 motion-reduce:transition-none",
     VARIANT_CLASSES[variant],
     "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-accent/40 focus-visible:ring-offset-2",
