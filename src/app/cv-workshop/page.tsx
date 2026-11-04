@@ -18,6 +18,7 @@ import {
 export const metadata: Metadata = {
   title: "Free CV workshop for students | 8billionideas",
   description: "A free video workshop and printable activity book to help your students create their first CV.",
+  alternates: { canonical: "/cv-workshop" },
 };
 
 const H2 = "text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] md:text-[52px]";

@@ -9,6 +9,7 @@ import Script from "next/script";
 import CookieBanner from "@/components/analytics/CookieBanner";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { ANALYTICS_ENABLED, CONSENT_DEFAULT_SCRIPT } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/site-config";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -19,10 +20,12 @@ const poppins = Poppins({
   display: "swap",
 });
 
+// Indexable by default; /minerva, /money-masters and /gec-academy set their own noindex. Each page
+// sets its canonical path (relative to metadataBase).
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "8billionideas",
   description: "8billionideas website",
-  robots: { index: false, follow: false },
 };
 
 // Locks the site to its designed light theme. "only light" also stops browsers
