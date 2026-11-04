@@ -151,13 +151,13 @@ export const subjects: Subject[] = [
         },
         application: {
           headline: "Work out the real cost of employing someone.",
-          text: "Through Diversify Your Money, students work out the cost of employing someone, including employer contributions, before considering how these costs influence business decisions.",
+          text: "Through Diverse Dollars, students work out the cost of employing someone, including employer contributions, before considering how these costs influence business decisions.",
         },
         fit: "A real-world extension of KS3 percentage and proportional-reasoning learning, potentially in Year 9, or within financial education. Employer contributions are a business application, not prescribed KS3 mathematics content. The full module is approximately 50 minutes.",
         extra: null,
         skills: ["Problem-Solving", "Critical Thinking", "Decision-Making"],
-        example: "Diversify Your Money: Talking The Talk – Year 9",
-        explore: { programme: "Diversify Your Money", year: 9, pillar: "Financial Literacy" },
+        example: "Diverse Dollars: Talking The Talk – Year 9",
+        explore: { programme: "Diverse Dollars", year: 9, pillar: "Financial Literacy" },
         source: SOURCES.maths,
       },
       // HELD (V3 publishing hold): programme and age-group suitability unconfirmed.

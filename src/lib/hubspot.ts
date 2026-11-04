@@ -11,9 +11,12 @@ const HUBSPOT_DEFAULTS = {
   moneyMastersFormId: null as string | null,
   // The ROAR sign-up form (as embedded on page.8billionideas.com/roar-2026).
   roarFormId: "51b30d26-843b-4ed3-8944-70ca0654709b",
-  // The resources download form: Future Jobs Kit 2.0 and My First Job Kit (the /resources pop-up)
-  // and the First CV Workshop (/cv-workshop). Its HubSpot workflow emails the download link.
-  resourcesFormId: "0c0e6eaf-3138-47bb-aad0-401744bf07f5",
+  // One download form per resource (each form's HubSpot workflow emails its download link): the
+  // Future Jobs Kit 2.0 and My First Job Kit (the /resources pop-up) and the First CV Workshop
+  // (/cv-workshop).
+  futureJobsKitFormId: "e55ad940-6e59-43f2-b166-49f099230458",
+  myFirstJobKitFormId: "aa3a9bf9-2110-4e61-b613-9a232cf922c2",
+  cvWorkshopFormId: "561208a7-c30b-4c1f-ba6c-4303592604af",
 };
 
 // NEXT_PUBLIC_ variables are inlined at build time, so each is read by its full name.
@@ -32,15 +35,26 @@ export const HUBSPOT_MONEY_MASTERS_FORM_ID =
 export const HUBSPOT_ROAR_FORM_ID = process.env.NEXT_PUBLIC_HUBSPOT_ROAR_FORM_ID || HUBSPOT_DEFAULTS.roarFormId;
 
 
-export const HUBSPOT_RESOURCES_FORM_ID =
-  process.env.NEXT_PUBLIC_HUBSPOT_RESOURCES_FORM_ID || HUBSPOT_DEFAULTS.resourcesFormId || "";
+export const HUBSPOT_FUTURE_JOBS_KIT_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_FUTURE_JOBS_KIT_FORM_ID || HUBSPOT_DEFAULTS.futureJobsKitFormId;
+export const HUBSPOT_MY_FIRST_JOB_KIT_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_MY_FIRST_JOB_KIT_FORM_ID || HUBSPOT_DEFAULTS.myFirstJobKitFormId;
+export const HUBSPOT_CV_WORKSHOP_FORM_ID =
+  process.env.NEXT_PUBLIC_HUBSPOT_CV_WORKSHOP_FORM_ID || HUBSPOT_DEFAULTS.cvWorkshopFormId;
+
+// The /resources kits' download forms, by the kit's slug (src/lib/resources.ts).
+export const KIT_DOWNLOAD_FORM_IDS: Record<string, string> = {
+  "future-jobs-kit": HUBSPOT_FUTURE_JOBS_KIT_FORM_ID,
+  "my-first-job-kit": HUBSPOT_MY_FIRST_JOB_KIT_FORM_ID,
+};
 
 export const isHubspotConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_DEMO_FORM_ID);
 export const isContactFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CONTACT_FORM_ID);
 export const isQuoteFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_QUOTE_FORM_ID);
 export const isMoneyMastersFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_MONEY_MASTERS_FORM_ID);
 export const isRoarFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_ROAR_FORM_ID);
-export const isResourcesFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_RESOURCES_FORM_ID);
+export const isKitDownloadConfigured = (kitSlug: string) => Boolean(HUBSPOT_PORTAL_ID && KIT_DOWNLOAD_FORM_IDS[kitSlug]);
+export const isCvWorkshopFormConfigured = Boolean(HUBSPOT_PORTAL_ID && HUBSPOT_CV_WORKSHOP_FORM_ID);
 
 // Forms API v3 submission hosts. HubSpot's Forms API v3 reference documents only the standard
 // host, so it's tried first. For EU accounts, a 404 there ("form not found") is retried once at
@@ -187,7 +201,7 @@ export function submitRoarSignUp(request: RoarSignUp): Promise<boolean> {
   );
 }
 
-// A download request: the resources form's three contact fields, by their internal names
+// A download request: the three contact fields every download form has, by their internal names
 // ("0-1/firstname", "0-1/lastname", "0-1/email"), plus its one optional marketing checkbox.
 export interface ResourceDownload {
   firstname: string;
@@ -197,8 +211,9 @@ export interface ResourceDownload {
   marketingOptIn: boolean;
 }
 
-// The resources form's consent settings: processing consent is implicit (the small print, no
-// checkbox), and the opt-in is the communication checkbox for subscription type 7269415.
+// The download forms' consent settings (the same on all three): processing consent is implicit
+// (the small print, no checkbox), and the opt-in is the communication checkbox for subscription
+// type 7269415.
 export const DOWNLOAD_SUBSCRIPTION_TYPE_ID = 7269415;
 export const DOWNLOAD_PROCESSING_TEXT =
   "We’ll use your details to send your download. You can unsubscribe at any time. See our Privacy Policy.";
@@ -225,15 +240,14 @@ const downloadFields = (contact: { firstname: string; lastname: string; email: s
   "0-1/email": contact.email,
 });
 
-// All three downloads go to the resources form. The form has no field saying which resource was
-// asked for yet, so the resource goes in the page context: its URL and "{resource} download".
-// TODO: when the HubSpot admin adds the hidden resource field to the form, send it from both
-// functions below.
+// Each download goes to its own form, with the resource in the page context too: its URL and
+// "{resource} download".
 function submitResourceDownload(
+  formId: string,
   { marketingOptIn, ...contact }: ResourceDownload,
   context: { path: string; resourceName: string }
 ): Promise<boolean> {
-  return submitHubspotForm(HUBSPOT_RESOURCES_FORM_ID, downloadFields(contact), downloadConsent(marketingOptIn), {
+  return submitHubspotForm(formId, downloadFields(contact), downloadConsent(marketingOptIn), {
     pageUri: `${window.location.origin}${context.path}`,
     pageName: `${context.resourceName} download`,
   });
@@ -243,7 +257,10 @@ function submitResourceDownload(
 export const CV_WORKSHOP_RESOURCE_NAME = "First CV Workshop";
 
 export function submitCvWorkshopDownload(request: ResourceDownload): Promise<boolean> {
-  return submitResourceDownload(request, { path: "/cv-workshop", resourceName: CV_WORKSHOP_RESOURCE_NAME });
+  return submitResourceDownload(HUBSPOT_CV_WORKSHOP_FORM_ID, request, {
+    path: "/cv-workshop",
+    resourceName: CV_WORKSHOP_RESOURCE_NAME,
+  });
 }
 
 // Future Jobs Kit 2.0 / My First Job Kit (the /resources pop-up): the kit's row on /resources.
@@ -253,5 +270,7 @@ export interface KitDownload extends ResourceDownload {
 }
 
 export function submitKitDownload({ kitSlug, kitName, ...request }: KitDownload): Promise<boolean> {
-  return submitResourceDownload(request, { path: `/resources#${kitSlug}`, resourceName: kitName });
+  const formId = KIT_DOWNLOAD_FORM_IDS[kitSlug];
+  if (!formId) return Promise.resolve(false);
+  return submitResourceDownload(formId, request, { path: `/resources#${kitSlug}`, resourceName: kitName });
 }

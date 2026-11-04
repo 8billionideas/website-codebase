@@ -2,6 +2,11 @@
 // section on /resources. The content of the old HubSpot page
 // (page.8billionideas.com/money-masters-rulebook), moved onto the site.
 
+// Offline for now: false makes /money-masters a 404 and takes Money Masters off /resources and the
+// footer's Partnerships column. The page, content, images and videos are all kept; set true to
+// bring it back.
+export const SHOW_MONEY_MASTERS = false;
+
 // The main image: the open box with the Retirement Regret, Overdue Bill and Financing Fail cards in
 // front (transparent background, trimmed to a 3% margin, 1198×1068). The previous box-only image
 // (money-masters-box) is kept. Used on /resources and at the top of /money-masters;

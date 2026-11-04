@@ -6,7 +6,7 @@ import Button from "@/components/ui/Button";
 import {
   CV_WORKSHOP_RESOURCE_NAME,
   DOWNLOAD_OPT_IN_TEXT,
-  isResourcesFormConfigured,
+  isCvWorkshopFormConfigured,
   submitCvWorkshopDownload,
 } from "@/lib/hubspot";
 import { trackEvent } from "@/lib/analytics";
@@ -75,7 +75,7 @@ export default function CvWorkshopForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting" || !isResourcesFormConfigured) return;
+    if (status === "submitting" || !isCvWorkshopFormConfigured) return;
 
     const nextErrors: Errors = {};
     for (const name of ORDER) nextErrors[name] = validate(name, values[name]);
@@ -211,12 +211,12 @@ export default function CvWorkshopForm() {
           size="form"
           arrow
           loading={status === "submitting"}
-          disabled={status === "submitting" || !isResourcesFormConfigured}
-          aria-describedby={!isResourcesFormConfigured ? id("not-connected") : undefined}
+          disabled={status === "submitting" || !isCvWorkshopFormConfigured}
+          aria-describedby={!isCvWorkshopFormConfigured ? id("not-connected") : undefined}
         >
           {status === "submitting" ? "Sending…" : cvWorkshopDownload.submit}
         </Button>
-        {!isResourcesFormConfigured && (
+        {!isCvWorkshopFormConfigured && (
           <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/60">
             Downloads aren&apos;t connected yet – please email{" "}
             <a href={`mailto:${siteConfig.email}`} className="text-ink underline underline-offset-2">

@@ -8,7 +8,7 @@ import { KITS, KIT_DOWNLOADS, closingImage, type Resource } from "@/lib/resource
 import Button from "@/components/ui/Button";
 import CriticalCurriculumName from "@/components/shared/CriticalCurriculumName";
 import Link from "next/link";
-import { MONEY_MASTERS_IMAGE, moneyMastersResource } from "@/content/money-masters";
+import { MONEY_MASTERS_IMAGE, SHOW_MONEY_MASTERS, moneyMastersResource } from "@/content/money-masters";
 import MoneyMastersRequestTrigger from "@/components/money-masters/MoneyMastersRequest";
 import KitDownloadTrigger from "@/components/resources/KitDownload";
 import { CV_WORKSHOP_IMAGE, cvWorkshopResource } from "@/content/cv-workshop";
@@ -26,8 +26,9 @@ const INSET_RIGHT = "lg:pr-[calc(48px_+_max(0px,(100vw_-_1200px)/2))]";
 
 
 // The kits, then Money Masters (the card game) and the First CV Workshop (each with its own page), all
-// in the same row format.
-const RESOURCES: Resource[] = [
+// in the same row format. Money Masters is left out while SHOW_MONEY_MASTERS is false (its "Request
+// your cards" button below only shows with its row).
+const ALL_RESOURCES: Resource[] = [
   ...KITS,
   {
     slug: "money-masters",
@@ -58,6 +59,7 @@ const RESOURCES: Resource[] = [
       : null,
   },
 ];
+const RESOURCES = ALL_RESOURCES.filter((resource) => SHOW_MONEY_MASTERS || resource.slug !== "money-masters");
 
 // A second green button under a resource's button (Money Masters: the request pop-up).
 const EXTRA_ACTIONS: Record<string, ReactNode> = {

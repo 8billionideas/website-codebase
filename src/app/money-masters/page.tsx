@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
@@ -8,6 +9,7 @@ import MoneyMastersImage from "@/components/money-masters/MoneyMastersImage";
 import MoneyMastersRequestTrigger from "@/components/money-masters/MoneyMastersRequest";
 import {
   MONEY_MASTERS_GREEN,
+  SHOW_MONEY_MASTERS,
   moneyMastersIntro,
   moneyMastersIntroCta,
   moneyMastersLogos,
@@ -70,6 +72,8 @@ function VideoCard({ video }: { video: MoneyMastersVideo }) {
 }
 
 export default function MoneyMastersPage() {
+  // Offline (the site's 404) while SHOW_MONEY_MASTERS is false.
+  if (!SHOW_MONEY_MASTERS) notFound();
   const { partnership, game } = moneyMastersLogos;
   return (
     <div className="bg-paper">

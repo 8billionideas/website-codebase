@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type FocusEvent, type FormEvent } f
 import { Check } from "lucide-react";
 import ModalShell from "@/components/layout/ModalShell";
 import Button from "@/components/ui/Button";
-import { DOWNLOAD_OPT_IN_LEAD, DOWNLOAD_OPT_IN_TEXT, isResourcesFormConfigured, submitKitDownload } from "@/lib/hubspot";
+import { DOWNLOAD_OPT_IN_LEAD, DOWNLOAD_OPT_IN_TEXT, isKitDownloadConfigured, submitKitDownload } from "@/lib/hubspot";
 import { KIT_DOWNLOADS, KIT_DOWNLOAD_URLS } from "@/lib/resources";
 import { trackEvent } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site-config";
@@ -83,7 +83,7 @@ function KitDownloadModal({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting" || !isResourcesFormConfigured) return;
+    if (status === "submitting" || !isKitDownloadConfigured(kitSlug)) return;
 
     const nextErrors: Errors = {};
     for (const name of ORDER) nextErrors[name] = validate(name, values[name]);
@@ -252,12 +252,12 @@ function KitDownloadModal({
                 size="form"
                 arrow
                 loading={status === "submitting"}
-                disabled={status === "submitting" || !isResourcesFormConfigured}
-                aria-describedby={!isResourcesFormConfigured ? id("not-connected") : undefined}
+                disabled={status === "submitting" || !isKitDownloadConfigured(kitSlug)}
+                aria-describedby={!isKitDownloadConfigured(kitSlug) ? id("not-connected") : undefined}
               >
                 {status === "submitting" ? "Sending…" : "Download now"}
               </Button>
-              {!isResourcesFormConfigured && (
+              {!isKitDownloadConfigured(kitSlug) && (
                 <p id={id("not-connected")} className="mt-2 text-center text-[13px] text-ink/60">
                   Downloads aren&apos;t connected yet – please email{" "}
                   <a href={`mailto:${siteConfig.email}`} className="text-ink underline underline-offset-2">

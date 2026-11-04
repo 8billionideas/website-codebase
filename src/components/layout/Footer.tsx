@@ -7,6 +7,7 @@ import Container from "@/components/layout/Container";
 import Logo from "@/components/layout/Logo";
 import LoginModal from "@/components/layout/LoginModal";
 import { footerPartners, siteConfig, type SocialNetwork } from "@/lib/site-config";
+import { SHOW_MONEY_MASTERS } from "@/content/money-masters";
 
 const FOCUS_RING =
   "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink";
@@ -55,7 +56,11 @@ export default function Footer() {
   const [loginOpen, setLoginOpen] = useState(false);
   const loginButtonRef = useRef<HTMLButtonElement>(null);
   const { email, phone, social, legal } = siteConfig;
-  const partners = footerPartners.filter((partner): partner is { label: string; href: string } => Boolean(partner.href));
+  // Partners with a link, except Money Masters while it's offline (SHOW_MONEY_MASTERS).
+  const partners = footerPartners.filter(
+    (partner): partner is { label: string; href: string } =>
+      Boolean(partner.href) && (SHOW_MONEY_MASTERS || partner.href !== "/money-masters")
+  );
   const legalLinks = legal.filter((link): link is { label: string; url: string } => Boolean(link.url));
   const year = new Date().getFullYear();
 
