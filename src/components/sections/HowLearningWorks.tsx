@@ -20,15 +20,14 @@ export default function HowLearningWorks() {
           <em className="text-accent">{headingLine2}</em>
         </h2>
 
-        <ul className="mt-content grid list-none grid-cols-1 gap-8 p-0 md:grid-cols-3 md:gap-12">
+        {/* The four areas of learning: white cards, 2×2 from md, one column below. */}
+        <ul className="mt-content grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 md:gap-6">
           {stages.map((stage) => (
-            <li key={stage.title}>
-              <div className="flex items-center" aria-hidden="true">
-                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-accent" />
-                <span className="h-px flex-1 bg-white/25" />
-              </div>
-              <h3 className="mt-5 text-[24px] font-normal leading-[1.25] text-white">{stage.title}</h3>
-              <p className="mt-3 max-w-[380px] text-[17px] leading-[1.6] text-white/70">{stage.text}</p>
+            <li key={stage.title} className="rounded-xl border border-ink/10 bg-white p-6 md:p-8">
+              {/* The darker green: accent green fails contrast on white at this size. */}
+              <p className="text-[14px] font-medium leading-[1.4] text-[#0E7C5A]">{stage.number}</p>
+              <h3 className="mt-3 text-[24px] font-normal leading-[1.25] text-ink">{stage.title}</h3>
+              <p className="mt-3 max-w-[480px] text-[17px] leading-[1.6] text-ink/70">{stage.text}</p>
             </li>
           ))}
         </ul>

@@ -52,13 +52,14 @@ export default function CurriculumFitSection() {
                   on the column above; below lg it's a plain full-width panel. */}
               <div className="relative h-[240px] w-full overflow-hidden md:h-[320px] lg:h-[460px] lg:w-[calc(100%+var(--right-bleed))]">
                 <Image
-                  src="/images/curriculum-fit-map.webp"
-                  alt="A world map on a desk with small model schools on each continent, connected by fine golden lines"
+                  src="/images/future-skills-workshop.webp"
+                  alt="An 8billionideas presenter leading a future skills workshop for teachers and students, with the slide 'A practical approach to future skills.' on screen."
                   fill
                   loading="lazy"
                   sizes="(min-width: 1024px) 42vw, 100vw"
                   className="object-cover"
-                  style={{ objectPosition: "55% center" }}
+                  // The presenter and screen sit centred, just below the photo's middle.
+                  style={{ objectPosition: "50% 52%" }}
                 />
               </div>
             </div>

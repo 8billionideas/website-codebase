@@ -129,6 +129,21 @@ export const programmes: Programme[] = [
       { number: 6, title: "Work Time Machine: Showcase", description: "Present your imagined jobs from the past and future." },
     ],
   },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 1,
+    pillar: "Leadership",
+    name: "Shoulders of Giants",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "What Makes A Great Leader?", description: "Explore the qualities that make people effective and inspiring leaders." },
+      { number: 2, title: "Respect In Action", description: "Understand respect and its importance in everyday relationships." },
+      { number: 3, title: "Speaking Up For Yourself", description: "Practise expressing ideas and speaking confidently for yourself." },
+      { number: 4, title: "What Makes A Team?", description: "Identify the qualities that help people work together." },
+      { number: 5, title: "Sharing Ideas", description: "Discuss different viewpoints and practise listening to others." },
+      { number: 6, title: "Planning A Leadership Field Trip", description: "Plan a field trip inspired by an influential figure." },
+    ],
+  },
   {
     year: 1,
     pillar: "Wellbeing",
@@ -185,6 +200,21 @@ export const programmes: Programme[] = [
       { number: 6, title: "Eating The Frog: Showcase", description: "Demonstrate your favourite project and explain how it works." },
     ],
   },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 2,
+    pillar: "Leadership",
+    name: "Badge of Honour",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "Who Inspires Us?", description: "Identify people who inspire others through their actions." },
+      { number: 2, title: "What Makes Someone Inspiring?", description: "Explore the qualities and actions that make people inspiring." },
+      { number: 3, title: "Communication In Teams", description: "Discover how teams share information and work together." },
+      { number: 4, title: "Building A Team", description: "Explore different team roles and the strengths people bring." },
+      { number: 5, title: "Making Your Case", description: "Practise building an argument and explaining your reasoning." },
+      { number: 6, title: "Create Your Dream Team", description: "Choose team members and explain how they work together." },
+    ],
+  },
   {
     year: 2,
     pillar: "Wellbeing",
@@ -239,6 +269,21 @@ export const programmes: Programme[] = [
       { number: 4, title: "Bring Your Hobby To Class", description: "Tell their hobby story to classmates using show-and-tell props." },
       { number: 5, title: "The Great Hobby Swap!", description: "Teach a partner their hobby and learn theirs." },
       { number: 6, title: "Demo Day", description: "Demonstrate a partner's hobby in pairs to the class." },
+    ],
+  },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 3,
+    pillar: "Leadership",
+    name: "Escape Room",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "The People Behind A Team", description: "Explore how different people contribute to successful teamwork." },
+      { number: 2, title: "The Qualities Of A Leader", description: "Identify leadership qualities that help groups solve problems." },
+      { number: 3, title: "Giving And Receiving Feedback", description: "Practise sharing constructive feedback and responding to others." },
+      { number: 4, title: "Working Better Together", description: "Explore how cooperation helps teams complete shared challenges." },
+      { number: 5, title: "Making Decisions As A Team", description: "Share ideas, listen to others and agree on decisions." },
+      { number: 6, title: "Design Your Escape Room", description: "Develop an escape room concept using teamwork and creativity." },
     ],
   },
   {
@@ -381,6 +426,21 @@ export const programmes: Programme[] = [
       { number: 6, title: "Graduation Ceremony", description: "Celebrate by awarding certificates in a graduation ceremony." },
     ],
   },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 5,
+    pillar: "Leadership",
+    name: "Treasure Island",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "Leadership Through The Team’s Eyes", description: "Explore how team members perceive and respond to leaders." },
+      { number: 2, title: "Earning And Showing Respect", description: "Explore how leaders build respect through their actions." },
+      { number: 3, title: "Communicating Your Ideas", description: "Practise explaining ideas clearly and confidently to others." },
+      { number: 4, title: "The Art Of Delegation", description: "Explore how leaders share responsibilities across a team." },
+      { number: 5, title: "Understanding Team Strengths", description: "Evaluate team strengths and identify areas for improvement." },
+      { number: 6, title: "Leading Through Challenges", description: "Consider how leaders respond when situations become difficult." },
+    ],
+  },
   {
     year: 5,
     pillar: "Wellbeing",
@@ -449,6 +509,21 @@ export const programmes: Programme[] = [
       { number: 3, title: "Space Travel Agent", description: "Use organisation skills to plan a space holiday." },
       { number: 4, title: "Candy Connoisseur", description: "Take initiative to invent a bestselling sweet treat." },
       { number: 5, title: "Career Explorers: Showcase", description: "Present their favourite career idea in show and tell." },
+    ],
+  },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 6,
+    pillar: "Leadership",
+    name: "Campaigners",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "Introducing Campaigns", description: "Discover what campaigns are and who leads them." },
+      { number: 2, title: "What Makes A Campaign Memorable?", description: "Explore why certain campaigns capture attention and inspire action." },
+      { number: 3, title: "Communicating A Cause", description: "Examine how campaigns communicate issues to different audiences." },
+      { number: 4, title: "Working Towards A Shared Goal", description: "Explore how campaigners cooperate to achieve shared objectives." },
+      { number: 5, title: "Why People Campaign", description: "Investigate what motivates people to campaign for change." },
+      { number: 6, title: "Choose Your Cause", description: "Identify a cause and develop an idea for campaigning." },
     ],
   },
   {
@@ -549,6 +624,22 @@ export const programmes: Programme[] = [
       { number: 6, title: "Healthy Hype: Showcase", description: "Present a tech solution for safer online health advice." },
     ],
   },
+  // Financial Literacy: supplied separately from the source document (November 2026).
+  {
+    year: 7,
+    pillar: "Financial Literacy",
+    name: "Demystifying Money",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "The Concept of Money", description: "Explore money personalities and reflect on your financial attitudes." },
+      { number: 2, title: "Moving Out", description: "Make financial decisions when preparing to live independently." },
+      { number: 3, title: "Moving Up", description: "Explore everyday expenses and financial responsibilities of independent living." },
+      { number: 4, title: "Rainy Days", description: "Discover why saving matters and prepare for unexpected expenses." },
+      { number: 5, title: "Risk and Reward", description: "Evaluate financial risks and rewards through practical decisions." },
+      { number: 6, title: "Cost and Value", description: "Analyse costs and value when making important financial choices." },
+      { number: 7, title: "Demystifying Money Showcase", description: "Present financial decisions and learning through graphics and metrics." },
+    ],
+  },
   {
     year: 7,
     pillar: "Health & Performance",
@@ -592,20 +683,20 @@ export const programmes: Programme[] = [
       { number: 6, title: "Careers To Save The World: Showcase", description: "Present their company's world-changing solution to a panel." },
     ],
   },
+  // Leadership: supplied separately from the source document (November 2026).
   {
     year: 8,
     pillar: "Leadership",
     name: "Take The Stage",
-    type: "proposed",
+    type: "standard",
     lessons: [
-      { number: 1, title: "How To Talk About Yourself", description: "Develop confident introductions and understand how to communicate effectively." },
-      { number: 2, title: "Debating For Success", description: "Build persuasive arguments and practise respectful debate with others." },
-      { number: 3, title: "How To Be Confident", description: "Explore practical techniques for speaking confidently in front of others." },
-      { number: 4, title: "Create Your Own TED Talk", description: "Plan and script an original talk around your chosen topic." },
-      { number: 5, title: "How To Rehearse", description: "Practise techniques to prepare and confidently deliver your talk." },
-      { number: 6, title: "Showcase", description: "Present your original TED-style talk to an audience." },
+      { number: 1, title: "Introducing Yourself With Confidence", description: "Practise introducing yourself clearly and confidently to an audience." },
+      { number: 2, title: "Communication Masterclass", description: "Explore techniques for communicating ideas clearly and effectively." },
+      { number: 3, title: "Confident Speaking And Debate", description: "Develop confidence when presenting ideas and debating different viewpoints." },
+      { number: 4, title: "Create Your TED Talk", description: "Plan and structure an original talk on a chosen topic." },
+      { number: 5, title: "Preparing For Your Showcase", description: "Prepare your speech and organise your ideas for presentation." },
+      { number: 6, title: "Rehearsing Your Talk", description: "Practise delivery and refine your presentation through rehearsal." },
     ],
-    internalNote: "Website grouping: original Communication Masterclass is incorporated into How To Talk About Yourself; Public Speaking Demystified into How To Be Confident. Original platform has 8 lessons.",
   },
   {
     year: 8,
@@ -674,6 +765,21 @@ export const programmes: Programme[] = [
       { number: 4, title: "The World Of Cybersecurity", description: "Investigate cybersecurity careers through practical challenges that test relevant skills." },
       { number: 5, title: "Health Tech", description: "Explore health technology careers and innovations supporting human performance." },
     ],
+  },
+  {
+    year: 9,
+    pillar: "Leadership",
+    name: "Personality Power",
+    type: "proposed",
+    lessons: [
+      { number: 1, title: "What Is Personality Power?", description: "Explore the Big Five personality traits and question personality assessments." },
+      { number: 2, title: "Extraversion", description: "Examine how extraversion influences your communication and social interactions." },
+      { number: 3, title: "Conscientousness", description: "Reflect on how conscientiousness shapes your habits and responsibilities." },
+      { number: 4, title: "Neuroticism", description: "Explore emotional responses and how they influence everyday experiences." },
+      { number: 5, title: "Openness To Experience", description: "Examine how openness shapes your curiosity and willingness to try new things." },
+      { number: 6, title: "Agreeableness", description: "Reflect on relationships and design your own personality assessment." },
+    ],
+    internalNote: "Website grouping: Create Your Own Personality Metric is incorporated into Agreeableness. Original platform has 7 lessons. “Conscientousness” spelling retained from source pending platform title check.",
   },
   {
     year: 9,
@@ -755,6 +861,20 @@ export const programmes: Programme[] = [
       { number: 3, title: "Interview Skills", description: "Practise responding to interview questions using the STAR method." },
       { number: 4, title: "Respect", description: "Explore the workplace rights and responsibilities of new employees." },
       { number: 5, title: "Build Your Career Starter Pack", description: "Finish and submit their career starter pack guide." },
+    ],
+  },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 10,
+    pillar: "Leadership",
+    name: "Positive Arguments",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "Spotting Problems In Arguments", description: "Identify common weaknesses and problems in arguments." },
+      { number: 2, title: "Digital Debate", description: "Explore respectful ways to disagree and debate online." },
+      { number: 3, title: "Agree To Disagree", description: "Practise responding constructively to disagreements and resolving conflict." },
+      { number: 4, title: "The Conflict Resolution Challenge", description: "Apply conflict-resolution approaches to a challenging scenario." },
+      { number: 5, title: "Healthy Conflict", description: "Express different perspectives clearly while maintaining respectful discussion." },
     ],
   },
   {
@@ -842,20 +962,20 @@ export const programmes: Programme[] = [
       { number: 6, title: "Showcase", description: "Present their Hire Me file to demonstrate professionalism." },
     ],
   },
+  // Leadership: supplied separately from the source document (November 2026).
   {
     year: 11,
     pillar: "Leadership",
-    name: "Personality Power",
-    type: "proposed",
+    name: "Leadership Styles",
+    type: "standard",
     lessons: [
-      { number: 1, title: "What Is Personality Power?", description: "Explore the Big Five personality traits and question personality assessments." },
-      { number: 2, title: "Extraversion", description: "Examine how extraversion influences your communication and social interactions." },
-      { number: 3, title: "Conscientousness", description: "Reflect on how conscientiousness shapes your habits and responsibilities." },
-      { number: 4, title: "Neuroticism", description: "Explore emotional responses and how they influence everyday experiences." },
-      { number: 5, title: "Openness To Experience", description: "Examine how openness shapes your curiosity and willingness to try new things." },
-      { number: 6, title: "Agreeableness", description: "Reflect on relationships and design your own personality assessment." },
+      { number: 1, title: "Exploring Leadership Styles", description: "Discover different leadership styles and where they can be effective." },
+      { number: 2, title: "Leading With Respect", description: "Explore how respectful leadership supports inclusion and teamwork." },
+      { number: 3, title: "Leadership And Conflict", description: "Compare how different leaders approach and resolve conflict." },
+      { number: 4, title: "Leadership Lessons From History", description: "Examine how leaders have handled conflicts throughout history." },
+      { number: 5, title: "Leading Through Difficult Times", description: "Consider how leaders respond to setbacks and difficult situations." },
+      { number: 6, title: "Communicating Your Leadership Style", description: "Practise expressing your leadership approach clearly to others." },
     ],
-    internalNote: "Website grouping: Create Your Own Personality Metric is incorporated into Agreeableness. Original platform has 7 lessons. “Conscientousness” spelling retained from source pending platform title check.",
   },
   {
     year: 11,
@@ -996,6 +1116,21 @@ export const programmes: Programme[] = [
       { number: 4, title: "Learning About The Machine: Tools For Creativity", description: "Use ChatGPT to create prompts for fiction writing." },
       { number: 5, title: "Learning About The Machine: Responsible and Ethical Use", description: "Evaluate pros and cons of AI and present views." },
       { number: 6, title: "Learning About The Machine: Predicting The Future", description: "Predict AI's impact on jobs through a future job post." },
+    ],
+  },
+  // Leadership: supplied separately from the source document (November 2026).
+  {
+    year: 13,
+    pillar: "Leadership",
+    name: "Thought Leadership",
+    type: "standard",
+    lessons: [
+      { number: 1, title: "What Is Thought Leadership?", description: "Explore what distinguishes thought leadership from personal opinion." },
+      { number: 2, title: "Building Credibility And Respect", description: "Examine why certain voices earn influence and respect." },
+      { number: 3, title: "Communicating Influential Ideas", description: "Explore how thought leaders communicate ideas to others." },
+      { number: 4, title: "Thought Leaders Through History", description: "Investigate influential thinkers and their contributions throughout history." },
+      { number: 5, title: "Ideas That Inspire Change", description: "Examine how influential ideas inspire people and drive change." },
+      { number: 6, title: "Making Complex Ideas Accessible", description: "Explore how thought leaders explain complex ideas clearly." },
     ],
   },
   {

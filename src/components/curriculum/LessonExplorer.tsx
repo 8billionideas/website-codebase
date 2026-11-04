@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import LevelModeToggle from "@/components/shared/LevelModeToggle";
 import { PILLARS, type PillarName } from "@/content/curriculumMapping";
@@ -14,6 +14,7 @@ import {
   type Programme,
 } from "@/content/lesson-explorer";
 import { pillarCarousel } from "@/content/pillarCarousel";
+import { LESSON_EXPLORER_SELECT_EVENT, type LessonExplorerTarget } from "@/lib/lesson-explorer-link";
 import { useLevelMode } from "@/lib/level-mode";
 import { formatLevel, formatLevelShort, formatLevelUpper, type LevelMode } from "@/lib/year-grade";
 
@@ -197,6 +198,24 @@ export default function LessonExplorer() {
     // available programme.
     if (!isSelectable(next, pillar)) setPillar(firstAvailable(next));
   }
+
+  // The curriculum mapping panels' "Explore … in the Lesson Explorer" links select their programme.
+  useEffect(() => {
+    function handleSelect(event: Event) {
+      const { year: nextYear, pillar: nextPillar } = (event as CustomEvent<LessonExplorerTarget>).detail;
+      if (nextYear === null || !YEARS.includes(nextYear)) return;
+      setYear(nextYear);
+      setPillar((current) =>
+        nextPillar && isSelectable(nextYear, nextPillar)
+          ? nextPillar
+          : isSelectable(nextYear, current)
+            ? current
+            : firstAvailable(nextYear)
+      );
+    }
+    window.addEventListener(LESSON_EXPLORER_SELECT_EVENT, handleSelect);
+    return () => window.removeEventListener(LESSON_EXPLORER_SELECT_EVENT, handleSelect);
+  }, []);
 
   const programme = getPublishedProgramme(year, pillar);
   const announcement = `${formatLevel(year, mode)}, ${pillar}: ${

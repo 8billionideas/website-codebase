@@ -161,15 +161,22 @@ export default function Footer() {
           <ul className="flex list-none flex-wrap items-center p-0">
             {legalLinks.map((link, i) => (
               <li key={link.label} className={i > 0 ? "ml-3 border-l border-white/20 pl-3" : ""}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}
-                >
-                  {link.label}
-                  <NewTabNote />
-                </a>
+                {/* Site paths open in the same tab, full URLs in a new one. */}
+                {link.url.startsWith("/") ? (
+                  <Link href={link.url} className={`text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}>
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`text-[14px] text-white/65 transition-colors hover:text-white ${FOCUS_RING}`}
+                  >
+                    {link.label}
+                    <NewTabNote />
+                  </a>
+                )}
               </li>
             ))}
             {/* Reopens the cookie banner; focus comes back here after a choice. */}

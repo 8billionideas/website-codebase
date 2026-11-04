@@ -42,7 +42,8 @@ export const siteConfig = {
 
   // Only links with a url are shown.
   legal: [
-    { label: "Privacy Policy", url: "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05" },
+    // KitDownload, CvWorkshopForm, RoarSignUpForm and MoneyMastersRequest look this up by label.
+    { label: "Privacy Policy", url: "/privacy-policy" },
     { label: "Cookie Policy", url: null },
     { label: "Safeguarding", url: null },
     { label: "Terms of Use", url: null },

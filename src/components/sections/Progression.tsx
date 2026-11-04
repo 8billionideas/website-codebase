@@ -1,145 +1,190 @@
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import { useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import Container from "@/components/layout/Container";
 import LevelModeToggle, { LevelText } from "@/components/shared/LevelModeToggle";
-import { progressionBands, progressionRows, skillsProgressionSection } from "@/content/skills-progression";
+import { progressionAreas, progressionBands, skillsProgressionSection as copy } from "@/content/skills-progression";
 
-// Grid template shared by the label row and the three timeline rows (desktop and the
-// tablet scroller): a row-label column, then five equal columns.
-const GRID = "grid grid-cols-[160px_repeat(5,minmax(0,1fr))]";
+const PANEL_ID = "skills-progression-panel";
+const tabId = (index: number) => `skills-progression-tab-${index}`;
+
+// The dots grow and strengthen from light mint to full accent green (#21D199) to show growth:
+// diameter in px, and the share of accent green mixed with the paper background.
+const DOTS = [
+  { size: 10, mix: 30 },
+  { size: 12, mix: 48 },
+  { size: 14, mix: 65 },
+  { size: 16, mix: 82 },
+  { size: 18, mix: 100 },
+];
+const dotColour = (i: number) => `color-mix(in srgb, #21D199 ${DOTS[i].mix}%, #FFFDFA)`;
 const LAST = progressionBands.length - 1;
 
-// One timeline row: the line runs through the dots (12px down, the centre of the h-6 dot
-// row), with arrows between columns. The last (Years 12–13) column's dot, the line beyond it
-// and the closing arrow are accent-green.
-function TimelineRow({ name, steps }: { name: string; steps: readonly string[] }) {
+// The line from one dot to the next, shading between their two colours.
+const segmentStyle = (i: number, direction: "right" | "bottom"): CSSProperties => ({
+  backgroundImage: `linear-gradient(to ${direction}, ${dotColour(i)}, ${dotColour(i + 1)})`,
+});
+
+// Every area's text for a stage, stacked in one cell with only the selected one visible: the cell
+// keeps the height of the longest, so switching areas never makes the page jump, and the text
+// cross-fades.
+function StageText({ stage, selected }: { stage: number; selected: number }) {
   return (
-    <div className={GRID}>
-      <div className="sticky left-0 z-10 flex h-6 items-center bg-paper pr-4">
-        <h3 className="text-[22px] font-normal leading-none text-ink">{name}</h3>
-      </div>
-      <div className="relative col-span-5 grid grid-cols-5">
-        {/* Grey line: first dot to last dot. Green line: last dot to the edge. */}
-        <span aria-hidden="true" className="absolute top-3 left-[10%] right-[10%] h-px bg-ink/25" />
-        <span aria-hidden="true" className="absolute top-3 left-[90%] right-3 h-px bg-accent" />
-        <ArrowRight
-          aria-hidden="true"
-          className="absolute top-3 right-0 h-3.5 w-3.5 -translate-y-1/2 text-accent"
-          strokeWidth={1.5}
-        />
-        {steps.map((text, i) => (
-          <div key={text} className="relative flex flex-col items-center px-3 text-center">
-            <div className="flex h-6 items-center">
-              <span
-                aria-hidden="true"
-                className={`relative h-2 w-2 rounded-full ${i === LAST ? "bg-accent" : "bg-ink"}`}
-              />
-            </div>
-            {/* Arrow on the line between this column and the next. */}
-            {i < LAST && (
-              <ArrowRight
-                aria-hidden="true"
-                className="absolute top-3 -right-[7px] h-3.5 w-3.5 -translate-y-1/2 bg-paper text-ink/50"
-                strokeWidth={1.5}
-              />
-            )}
-            <p className="mt-3 max-w-[200px] text-[14px] leading-[1.5] text-ink/65">{text}</p>
-          </div>
-        ))}
-      </div>
+    <div className="grid">
+      {progressionAreas.map((area, a) => (
+        <p
+          key={area.name}
+          aria-hidden={a !== selected}
+          className={`[grid-area:1/1] text-[16px] leading-[1.6] text-ink/70 transition-[opacity,visibility] duration-200 motion-reduce:transition-none ${
+            a === selected ? "opacity-100" : "invisible opacity-0"
+          }`}
+        >
+          {area.stages[stage]}
+        </p>
+      ))}
     </div>
   );
 }
 
-function Timeline() {
+// "Years 1–3" / "Kindergarten–Grade 2", following the site-wide Years/Grades choice.
+function StageLabel({ stage }: { stage: number }) {
+  const { startYear, endYear } = progressionBands[stage];
   return (
-    <div>
-      {/* Each label stays on one line (both Years and Grades versions share its box, so a wrapped
-          "Kindergarten–Grade 2" used to make "Years 1–3" two lines tall too, leaving a gap above
-          its age range). 14px below xl, where the columns are only ~155px wide (at 16px "Kindergarten–
-          Grade 2" ran into the next label at 1024px); 18px from xl.
-          The label is centred with flex, not text-align: "Kindergarten–Grade 2" is wider than its
-          column at 18px, and text-align pushes overflowing text to the right (taking "Years 1–3",
-          centred in the same box, with it); flex splits the overflow evenly. The corner cell only
-          needs its paper background for the tablet scroller, so it's transparent from lg, where
-          the first label can reach a few px into it. */}
-      <div className={GRID}>
-        <div className="sticky left-0 z-10 bg-paper lg:bg-transparent" />
-        {progressionBands.map((band) => (
-          <div key={band.startYear} className="px-2 text-center">
-            <p className="flex justify-center whitespace-nowrap text-[14px] font-medium leading-[1.3] text-ink xl:text-[18px]">
-              <LevelText year={band.startYear} to={band.endYear} />
-            </p>
-            <p className="mt-1 text-[13px] text-ink/55">{band.ages}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 flex flex-col gap-10">
-        {progressionRows.map((row) => (
-          <TimelineRow key={row.name} name={row.name} steps={row.steps} />
-        ))}
-      </div>
-    </div>
+    <p className="text-[17px] font-medium leading-[1.4] text-ink">
+      <LevelText year={startYear} to={endYear} />
+    </p>
   );
 }
 
-// Homepage Section 4: "Skills that grow with students".
+function Dot({ stage }: { stage: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="relative z-10 block rounded-full"
+      style={{ width: DOTS[stage].size, height: DOTS[stage].size, backgroundColor: dotColour(stage) }}
+    />
+  );
+}
+
+// Homepage: "Progressively building skills at every stage" – pick an area of learning to see how
+// it develops across the five stages of school.
 export default function Progression() {
-  const { eyebrow, headingLine1, headingLine2, intro } = skillsProgressionSection;
+  const [selected, setSelected] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  function handleKeyDown(event: KeyboardEvent, index: number) {
+    const last = progressionAreas.length - 1;
+    const next =
+      event.key === "ArrowRight" ? (index === last ? 0 : index + 1)
+      : event.key === "ArrowLeft" ? (index === 0 ? last : index - 1)
+      : event.key === "Home" ? 0
+      : event.key === "End" ? last
+      : null;
+    if (next === null) return;
+    event.preventDefault();
+    setSelected(next);
+    tabRefs.current[next]?.focus();
+  }
 
   return (
     <section className="bg-paper py-section">
       <Container>
-        {/* Heading block on the left, Years/Grades toggle on the right (below the paragraph on mobile). */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between md:gap-10">
-          <div>
-            <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{eyebrow}</p>
-            <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
-              {headingLine1}
-              <br />
-              <em className="text-accent">{headingLine2}</em>
-            </h2>
-            <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{intro}</p>
-          </div>
+        <p className="text-[12px] uppercase tracking-[0.25em] text-accent">{copy.eyebrow}</p>
+        <h2 className="mt-eyebrow text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] text-ink md:text-[52px]">
+          {/* Forced break after "building" from md; below md it wraps naturally. */}
+          {copy.headingLine1}
+          <br className="hidden md:inline" /> {copy.headingLine2Lead} <em className="text-accent">{copy.headingLine2}</em>
+        </h2>
+        <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
+
+        {/* The shared Years/Grades toggle (as in the Lesson Explorer) directly above the area tabs,
+            left-aligned with the first tab, at every size. */}
+        <div className="mt-content flex flex-col gap-eyebrow">
           <LevelModeToggle className="self-start" />
-        </div>
-
-        {/* Desktop: the timeline grid. Tablet: the same grid scrolling inside its own box,
-            with sticky row labels and a fade on the right. */}
-        <div className="relative mt-content hidden md:block">
-          <div className="[-ms-overflow-style:none] [scrollbar-width:none] overflow-x-auto [&::-webkit-scrollbar]:hidden lg:overflow-visible">
-            <div className="min-w-[960px] pb-1 lg:min-w-0">
-              <Timeline />
-            </div>
-          </div>
+          {/* Area tabs: one row; below xl it scrolls sideways rather than wrapping. From xl, each
+              column is at least as wide as its label (equal columns left "Explore & Understand"
+              running into its padding). */}
           <div
-            aria-hidden="true"
-            className="pointer-events-none absolute top-0 right-0 bottom-0 w-12 bg-gradient-to-l from-paper to-transparent lg:hidden"
-          />
+            role="tablist"
+            aria-label={copy.tabsLabel}
+            className="[-ms-overflow-style:none] [scrollbar-width:none] -mx-1 flex min-w-0 gap-3 overflow-x-auto px-1 py-1 [&::-webkit-scrollbar]:hidden xl:grid xl:grid-cols-[repeat(4,minmax(max-content,1fr))] xl:overflow-visible"
+          >
+            {progressionAreas.map((area, i) => {
+              const active = i === selected;
+              return (
+                <button
+                  key={area.name}
+                  ref={(el) => {
+                    tabRefs.current[i] = el;
+                  }}
+                  id={tabId(i)}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  aria-controls={PANEL_ID}
+                  tabIndex={active ? 0 : -1}
+                  onClick={() => setSelected(i)}
+                  onKeyDown={(e) => handleKeyDown(e, i)}
+                  className={`flex shrink-0 cursor-pointer items-baseline gap-3 whitespace-nowrap rounded-[10px] border px-5 py-3.5 text-left text-[16px] leading-[1.3] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper motion-reduce:transition-none ${
+                    active ? "border-ink bg-ink text-white" : "border-ink/15 bg-white text-ink hover:border-accent"
+                  }`}
+                >
+                  {/* Accent green on navy; the darker green on white (accent fails contrast there). */}
+                  <span className={`text-[13px] font-medium ${active ? "text-accent" : "text-[#0E7C5A]"}`}>{area.number}</span>
+                  {area.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Mobile: one vertical timeline per row. */}
-        <div className="mt-content flex flex-col gap-12 md:hidden">
-          {progressionRows.map((row) => (
-            <div key={row.name}>
-              <h3 className="text-[22px] font-normal text-ink">{row.name}</h3>
-              <ol className="relative mt-5 flex list-none flex-col gap-6 p-0">
-                <span aria-hidden="true" className="absolute top-2 bottom-2 left-1 w-px -translate-x-1/2 bg-ink/25" />
-                {row.steps.map((text, i) => (
-                  <li key={text} className="relative pl-7">
-                    <span
-                      aria-hidden="true"
-                      className={`absolute top-[7px] left-0 h-2 w-2 rounded-full ${i === LAST ? "bg-accent" : "bg-ink"}`}
-                    />
-                    <p className="text-[14px] font-medium text-ink">
-                      <LevelText year={progressionBands[i].startYear} to={progressionBands[i].endYear} />
-                    </p>
-                    <p className="text-[13px] text-ink/55">{progressionBands[i].ages}</p>
-                    <p className="mt-1 text-[14px] leading-[1.5] text-ink/65">{text}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ))}
+        <div id={PANEL_ID} role="tabpanel" aria-labelledby={tabId(selected)} className="mt-content">
+          {/* From lg: five columns joined by a line through the dots. */}
+          <ol className="hidden list-none grid-cols-5 gap-6 p-0 lg:grid">
+            {progressionBands.map((band, i) => (
+              <li key={band.startYear} className="relative">
+                {i < LAST && (
+                  // From this dot's centre (12px in) to the next one's (column + 24px gap + 12px).
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-[11px] left-3 -right-9 h-0.5"
+                    style={segmentStyle(i, "right")}
+                  />
+                )}
+                <div className="flex h-6 w-6 items-center justify-center">
+                  <Dot stage={i} />
+                </div>
+                <div className="mt-4">
+                  <StageLabel stage={i} />
+                </div>
+                <div className="mt-3">
+                  <StageText stage={i} selected={selected} />
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          {/* Below lg: the same path running down the left. */}
+          <ol className="list-none p-0 lg:hidden">
+            {progressionBands.map((band, i) => (
+              <li key={band.startYear} className="relative pb-8 pl-11 last:pb-0">
+                {i < LAST && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-3 bottom-[-12px] left-[11px] w-0.5"
+                    style={segmentStyle(i, "bottom")}
+                  />
+                )}
+                <div className="absolute top-0 left-0 flex h-6 w-6 items-center justify-center">
+                  <Dot stage={i} />
+                </div>
+                <StageLabel stage={i} />
+                <div className="mt-2">
+                  <StageText stage={i} selected={selected} />
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </Container>
     </section>

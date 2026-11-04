@@ -6,8 +6,7 @@ import ImplementationSupportSection from "@/components/curriculum/Implementation
 import LessonPlatformShowcase from "@/components/curriculum/LessonPlatformShowcase";
 import LessonExplorer from "@/components/curriculum/LessonExplorer";
 import StudentProgressionShowcase from "@/components/curriculum/StudentProgressionShowcase";
-import { curriculumMapping } from "@/content/curriculumMapping";
-import DemoTrigger from "@/components/demo/DemoTrigger";
+import { LESSON_EXPLORER_ID } from "@/lib/lesson-explorer-link";
 
 export const metadata: Metadata = {
   title: "Our Curriculum | 8billionideas",
@@ -16,14 +15,13 @@ export const metadata: Metadata = {
 };
 
 export default function CurriculumMappingPage() {
-  const { footnote } = curriculumMapping;
-
   return (
     <>
       <CurriculumHero />
 
-      {/* Lesson explorer — its own section, above the mapping. */}
-      <div className="bg-paper py-section">
+      {/* Lesson explorer — its own section, above the mapping. The mapping panels' Explore links
+          scroll here (the section's top padding clears the sticky nav) and move focus to it. */}
+      <div id={LESSON_EXPLORER_ID} tabIndex={-1} className="bg-paper py-section focus:outline-none">
         <Container>
           <LessonExplorer />
         </Container>
@@ -35,16 +33,6 @@ export default function CurriculumMappingPage() {
       <section id="mapping" className="bg-paper py-section">
         <Container>
           <CurriculumConnections />
-
-          <p className="mt-12 max-w-2xl text-body text-muted md:mt-16">
-            {footnote.pre}
-            <DemoTrigger trackingLocation="curriculum_mapping_footnote"
-              className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent"
-            >
-              {footnote.linkLabel}
-            </DemoTrigger>
-            {footnote.post}
-          </p>
         </Container>
       </section>
 

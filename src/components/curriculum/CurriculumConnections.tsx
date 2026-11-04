@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent } from "react";
-import DemoTrigger from "@/components/demo/DemoTrigger";
+import { useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import {
-  SHOW_UNCONFIRMED_EXAMPLES,
   STAGES,
   curriculumConnectionsSection as copy,
   subjects,
@@ -11,6 +10,7 @@ import {
   type StageKey,
   type Subject,
 } from "@/content/curriculum-connections";
+import { LESSON_EXPLORER_ID, openLessonExplorer, type LessonExplorerTarget } from "@/lib/lesson-explorer-link";
 import { useLevelMode } from "@/lib/level-mode";
 import { formatLevelRange, type LevelMode } from "@/lib/year-grade";
 
@@ -24,18 +24,14 @@ const tabId = (subject: Subject) => `curriculum-connections-tab-${subject.id}`;
 // example; the content below can move a little when switching); the visible one cross-fades in.
 const STACKED = "[grid-area:1/1] transition-[opacity,visibility] duration-200 motion-reduce:transition-none";
 // Hidden panels take no height, so the box fits the one on show (the tallest used to leave empty
-// space below shorter panels, above the footnote).
+// space below shorter panels).
 const stackState = (active: boolean) => (active ? "opacity-100" : "invisible h-0 overflow-hidden opacity-0");
 
-const isUnconfirmed = (stage: Stage) => !SHOW_UNCONFIRMED_EXAMPLES && stage.status !== "confirmed";
+// Held examples (published: false) show the "Coming soon" state.
+const isHeld = (stage: Stage) => !stage.published;
 
-function exampleLabel(stage: Stage, mode: LevelMode): string | null {
-  if (stage.eyebrowLabel) return stage.eyebrowLabel;
-  if (!stage.exampleYears?.length) return null;
-  const from = Math.min(...stage.exampleYears);
-  const to = Math.max(...stage.exampleYears);
-  return `${formatLevelRange(from, to, mode).toUpperCase()} EXAMPLE`;
-}
+// Dark green for small green text on light backgrounds (accent green fails contrast there).
+const LINK_GREEN = "text-[#0E7C5A]";
 
 // The first tab lines up with the heading; the last keeps room for the scroll fade below
 // lg and sits flush with the right edge from lg. The underline spans the tab's text.
@@ -185,7 +181,7 @@ function StageCards({
             </span>
             {/* Two lines reserved so the cards keep one height across subjects. */}
             <span className="mt-2 block min-h-[2.8em] text-[12px] leading-[1.4]">
-              {isUnconfirmed(content) ? (
+              {isHeld(content) ? (
                 <span className="inline-block rounded-full border border-current px-2 py-0.5 text-[11px] font-medium uppercase leading-[1.3] tracking-[0.12em] opacity-80">
                   {copy.comingSoon.label}
                 </span>
@@ -200,96 +196,114 @@ function StageCards({
   );
 }
 
-function ExamplePanel({
-  subject,
-  stageKey,
-  mode,
-}: {
-  subject: Subject;
-  stageKey: StageKey;
-  mode: LevelMode;
-}) {
-  const stage = subject.stages[stageKey];
-  const stageName = STAGES.find((s) => s.key === stageKey)!.name.toUpperCase();
-  const eyebrowClass = "text-[12px] uppercase leading-[1.5] tracking-[0.2em] text-accent";
+// "Explore … in the Lesson Explorer": a page link to the explorer (so it still works without
+// JavaScript) that also selects the programme's year and pillar.
+function ExplorerLink({ target, children }: { target: LessonExplorerTarget; children: React.ReactNode }) {
+  return (
+    <a
+      href={`#${LESSON_EXPLORER_ID}`}
+      onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+        event.preventDefault();
+        openLessonExplorer(target);
+      }}
+      className={`rounded-sm underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${LINK_GREEN}`}
+    >
+      {children}
+    </a>
+  );
+}
 
-  if (isUnconfirmed(stage)) {
+// Small caps labels inside the card.
+const BLOCK_LABEL = "text-[12px] uppercase leading-[1.5] tracking-[0.12em]";
+
+function ExamplePanel({ subject, stageKey }: { subject: Subject; stageKey: StageKey }) {
+  const stage = subject.stages[stageKey];
+  const eyebrowClass = "text-[12px] uppercase leading-[1.5] tracking-[0.2em] text-[#0E7C5A]";
+  const headingClass = "mt-3 text-balance text-[28px] font-light leading-[1.2] text-ink md:text-[36px]";
+
+  if (isHeld(stage)) {
     return (
       <div>
-        <p className={eyebrowClass}>
-          {copy.exampleEyebrow} · {stageName}
-        </p>
-        <h3 className="mt-3 text-balance text-[28px] font-light leading-[1.2] text-ink md:text-[36px]">
-          {copy.comingSoon.heading}
-        </h3>
-        <p className="mt-4 max-w-[640px] text-[17px] leading-[1.6] text-ink/70">
-          {copy.comingSoon.pre(subject.name)}
-          <DemoTrigger trackingLocation="curriculum_connections" className="font-normal text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-accent">
-            {copy.comingSoon.linkLabel}
-          </DemoTrigger>
-          {copy.comingSoon.post}
-        </p>
+        <p className={eyebrowClass}>{copy.comingSoon.eyebrow}</p>
+        <h3 className={headingClass}>{copy.comingSoon.heading}</h3>
+        <div className="mt-6 rounded-[10px] border border-ink/10 bg-white px-5 py-6 md:px-6">
+          <p className="max-w-[760px] text-[16px] leading-[1.6] text-ink/75">
+            {copy.comingSoon.pre}
+            <ExplorerLink target={{ year: STAGES.find((s) => s.key === stageKey)!.fromYear, pillar: null }}>
+              {copy.comingSoon.linkLabel}
+            </ExplorerLink>
+            {copy.comingSoon.post}
+          </p>
+        </div>
       </div>
     );
   }
 
-  const label = exampleLabel(stage, mode);
-  const rows: { label: string; value: React.ReactNode }[] = [
-    { label: copy.rowLabels.existing(subject.name), value: stage.existing },
-    { label: copy.rowLabels.connection, value: stage.connection },
-    {
-      label: copy.rowLabels.skills,
-      value: (
-        <ul className="flex list-none flex-wrap gap-2 p-0">
-          {stage.skills.map((skill) => (
-            <li
-              key={skill}
-              className="rounded-full border border-ink/15 px-[14px] py-[6px] text-[14px] leading-[1.3] text-ink"
-            >
-              {skill}
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-    { label: copy.rowLabels.fit, value: stage.fit },
-  ];
-
-  const rowGrid = "grid gap-2 md:grid-cols-[240px_minmax(0,1fr)] md:gap-6";
-  const labelClass = "text-[16px] leading-[1.6] text-ink/70";
-  const valueClass = "max-w-[900px] text-[16px] leading-[1.6] text-ink";
-
   return (
     <div>
-      <p className={eyebrowClass}>
-        {copy.exampleEyebrow} · {stageName}
-        {label && ` · ${label}`}
-      </p>
-      <h3 className="mt-3 text-balance text-[28px] font-light leading-[1.2] text-ink md:text-[36px]">
-        {stage.heading}
-      </h3>
-      <dl className="mt-6 divide-y divide-ink/10">
-        {rows.map((row) => (
-          <div key={row.label} className={`${rowGrid} py-5`}>
-            <dt className={labelClass}>{row.label}</dt>
-            <dd className={valueClass}>{row.value}</dd>
+      <p className={eyebrowClass}>{stage.eyebrow}</p>
+      <h3 className={headingClass}>{stage.heading}</h3>
+
+      <div className="mt-6 overflow-hidden rounded-[10px] border border-ink/10 bg-white">
+        {/* The learning: the school's existing curriculum. */}
+        <div className="px-5 py-5 md:px-6 md:py-6">
+          <div className={`flex items-baseline justify-between gap-4 text-ink/65 ${BLOCK_LABEL}`}>
+            <p className="shrink-0 whitespace-nowrap">{copy.labels.learning}</p>
+            <p className="text-right">{subject.name}</p>
           </div>
-        ))}
-        {/* Final row: the example content, on a soft mint background as the takeaway. */}
-        <div className="pt-3">
-          {/* Label column 16px narrower to offset the padding, so the value lines up with the rows above. */}
-          <div className="grid gap-2 rounded-lg bg-accent/[0.06] px-4 py-5 md:grid-cols-[224px_minmax(0,1fr)] md:gap-6">
-            <dt className={labelClass}>{copy.exampleContentHeading}</dt>
-            <dd className={valueClass}>
-              <p className="flex gap-3 text-[17px] font-medium leading-[1.5] text-ink">
-                <span aria-hidden="true" className="mt-[0.6em] h-2 w-2 shrink-0 rounded-full bg-accent" />
-                <span>{stage.example}</span>
-              </p>
-              {stage.extra && <p className="mt-2 text-[15px] leading-[1.6] text-ink/70">{stage.extra}</p>}
-            </dd>
-          </div>
+          <p className="mt-3 text-[20px] font-normal leading-[1.35] text-ink md:text-[22px]">{stage.learning.headline}</p>
+          <p className="mt-2 max-w-[900px] text-[15px] leading-[1.6] text-ink/70">{stage.learning.text}</p>
         </div>
-      </dl>
+
+        {/* The application: the 8billionideas activity, on navy. */}
+        <div className="bg-ink px-5 pt-3 pb-6 text-white md:px-6">
+          <ArrowDown className="mx-auto h-4 w-4 text-white/70" strokeWidth={1.5} aria-hidden="true" />
+          <div className={`mt-3 flex items-baseline justify-between gap-4 ${BLOCK_LABEL}`}>
+            <p className="shrink-0 whitespace-nowrap text-accent">{copy.labels.application}</p>
+            <p className="text-right text-white/75">{copy.labels.applicationSide}</p>
+          </div>
+          <p className="mt-3 text-[20px] font-normal leading-[1.35] text-white md:text-[22px]">{stage.application.headline}</p>
+          <p className="mt-2 max-w-[900px] text-[15px] leading-[1.6] text-white/80">{stage.application.text}</p>
+        </div>
+
+        {/* How schools could use it, and the skills. */}
+        <div className="bg-surface px-5 py-5 md:px-6 md:py-6">
+          <p className={`text-ink/70 ${BLOCK_LABEL}`}>{copy.labels.fit}</p>
+          <p className="mt-2 max-w-[900px] text-[15px] leading-[1.6] text-ink">{stage.fit}</p>
+          {stage.extra && <p className="mt-2 max-w-[900px] text-[14px] leading-[1.6] text-ink/70">{stage.extra}</p>}
+
+          <p className={`mt-5 text-ink/70 ${BLOCK_LABEL}`}>{copy.labels.skills}</p>
+          <ul className="mt-3 flex list-none flex-wrap gap-2 p-0">
+            {stage.skills.map((skill) => (
+              <li
+                key={skill}
+                className="rounded-lg border border-ink/15 bg-white px-3.5 py-2 text-[14px] leading-[1.3] text-ink"
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <p className="mt-5 text-[16px] leading-[1.5]">
+        <ExplorerLink target={stage.explore}>
+          {copy.explore(stage.explore.programme)}
+          <ArrowUpRight className="ml-1.5 inline h-4 w-4 align-[-0.15em]" strokeWidth={1.5} aria-hidden="true" />
+        </ExplorerLink>
+      </p>
+      {/* A reference to the official curriculum document, not an endorsement. */}
+      <p className="mt-2 text-[13px] leading-[1.5] text-ink/65">
+        <a
+          href={stage.source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-ink/25 underline-offset-2 hover:decoration-ink/60"
+        >
+          {stage.source.label}
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </p>
     </div>
   );
 }
@@ -313,6 +327,7 @@ export default function CurriculumConnections() {
         <em className="text-accent">{copy.headingLine2}</em>
       </h2>
       <p className="mt-lead max-w-[760px] text-[18px] leading-[1.6] text-ink/70">{copy.intro}</p>
+      <p className="mt-3 text-[14px] leading-[1.5] text-ink/65">{copy.note}</p>
 
       <SubjectTabs selected={subjectIndex} onSelect={setSubjectIndex} />
 
@@ -336,7 +351,7 @@ export default function CurriculumConnections() {
 
         {/* Screen-reader announcement of the newly shown example. */}
         <p aria-live="polite" className="sr-only">
-          {`${subject.name}, ${stageName}: ${isUnconfirmed(stage) ? copy.comingSoon.heading : stage.heading}`}
+          {`${subject.name}, ${stageName}: ${isHeld(stage) ? copy.comingSoon.heading : stage.heading}`}
         </p>
 
         {/* Example panel: every combination stacked, the selected one shown. */}
@@ -351,7 +366,7 @@ export default function CurriculumConnections() {
                   inert={!active}
                   className={`${STACKED} ${stackState(active)}`}
                 >
-                  <ExamplePanel subject={s} stageKey={key} mode={mode} />
+                  <ExamplePanel subject={s} stageKey={key} />
                 </div>
               );
             })

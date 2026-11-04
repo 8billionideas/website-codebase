@@ -39,9 +39,27 @@ export const howLearningWorks = {
   eyebrow: "HOW LEARNING WORKS",
   headingLine1: "Students discover, develop and apply these skills",
   headingLine2: "throughout their learning journey.",
+  // The four areas of learning (the same four as the "Skills that grow with students" tabs).
   stages: [
-    { title: "Discovering", text: "Explore new ideas, ask questions and build understanding." },
-    { title: "Developing", text: "Strengthen skills through practice and make connections." },
-    { title: "Applying", text: "Use learning in different situations and take it beyond the classroom." },
+    {
+      number: "01",
+      title: "Explore & Understand",
+      text: "Discover new ideas, ask questions and build an understanding of the world around them.",
+    },
+    {
+      number: "02",
+      title: "Apply & Practise",
+      text: "Put their learning into practice, develop confidence and strengthen their skills through experience.",
+    },
+    {
+      number: "03",
+      title: "Analyse & Evaluate",
+      text: "Think critically, consider different perspectives and make informed decisions.",
+    },
+    {
+      number: "04",
+      title: "Create & Reflect",
+      text: "Develop original ideas, create solutions and reflect on what they've learnt.",
+    },
   ],
 };

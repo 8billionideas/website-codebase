@@ -1,65 +1,82 @@
-// Homepage Section 4: how the skills develop across year groups.
-// Column labels come from the Years/Grades helper (src/lib/year-grade.ts), never hardcoded.
+// Homepage "Progressively building skills at every stage": four areas of learning, each shown as
+// a five-stage progression. Stage labels come from the Years/Grades helper (src/lib/year-grade.ts),
+// never hardcoded, and follow the site-wide Years/Grades choice.
 
 export const skillsProgressionSection = {
   eyebrow: "A PROGRESSIVE JOURNEY",
-  headingLine1: "Skills that grow",
-  headingLine2: "with students",
+  headingLine1: "Progressively building",
+  // Second line: plain lead-in, then the accent phrase.
+  headingLine2Lead: "skills",
+  headingLine2: "at every stage",
   intro:
-    "As students move through school, they build on the skills they've already developed and learn to use them in more challenging situations. Our curriculum is designed to support that progression, with learning that develops as students do.",
+    "See how our four areas of learning develop throughout school, with each stage building on the last to strengthen students’ knowledge, confidence and independence.",
+  tabsLabel: "Areas of learning",
 };
 
-// The five timeline columns: bands of year groups (labels come from the Years/Grades helper,
-// e.g. "Years 1–3" / "Kindergarten–Grade 2") with the age range shown underneath.
+// The five stages, e.g. "Years 1–3" / "Kindergarten–Grade 2".
 export interface ProgressionBand {
   startYear: number;
   endYear: number;
-  ages: string;
 }
 
 export const progressionBands: ProgressionBand[] = [
-  { startYear: 1, endYear: 3, ages: "Ages 5–8" },
-  { startYear: 4, endYear: 6, ages: "Ages 8–11" },
-  { startYear: 7, endYear: 9, ages: "Ages 11–14" },
-  { startYear: 10, endYear: 11, ages: "Ages 14–16" },
-  { startYear: 12, endYear: 13, ages: "Ages 16–18" },
+  { startYear: 1, endYear: 3 },
+  { startYear: 4, endYear: 6 },
+  { startYear: 7, endYear: 9 },
+  { startYear: 10, endYear: 11 },
+  { startYear: 12, endYear: 13 },
 ];
 
-export interface ProgressionRow {
+export interface ProgressionArea {
+  number: string;
   name: string;
   // One entry per band in progressionBands, in the same order.
-  steps: [string, string, string, string, string];
+  stages: [string, string, string, string, string];
 }
 
-export const progressionRows: ProgressionRow[] = [
+export const progressionAreas: ProgressionArea[] = [
   {
-    name: "Discovering",
-    steps: [
-      "Exploring ideas through curiosity and questioning.",
-      "Asking questions and exploring different perspectives.",
-      "Investigating ideas and questioning information more closely.",
-      "Examining evidence and considering different viewpoints.",
-      "Critically evaluating ideas and challenging assumptions.",
+    number: "01",
+    name: "Explore & Understand",
+    stages: [
+      "Explore new ideas through curiosity, questioning and observation.",
+      "Ask questions, make connections and explore different perspectives.",
+      "Investigate ideas, question information and consider alternative explanations.",
+      "Examine complex ideas, question assumptions and consider different viewpoints.",
+      "Independently investigate unfamiliar ideas, challenge assumptions and develop deeper understanding.",
     ],
   },
   {
-    name: "Developing",
-    steps: [
-      "Building understanding through supported practice.",
-      "Making connections and improving through practice.",
-      "Developing approaches through feedback and reflection.",
-      "Refining approaches with greater independence.",
-      "Taking greater responsibility for improving their own work.",
+    number: "02",
+    name: "Apply & Practise",
+    stages: [
+      "Build understanding and confidence through supported, practical activities.",
+      "Apply learning to new challenges, making connections and improving through practice.",
+      "Apply knowledge in increasingly complex situations, adapting approaches through feedback.",
+      "Refine skills and approaches with greater independence in unfamiliar situations.",
+      "Apply and adapt skills independently to complex, real-world challenges.",
     ],
   },
   {
-    name: "Applying",
-    steps: [
-      "Using learning in familiar, practical situations.",
-      "Using what they've learnt to work through new challenges.",
-      "Using skills to solve increasingly complex problems.",
-      "Making informed decisions in unfamiliar situations.",
-      "Applying skills independently to complex, real-world challenges.",
+    number: "03",
+    name: "Analyse & Evaluate",
+    stages: [
+      "Notice differences, explore simple choices and explain their thinking.",
+      "Compare information, consider different viewpoints and give reasons for decisions.",
+      "Analyse information, evaluate evidence and consider different perspectives.",
+      "Critically assess evidence, challenge assumptions and form reasoned conclusions.",
+      "Evaluate competing arguments, weigh evidence and justify independent judgements.",
+    ],
+  },
+  {
+    number: "04",
+    name: "Create & Reflect",
+    stages: [
+      "Explore creative ideas, try different approaches and reflect on what they've learnt.",
+      "Develop ideas, test possible solutions and identify ways to improve.",
+      "Create solutions, respond to feedback and reflect on their effectiveness.",
+      "Develop original responses, evaluate outcomes and refine their approach.",
+      "Create and refine complex solutions, critically reflecting on decisions and outcomes.",
     ],
   },
 ];

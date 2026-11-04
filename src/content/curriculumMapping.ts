@@ -185,11 +185,6 @@ export const curriculumMapping = {
       ],
     },
   ] as MatrixCategory[],
-  footnote: {
-    pre: "This is illustrative – every school's framework is different. ",
-    linkLabel: "Get in touch",
-    post: " and we'll map our pillars directly to yours.",
-  },
 };
 
 export interface CurriculumHeroImage {

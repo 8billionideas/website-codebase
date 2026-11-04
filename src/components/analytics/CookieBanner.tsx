@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { chooseConsent, initConsent, useConsent } from "@/lib/consent";
-
-const PRIVACY_POLICY_URL = "https://8billionideas.notion.site/Privacy-Policy-0d819775ea1d4a0a8bdf36d8bdaedd05";
 
 // Cookie consent bar, on every page until the visitor accepts or rejects analytics cookies (asked
 // again after 12 months; the footer's "Cookie settings" reopens it). Fixed to the bottom: full
@@ -40,15 +39,12 @@ export default function CookieBanner() {
         <p className="text-[14px] leading-[1.55] text-ink">
           We use cookies to understand how our website is used and to improve it. You can accept or reject
           analytics cookies.{" "}
-          <a
-            href={PRIVACY_POLICY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/privacy-policy#cookies"
             className="whitespace-nowrap font-medium underline underline-offset-2 hover:text-ink/70 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            Privacy Policy
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
+            Privacy and cookies
+          </Link>
         </p>
         <div className="flex shrink-0 gap-3">
           <Button size="small" className="flex-1 md:flex-none" onClick={() => chooseConsent("granted")}>
