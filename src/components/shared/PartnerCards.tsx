@@ -21,7 +21,7 @@ const deliveryItems: { Icon: LucideIcon; text: string }[] = [
   { Icon: Headset, text: "Year-round Partnership Manager support" },
 ];
 
-// Shared between the homepage (Section 5) and /gcse (Section 6). Both cards
+// Shared between the homepage (Section 5) and /qualifications (Section 6). Both cards
 // subgrid the same 6 parent row tracks (header, sub-label, divider, then the
 // three items), so a row on one side always matches the height of its
 // partner row on the other side, even when only one of them wraps to a

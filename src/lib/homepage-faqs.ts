@@ -24,7 +24,7 @@ export const homepageFaqs: HomepageFaq[] = [
       "We know every school already has a busy curriculum, so 8billionideas doesn't need to sit separately from everything you're already teaching. There are natural connections across the curriculum, from literacy and numeracy to science, art and beyond.",
       "Our Curriculum Mapping page brings those connections to life, showing you where 8billionideas can complement your existing curriculum and how other schools are bringing the two together in practice.",
     ],
-    link: { label: "Explore Curriculum Mapping →", href: "/curriculum-mapping" },
+    link: { label: "Explore Curriculum Mapping →", href: "/curriculum" },
   },
   {
     question: "What age groups is the curriculum designed for?",

@@ -116,8 +116,8 @@ export default function Footer() {
             className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-8 xl:flex xl:justify-between xl:gap-6"
           >
             <FooterColumn heading="Explore">
-              <li><Link href="/curriculum-mapping" className={COLUMN_LINK}>Our Curriculum</Link></li>
-              <li><Link href="/gcse" className={COLUMN_LINK}>Qualifications</Link></li>
+              <li><Link href="/curriculum" className={COLUMN_LINK}>Our Curriculum</Link></li>
+              <li><Link href="/qualifications" className={COLUMN_LINK}>Qualifications</Link></li>
               <li><Link href="/pricing" className={COLUMN_LINK}>Pricing</Link></li>
               <li><Link href="/case-studies" className={COLUMN_LINK}>Case Studies</Link></li>
             </FooterColumn>

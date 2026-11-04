@@ -357,7 +357,7 @@ export default function QualificationSection() {
 
         {/* CTA */}
         <div className="mt-16 flex justify-center">
-          <Button href="/gcse" arrow>
+          <Button href="/qualifications" arrow>
             Explore the qualification
           </Button>
         </div>

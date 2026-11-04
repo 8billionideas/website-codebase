@@ -12,9 +12,9 @@ const IMAGE = {
 const BODY =
   "Each lesson brings the objectives, teaching content, videos, student activities and assessment together in one place, so teachers can see exactly what to deliver without having to build the learning from scratch";
 
-// Our Curriculum lesson platform band: the same band as /gcse's platform band, with this copy and
+// Our Curriculum lesson platform band: the same band as /qualifications's platform band, with this copy and
 // image. Band colour sampled from the image's left and right edges (#01102f). The For teachers /
-// For students boxes use the /gcse wording.
+// For students boxes use the /qualifications wording.
 export default function LessonPlatformShowcase() {
   return (
     <PlatformBand

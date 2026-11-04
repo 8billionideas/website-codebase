@@ -15,10 +15,10 @@ export const home = {
     headlineLine2: "shape the future of learning",
     subhead:
       "We believe future skills should be core to every student’s education, from age 5 to 18. That belief has shaped everything we’ve built, from The Critical Curriculum – flexible, week-to-week lessons that work around what you already teach – to our role as teaching and learning partner for the OxfordAQA International GCSE Global Skills Projects.",
-    primaryCta: { label: "Explore the GCSE", href: "/gcse" } as CtaLink,
+    primaryCta: { label: "Explore the GCSE", href: "/qualifications" } as CtaLink,
     secondaryCta: {
       label: "Explore the Critical Curriculum",
-      href: "/curriculum-mapping",
+      href: "/curriculum",
     } as CtaLink,
   },
 
@@ -50,7 +50,7 @@ export const home = {
   curriculumFit: {
     eyebrow: "FITS YOUR WORLD",
     body: "8billionideas works alongside the subjects and timetable you already have, whichever curriculum you follow – British, IB, American, Indian or another international curriculum. You choose the year groups, pillars and time slots, and our Curriculum Mapping tool will help show where the lessons link to what you already teach.",
-    cta: { label: "Explore curriculum mapping", href: "/curriculum-mapping" } as CtaLink,
+    cta: { label: "Explore curriculum mapping", href: "/curriculum" } as CtaLink,
     worksAcrossLabel: ["WORKS ACROSS", "CURRICULUMS"],
     curriculums: ["BRITISH", "IB", "AMERICAN", "INDIAN", "INTERNATIONAL", "AND MORE"],
   },

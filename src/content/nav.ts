@@ -14,8 +14,8 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { label: "Our Curriculum", href: "/curriculum-mapping" },
-  { label: "Qualifications", href: "/gcse" },
+  { label: "Our Curriculum", href: "/curriculum" },
+  { label: "Qualifications", href: "/qualifications" },
   { label: "Case Studies", href: "/case-studies" },
   { label: "Pricing", href: "/pricing" },
   {

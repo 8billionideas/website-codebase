@@ -7,8 +7,8 @@ import { SITE_URL } from "@/lib/site-config";
 // /find-out-more).
 const PATHS = [
   "/",
-  "/curriculum-mapping",
-  "/gcse",
+  "/curriculum",
+  "/qualifications",
   "/pricing",
   "/case-studies",
   ...caseStudies.map((study) => `/case-studies/${study.slug}`),

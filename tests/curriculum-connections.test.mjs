@@ -1,4 +1,4 @@
-// /curriculum-mapping panels (V3 developer content): 15 panels, the two held post-16 panels kept
+// /curriculum panels (V3 developer content): 15 panels, the two held post-16 panels kept
 // unpublished, and none of the document's instructions or em dashes in what's shown.
 import { test } from "node:test";
 import assert from "node:assert/strict";

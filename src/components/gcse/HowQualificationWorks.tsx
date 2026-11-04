@@ -11,7 +11,7 @@ function splitAfter(text: string, words: number): [string, string] {
   return [parts.slice(0, words).join(" "), parts.slice(words).join(" ")];
 }
 
-// /gcse 03: how the qualification is assessed – two weighted projects, no written exam.
+// /qualifications 03: how the qualification is assessed – two weighted projects, no written exam.
 export default function HowQualificationWorks() {
   const { eyebrow, headingLine1, headingLine2, intro, projects, columns } = gcse.qualification;
   // From lg the heading sits on three lines: "Students demonstrate" / "their learning through" /

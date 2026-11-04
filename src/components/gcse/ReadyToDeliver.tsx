@@ -2,7 +2,7 @@ import Container from "@/components/layout/Container";
 import DemoTrigger from "@/components/demo/DemoTrigger";
 import { gcse } from "@/content/gcse";
 
-// /gcse 04: "You don't have to build a new course from scratch" – what's already prepared.
+// /qualifications 04: "You don't have to build a new course from scratch" – what's already prepared.
 export default function ReadyToDeliver() {
   const { eyebrow, headingLine1, headingLine2, intro, reassurance, listHeading, items, registration } = gcse.readyToDeliver;
 

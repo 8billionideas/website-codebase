@@ -4,7 +4,7 @@ import { gcse } from "@/content/gcse";
 
 const ICONS: Record<string, LucideIcon> = { FileText, Users, CalendarDays, Star };
 
-// /gcse 09: why schools choose the qualification – a featured card and four benefits.
+// /qualifications 09: why schools choose the qualification – a featured card and four benefits.
 export default function WhySchoolsChooseIt() {
   const { eyebrow, headingLine1, headingLine2, intro, offersHeading, featured, benefits } = gcse.whySchoolsChoose;
 

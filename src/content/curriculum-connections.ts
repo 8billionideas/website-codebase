@@ -1,4 +1,4 @@
-// /curriculum-mapping "See how our learning fits alongside yours": subject-and-stage explorer.
+// /curriculum "See how our learning fits alongside yours": subject-and-stage explorer.
 // Panel content from "8billionideas_Curriculum_Mapping_Developer_Content_V3.docx" (4 November 2026),
 // field for field, with em dashes as en dashes. Not imported: the document's publishing status,
 // internal verification notes, change log, release checks and source list. Removed from "Where it

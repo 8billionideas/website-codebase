@@ -308,7 +308,7 @@ function ExamplePanel({ subject, stageKey }: { subject: Subject; stageKey: Stage
   );
 }
 
-// /curriculum-mapping: "See how our learning fits alongside yours" – pick a subject, then a
+// /curriculum: "See how our learning fits alongside yours" – pick a subject, then a
 // school stage, to see an example connection. Follows the site-wide Years/Grades setting.
 export default function CurriculumConnections() {
   const [subjectIndex, setSubjectIndex] = useState(0);

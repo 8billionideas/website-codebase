@@ -1,6 +1,6 @@
 import type { PillarName } from "@/content/curriculumMapping";
 
-// Links into the /curriculum-mapping Lesson Explorer from elsewhere on the page (the curriculum
+// Links into the /curriculum Lesson Explorer from elsewhere on the page (the curriculum
 // mapping panels): scroll to it and, when a year (and pillar) is given, select that programme.
 export const LESSON_EXPLORER_ID = "lesson-explorer";
 export const LESSON_EXPLORER_SELECT_EVENT = "lesson-explorer:select";

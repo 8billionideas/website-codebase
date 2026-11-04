@@ -4,7 +4,7 @@ import { gcse } from "@/content/gcse";
 
 const ICONS: Record<string, LucideIcon> = { Users, FileText };
 
-// /gcse 07: how a school gets set up – five steps, then two reassurances.
+// /qualifications 07: how a school gets set up – five steps, then two reassurances.
 export default function GettingStarted() {
   const { eyebrow, headingLine1, headingLine2, intro, stepsHeading, steps, reassurances } = gcse.gettingStarted;
 
@@ -21,7 +21,7 @@ export default function GettingStarted() {
 
         <h3 className="mt-content text-[26px] font-light leading-[1.2] text-ink md:text-[32px]">{stepsHeading}</h3>
 
-        {/* One ink strip, styled like the Lesson explorer's lesson strip on /curriculum-mapping.
+        {/* One ink strip, styled like the Lesson explorer's lesson strip on /curriculum.
             From lg: five equal columns in a row, separated by thin dividers with a small arrow on
             each. Below lg: a vertical list with a small downward arrow on each divider. */}
         <ol className="mt-6 list-none divide-y divide-white/15 rounded-xl bg-ink p-0 lg:flex lg:divide-y-0">

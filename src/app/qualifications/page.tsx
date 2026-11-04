@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   title: "OxfordAQA International GCSE Global Skills Projects | 8billionideas",
   description:
     "A real qualification built on real projects, developed with OxfordAQA and delivered by 8billionideas.",
-  alternates: { canonical: "/gcse" },
+  alternates: { canonical: "/qualifications" },
 };
 
 
@@ -134,7 +134,7 @@ export default function GcsePage() {
         </div>
       )}
 
-      {/* 06. The platform (shared with /curriculum-mapping's lesson platform band). Band colour
+      {/* 06. The platform (shared with /curriculum's lesson platform band). Band colour
           sampled from the annotated image's left and right edges (#010e2a). */}
       <PlatformBand
         background="#010e2a"

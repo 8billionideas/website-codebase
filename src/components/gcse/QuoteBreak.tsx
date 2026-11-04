@@ -2,7 +2,7 @@ import Image from "next/image";
 import Container from "@/components/layout/Container";
 import { gcse } from "@/content/gcse";
 
-// /gcse 05: a light quote break between "Ready to deliver" and the platform section, over a
+// /qualifications 05: a light quote break between "Ready to deliver" and the platform section, over a
 // decorative foliage background. Content is centred on purpose for this quote.
 // Switched on/off with SHOW_GCSE_QUOTE in src/content/gcse.ts.
 export default function QuoteBreak() {

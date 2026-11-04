@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { gcse } from "@/content/gcse";
 
-// /gcse 02: "Works with the curriculum you already follow" – the curricula it sits alongside
+// /qualifications 02: "Works with the curriculum you already follow" – the curricula it sits alongside
 // and the three routes into the qualification.
 export default function CurriculumFitSection() {
   const { eyebrow, headingLine1, headingLine2, intro, curricula, routesHeading, foundation, routes, closingLead, closingRest, closingNote } =

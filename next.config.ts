@@ -5,18 +5,18 @@ import type { NextConfig } from "next";
 // sites, so they need no redirect. permanent: true is a 308.
 const OLD_SITE_REDIRECTS: [source: string, destination: string][] = [
   // Product, programme and school-type pages
-  ["/product", "/curriculum-mapping"],
-  ["/what-we-do/challenges", "/curriculum-mapping"],
-  ["/what-we-do/curriculum", "/curriculum-mapping"],
-  ["/broadcast", "/curriculum-mapping"],
-  ["/broadcast/programmes", "/curriculum-mapping"],
-  ["/programmes/:slug", "/curriculum-mapping"],
-  ["/startup-school-set-menu-programme", "/curriculum-mapping"],
-  ["/perform-better-for-schools", "/curriculum-mapping"],
-  ["/8billionideas-for-primary-schools", "/curriculum-mapping"],
-  ["/8billionideas-for-secondary-schools", "/curriculum-mapping"],
-  ["/8billionideas-for-se", "/curriculum-mapping"],
-  ["/8billionideas-for-international-schools", "/curriculum-mapping"],
+  ["/product", "/curriculum"],
+  ["/what-we-do/challenges", "/curriculum"],
+  ["/what-we-do/curriculum", "/curriculum"],
+  ["/broadcast", "/curriculum"],
+  ["/broadcast/programmes", "/curriculum"],
+  ["/programmes/:slug", "/curriculum"],
+  ["/startup-school-set-menu-programme", "/curriculum"],
+  ["/perform-better-for-schools", "/curriculum"],
+  ["/8billionideas-for-primary-schools", "/curriculum"],
+  ["/8billionideas-for-secondary-schools", "/curriculum"],
+  ["/8billionideas-for-se", "/curriculum"],
+  ["/8billionideas-for-international-schools", "/curriculum"],
   // Building a programme, CPD and live experiences (priced as add-ons on /pricing)
   ["/broadcast/tailor-your-programme", "/pricing"],
   ["/what-we-do/cpd", "/pricing"],
@@ -55,15 +55,21 @@ const nextConfig: NextConfig = {
     // /nocn and /epq never existed as routes in this repo, but are included
     // defensively in case any old external links used those spellings.
     return [
-      { source: "/noc", destination: "/gcse", permanent: true },
-      { source: "/nocn", destination: "/gcse", permanent: true },
-      { source: "/epq", destination: "/gcse", permanent: true },
+      // The pages' earlier addresses (renamed to match the navigation). Query strings carry over;
+      // browsers keep any #anchor.
+      { source: "/curriculum-mapping", destination: "/curriculum", permanent: true },
+      { source: "/curriculum-mapping/:path*", destination: "/curriculum/:path*", permanent: true },
+      { source: "/gcse", destination: "/qualifications", permanent: true },
+      { source: "/gcse/:path*", destination: "/qualifications/:path*", permanent: true },
+      { source: "/noc", destination: "/qualifications", permanent: true },
+      { source: "/nocn", destination: "/qualifications", permanent: true },
+      { source: "/epq", destination: "/qualifications", permanent: true },
       // Blog and Community were placeholder pages; retired in favour of /about.
       { source: "/community", destination: "/about", permanent: true },
       { source: "/blog", destination: "/about", permanent: true },
       {
         source: "/implementation",
-        destination: "/curriculum-mapping",
+        destination: "/curriculum",
         permanent: true,
       },
       // A retired case study.

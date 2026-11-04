@@ -193,7 +193,7 @@ function ComingSoonPanel({ year, pillar, mode }: { year: number; pillar: PillarN
   );
 }
 
-// /curriculum-mapping: "Lesson explorer" – pick a year group and pillar to see that programme's
+// /curriculum: "Lesson explorer" – pick a year group and pillar to see that programme's
 // lessons (or grouped overview). Follows the site-wide Years/Grades setting.
 export default function LessonExplorer() {
   const [year, setYear] = useState(DEFAULT_LESSON_EXPLORER_YEAR);

@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Container from "@/components/layout/Container";
 import AudienceBoxes, { type AudienceBox } from "@/components/shared/AudienceBoxes";
 
-// Navy platform band (/gcse "Run the whole qualification in one place", /curriculum-mapping
+// Navy platform band (/qualifications "Run the whole qualification in one place", /curriculum
 // "Each lesson is already built, structured and ready to teach" and "Making student progression
 // easier to see and understand"): one layout so they always match; only the copy, image (with
 // its shape and edge fades) and band colour differ.
@@ -50,9 +50,9 @@ export default function PlatformBand({
   audiences?: AudienceBox[];
   // width and height: the file's size, which also sets the image box's shape (default 1536×1024).
   image: { src: string; alt: string; width?: number; height?: number };
-  // Optional extras under the boxes (e.g. the /gcse platform video, while switched on).
+  // Optional extras under the boxes (e.g. the /qualifications platform video, while switched on).
   children?: ReactNode;
-  // Optional overrides (the defaults are the /gcse band): the heading's width, and the image
+  // Optional overrides (the defaults are the /qualifications band): the heading's width, and the image
   // box's width from xl (the image keeps its 3:2 box and is never cropped).
   headingClassName?: string;
   headingLine2ClassName?: string;
@@ -71,7 +71,7 @@ export default function PlatformBand({
       style={{ backgroundColor: background }}
     >
       {/* The annotated laptop, shown whole (contain, never cropped) so every label stays
-          visible. 53.1% wide (78% × 845/1862 × 1.5: the height of the earlier /gcse image's box at
+          visible. 53.1% wide (78% × 845/1862 × 1.5: the height of the earlier /qualifications image's box at
           the new 3:2 ratio), right-aligned, vertically centred, clear of the text and boxes. The
           box matches the drawn image, so the fades sit on its edges. */}
       <div

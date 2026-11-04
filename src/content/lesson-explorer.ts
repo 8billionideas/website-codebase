@@ -1,4 +1,4 @@
-// /curriculum-mapping Lesson explorer. Generated from "8billionideas_Lesson_Explorer_Developer_Copy_QA_Refined.docx".
+// /curriculum Lesson explorer. Generated from "8billionideas_Lesson_Explorer_Developer_Copy_QA_Refined.docx".
 // Titles, descriptions and notes are copied exactly from the document (including its spacing and
 // capitalisation) – don't edit them here without a matching change to the source document.
 // The document's internal-only sections (curriculum decisions, editorial QA) are not imported.

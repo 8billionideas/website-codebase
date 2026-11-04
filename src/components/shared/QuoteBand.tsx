@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-// Full-bleed photo quote band (homepage, /gcse): the same photo, overlay and type wherever it's
+// Full-bleed photo quote band (homepage, /qualifications): the same photo, overlay and type wherever it's
 // used, with the compact section padding (py-section-tight). Sized for long quotes: 18px, then
 // 22px from lg, line-height 1.5, at most 900px wide.
 export default function QuoteBand({ quote, name, role }: { quote: string; name: string; role: string }) {

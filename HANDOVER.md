@@ -4,7 +4,7 @@ For Radu, who will deploy the site on the company Vercel account and connect 8bi
 
 ## What the site is
 
-The marketing website for 8billionideas: *The Critical Curriculum* (eight pillars, Year 1 to Year 13) and the OxfordAQA International GCSE Global Skills Projects. Pages include the homepage, /curriculum-mapping, /gcse, /pricing, /case-studies, /about, /resources, /contact, /privacy-policy and a few partner pages (/roar, /cv-workshop, /minerva, /gec-academy).
+The marketing website for 8billionideas: *The Critical Curriculum* (eight pillars, Year 1 to Year 13) and the OxfordAQA International GCSE Global Skills Projects. Pages include the homepage, /curriculum, /qualifications, /pricing, /case-studies, /about, /resources, /contact, /privacy-policy and a few partner pages (/roar, /cv-workshop, /minerva, /gec-academy).
 
 ## Stack
 
@@ -63,7 +63,7 @@ Simple on/off flags, each next to the content it controls:
 | `SHOW_CITYFIBRE_LINK` | `src/lib/site-config.ts` | `false` | CityFibre footer link (needs `CITYFIBRE_URL` once that page exists) |
 | `SHOW_CHELSEA_LOGO` | `src/content/home.ts` | `true` | Chelsea FC crest on the homepage testimonial (logo permission still to confirm) |
 | `GEC_PAGE_INDEXABLE` | `src/content/gec-academy.ts` | `false` | Lets search engines index /gec-academy once its claims are signed off |
-| `SHOW_GCSE_QUOTE` | `src/content/gcse.ts` | `false` | Quote break on /gcse (placeholder quote) |
+| `SHOW_GCSE_QUOTE` | `src/content/gcse.ts` | `false` | Quote break on /qualifications (placeholder quote) |
 | `SHOW_HOME_QUOTE` | `src/components/sections/HomeQuoteBand.tsx` | `true` | Homepage quote band |
 | `SHOW_MINERVA_TESTIMONIAL` | `src/content/minerva.ts` | `true` | Testimonial on /minerva |
 | `SHOW_CAREER_LEADERS_STAT` | `src/content/cv-workshop.ts` | `true` | Statistic on /cv-workshop |
