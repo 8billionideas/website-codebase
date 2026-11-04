@@ -12,7 +12,7 @@ Read this file in full at the start of every session. It holds the rules and dec
 
 ## Repos and environments
 
-- **Work in cam388/8bi-website-non-interactive**. This is the primary build.
+- **Work in 8billionideas/website-codebase**. This is the primary build.
 - **Never touch cam388/8bi-website-v1** (the interactive version, kept as it is).
 - **Never touch anything running on localhost:3000.**
 - The dev server for this repo runs on **localhost:3002** (check package.json if unsure).
