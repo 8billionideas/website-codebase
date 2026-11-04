@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "Resources | 8billionideas",
   description:
     "Free kits and a weekly newsletter to help schools bring future-focused learning into the classroom.",
+  alternates: { canonical: "/resources" },
 };
 
 // Matches Container's own side inset (mx-auto max-w-[75rem] + md:px-12), so

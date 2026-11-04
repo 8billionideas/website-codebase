@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "About Us | 8billionideas",
   description:
     "Our mission is to give every student on the planet the skills and belief to change the world.",
+  alternates: { canonical: "/about" },
 };
 
 

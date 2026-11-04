@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   title: "OxfordAQA International GCSE Global Skills Projects | 8billionideas",
   description:
     "A real qualification built on real projects, developed with OxfordAQA and delivered by 8billionideas.",
+  alternates: { canonical: "/gcse" },
 };
 
 

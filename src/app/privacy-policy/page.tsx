@@ -17,6 +17,7 @@ import {
 export const metadata: Metadata = {
   title: "Privacy Policy | 8billionideas",
   description: "How 8billionideas collects, uses and protects your personal information, and how we use cookies.",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 const LINK =

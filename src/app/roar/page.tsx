@@ -27,6 +27,7 @@ export const metadata: Metadata = {
   title: "ROAR 2026 with Lions Clubs | 8billionideas",
   description:
     "ROAR is a free PSHE competition supported by Lions Clubs and delivered by 8billionideas, challenging students to create a World Changing Idea.",
+  alternates: { canonical: "/roar" },
 };
 
 const H2 = "text-balance text-[32px] font-light leading-[1.15] tracking-[-0.01em] md:text-[52px]";

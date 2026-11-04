@@ -15,6 +15,11 @@ function kitUrl(slug: string): string {
   return kit.url;
 }
 
+// The live site's canonical address: www, as on the current site (the bare domain redirects to
+// it). Used for metadataBase, canonical URLs, the sitemap and robots.txt. NEXT_PUBLIC_SITE_URL
+// overrides it.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.8billionideas.com";
+
 // TODO: Add when the CityFibre landing page is built.
 export const SHOW_CITYFIBRE_LINK = false;
 export const CITYFIBRE_URL: string | null = null;

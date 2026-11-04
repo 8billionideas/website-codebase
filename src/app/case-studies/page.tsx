@@ -10,6 +10,7 @@ import { home } from "@/content/home";
 
 export const metadata: Metadata = {
   title: "Case Studies | 8billionideas",
+  alternates: { canonical: "/case-studies" },
 };
 
 // Matches Container's own side inset (mx-auto max-w-[75rem] + md:px-12)

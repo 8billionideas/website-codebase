@@ -17,7 +17,7 @@ Read this file in full at the start of every session. It holds the rules and dec
 - **Never touch anything running on localhost:3000.**
 - The dev server for this repo runs on **localhost:3002** (check package.json if unsure).
 - Confirm the working directory before making any changes.
-- Deployment target: **Webflow Cloud** (Next.js via the OpenNext Cloudflare adapter). Requires Next.js 15+. basePath and assetPrefix in next.config must match the Webflow mount path. Use fetch for outbound calls, not axios.
+- Hosting: **Vercel**, auto-deploying from GitHub **main** (every push to main goes to Production). Not Webflow Cloud. Live address: **https://www.8billionideas.com** (the bare domain redirects to www); it's SITE_URL in src/lib/site-config.ts, used for metadataBase, canonical URLs, the sitemap and robots.txt. Redirects from the old site are in next.config.ts. Use fetch for outbound calls, not axios.
 
 ## Stack
 

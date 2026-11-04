@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Our Curriculum | 8billionideas",
   description:
     "See how our eight pillars connect to the subjects you already teach, and how schools fit 8billionideas into their timetable.",
+  alternates: { canonical: "/curriculum-mapping" },
 };
 
 export default function CurriculumMappingPage() {

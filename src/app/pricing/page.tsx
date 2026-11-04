@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Pricing | 8billionideas",
   description:
     "Indicative pricing for the Critical Curriculum and the OxfordAQA International GCSE Global Skills Projects.",
+  alternates: { canonical: "/pricing" },
 };
 
 export default function PricingPage() {

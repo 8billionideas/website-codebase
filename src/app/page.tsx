@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import CriticalCurriculum from "@/components/sections/CriticalCurriculum";
 import HomeQuoteBand from "@/components/sections/HomeQuoteBand";
@@ -7,6 +8,11 @@ import SkillsFramework from "@/components/sections/SkillsFramework";
 import Progression from "@/components/sections/Progression";
 import HowLearningWorks from "@/components/sections/HowLearningWorks";
 import Faq from "@/components/sections/Faq";
+
+// Title and description come from the root layout.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (
