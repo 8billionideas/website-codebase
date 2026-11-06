@@ -1,17 +1,24 @@
 // Run with: npm test   (Node's built-in test runner; Node strips the TypeScript types.)
-// Pricing rules version 2026-10-30. Amounts are in pence; £ helpers keep the tests readable.
+// Pricing rules version 2026-11-06. Amounts are in pence; £ helpers keep the tests readable.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   PRICE_RULES_VERSION,
   QUOTE_ADD_ONS,
+  CC_BANDS,
+  CC_LIST_RATE,
+  CC_MIN_UNITS,
+  CC_UNITS_MAX,
   addOnCost,
   addOnLineLabel,
   addOnSummary,
   addOnsTotal,
+  ccBandLines,
   ccCharge,
   ccList,
   ccNextBand,
+  ccNextBandMessage,
+  ccStatus,
   crossProductHint,
   formatMoney,
   gcseFee,
@@ -29,38 +36,127 @@ import {
 const gbp = (amount) => Math.round(amount * 100);
 
 test("rules version", () => {
-  assert.equal(PRICE_RULES_VERSION, "2026-10-30b");
+  assert.equal(PRICE_RULES_VERSION, "2026-11-06");
 });
 
-// ── Critical Curriculum: marginal bands ──
-test("CC charge: band boundaries (each band prices only its own units)", () => {
-  assert.equal(ccCharge(1), gbp(50));
-  assert.equal(ccCharge(9), gbp(450));
-  assert.equal(ccCharge(10) - ccCharge(9), gbp(45)); // the 10th adds £45
-  assert.equal(ccCharge(10), gbp(495));
-  assert.equal(ccCharge(24), gbp(1125));
-  assert.equal(ccCharge(25) - ccCharge(24), gbp(42.5)); // the 25th adds £42.50
-  assert.equal(ccCharge(25), gbp(1167.5));
-  assert.equal(ccCharge(36), gbp(1635));
-  assert.equal(ccCharge(48), gbp(2145));
-  assert.equal(ccCharge(49) - ccCharge(48), gbp(40)); // the 49th adds £40
-  assert.equal(ccCharge(49), gbp(2185));
-  assert.equal(ccCharge(78), gbp(3345));
+// ── Critical Curriculum: marginal bands and the five-programme minimum ──
+// The formula from the pricing brief, written out independently of the config.
+const briefTotal = (n) =>
+  95 * Math.min(n, 13) + 75 * Math.max(Math.min(n - 13, 19), 0) + 55 * Math.max(Math.min(n - 32, 32), 0) + 40 * Math.max(n - 64, 0);
+// N programmes = N year groups × 1 pillar (13 × 6 = 78 for the maximum).
+const ccQuote = (n) => priceQuote({ cc: n === 78 ? { yearGroups: 13, pillars: 6 } : { yearGroups: n, pillars: 1 } });
+
+test("CC bands: £95 (1–13), £75 (14–32), £55 (33–64), £40 (65+); max 78 programmes", () => {
+  assert.deepEqual(
+    CC_BANDS.map((b) => [b.from, b.to, b.rate]),
+    [[1, 13, gbp(95)], [14, 32, gbp(75)], [33, 64, gbp(55)], [65, null, gbp(40)]]
+  );
+  assert.equal(CC_MIN_UNITS, 5);
+  assert.equal(CC_UNITS_MAX, 78);
 });
 
-test("CC list is £50 per unit; adding units never lowers the price of earlier ones", () => {
-  assert.equal(ccList(10), gbp(500));
-  assert.equal(priceCc(2, 5).saving, gbp(5));
+test("CC 0 programmes → no price, no quote", () => {
+  const q = priceQuote({ cc: { yearGroups: 0, pillars: 1 } });
+  assert.equal(q.ccSelection.status, "none");
+  assert.equal(q.cc, undefined);
+  assert.equal(q.quoteReady, false);
+  assert.equal(ccStatus(0), "none");
+});
+
+test("CC 4 programmes → below the minimum: 1 more needed, no price, no submission", () => {
+  const q = ccQuote(4);
+  assert.equal(q.ccSelection.status, "below-minimum");
+  assert.equal(q.ccSelection.needed, 1);
+  assert.equal(q.cc, undefined);
+  assert.equal(q.annualRecurring, 0);
+  assert.equal(q.quoteReady, false);
+});
+
+test("CC exact totals: 5 → £475 … 78 → £4,980", () => {
+  const expected = { 5: 475, 13: 1235, 14: 1310, 32: 2660, 33: 2715, 64: 4420, 65: 4460, 78: 4980 };
+  for (const [n, total] of Object.entries(expected).map(([n, t]) => [Number(n), t])) {
+    const q = ccQuote(n);
+    assert.equal(q.cc.units, n);
+    assert.equal(q.cc.charge, gbp(total), `${n} programmes`);
+    assert.equal(q.annualRecurring, gbp(total), `${n} programmes`);
+    assert.equal(q.quoteReady, true);
+  }
+});
+
+test("CC charge matches the brief's formula for every count, and never drops as programmes are added", () => {
+  for (let n = 0; n <= 78; n++) assert.equal(ccCharge(n), gbp(briefTotal(n)), `${n} programmes`);
   for (let n = 1; n < 78; n++) assert.ok(ccCharge(n + 1) > ccCharge(n));
 });
 
+test("total per month = total per year ÷ 12 (whole pounds when exact, otherwise to the penny)", () => {
+  const monthly = (q) => [formatMoney(q.annualRecurring), formatMoney(q.monthlyRecurring)];
+  assert.deepEqual(monthly(ccQuote(5)), ["£475", "£39.58"]);
+  assert.deepEqual(monthly(ccQuote(13)), ["£1,235", "£102.92"]);
+  assert.deepEqual(monthly(priceQuote({ cc: { yearGroups: 8, pillars: 5 }, gcse: { students: 120 } })), ["£8,800", "£733.33"]);
+  assert.deepEqual(monthly(priceQuote({ gcse: { students: 120 } })), ["£6,000", "£500"]);
+  // Recurring only: one-off extras don't change it.
+  assert.equal(priceQuote({ cc: { yearGroups: 5, pillars: 1 }, addOns: [{ id: "cpd" }] }).monthlyRecurring, gbp(39.58));
+});
+
+test("CC boundaries, adding and removing: 4↔5, 13↔14, 32↔33, 64↔65", () => {
+  // [from, to, change in price]
+  for (const [a, b, step] of [[13, 14, 75], [32, 33, 55], [64, 65, 40]]) {
+    assert.equal(ccCharge(b) - ccCharge(a), gbp(step), `${a}→${b}`);
+    assert.equal(ccCharge(a) - ccCharge(b), -gbp(step), `${b}→${a}`);
+  }
+  assert.equal(ccQuote(5).cc.charge, gbp(475));
+  assert.equal(ccQuote(5).quoteReady, true);
+  assert.equal(ccQuote(4).cc, undefined); // removing the fifth programme withdraws the licence price
+  assert.equal(ccQuote(4).quoteReady, false);
+});
+
+test("CC band breakdown (for the quote message)", () => {
+  const lines = (n) => ccBandLines(n).map((l) => [l.units, l.band.rate, l.subtotal]);
+  assert.deepEqual(lines(19), [[13, gbp(95), gbp(1235)], [6, gbp(75), gbp(450)]]);
+  assert.deepEqual(lines(78), [[13, gbp(95), gbp(1235)], [19, gbp(75), gbp(1425)], [32, gbp(55), gbp(1760)], [14, gbp(40), gbp(560)]]);
+  assert.deepEqual(lines(0), []);
+});
+
+test("CC list is £95 per programme (the first band); saving = list − charge", () => {
+  assert.equal(CC_LIST_RATE, gbp(95));
+  assert.equal(ccList(10), gbp(950));
+  assert.equal(priceCc(2, 5).saving, 0); // 10 programmes: all at £95
+  assert.equal(priceCc(2, 7).saving, gbp(20)); // 14 programmes: the 14th is £75
+  assert.equal(priceCc(13, 6).saving, gbp(7410 - 4980));
+});
+
 test("CC next band", () => {
-  assert.deepEqual(ccNextBand(9), { threshold: 10, needed: 1, rate: gbp(45), currentRate: gbp(50) });
-  assert.deepEqual(ccNextBand(10), { threshold: 25, needed: 15, rate: gbp(42.5), currentRate: gbp(45) });
-  assert.deepEqual(ccNextBand(24), { threshold: 25, needed: 1, rate: gbp(42.5), currentRate: gbp(45) });
-  assert.deepEqual(ccNextBand(48), { threshold: 49, needed: 1, rate: gbp(40), currentRate: gbp(42.5) });
-  assert.equal(ccNextBand(49), null);
+  assert.deepEqual(ccNextBand(5), { threshold: 14, needed: 9, rate: gbp(75), currentRate: gbp(95) });
+  assert.deepEqual(ccNextBand(13), { threshold: 14, needed: 1, rate: gbp(75), currentRate: gbp(95) });
+  assert.deepEqual(ccNextBand(14), { threshold: 33, needed: 19, rate: gbp(55), currentRate: gbp(75) });
+  assert.deepEqual(ccNextBand(64), { threshold: 65, needed: 1, rate: gbp(40), currentRate: gbp(55) });
+  assert.equal(ccNextBand(65), null);
   assert.equal(ccNextBand(78), null);
+});
+
+test("CC next-band nudge", () => {
+  assert.equal(ccNextBandMessage(0), null);
+  assert.equal(ccNextBandMessage(3), "Add 11 more programmes to unlock £75 for additional programmes");
+  assert.equal(ccNextBandMessage(5), "Add 9 more programmes to unlock £75 for additional programmes");
+  assert.equal(ccNextBandMessage(13), "Your next programme is £75");
+  assert.equal(ccNextBandMessage(14), "Add 19 more programmes to unlock £55 for additional programmes");
+  assert.equal(ccNextBandMessage(32), "Your next programme is £55");
+  assert.equal(ccNextBandMessage(33), "Add 32 more programmes to unlock £40 for additional programmes");
+  assert.equal(ccNextBandMessage(40), "Add 25 more programmes to unlock £40 for additional programmes");
+  assert.equal(ccNextBandMessage(64), "Your next programme is £40");
+  assert.equal(ccNextBandMessage(65), "Additional programmes are £40 each");
+  assert.equal(ccNextBandMessage(78), "Additional programmes are £40 each");
+});
+
+test("CC below the minimum alongside GCSE: GCSE still priced, but no CC price, benefits or quote", () => {
+  const q = priceQuote({ cc: { yearGroups: 4, pillars: 1 }, gcse: { students: 30 }, addOns: [{ id: "cpd" }] });
+  assert.equal(q.cc, undefined);
+  assert.equal(q.gcse.fee, gbp(2550));
+  assert.equal(q.crossProduct.earned, 0);
+  assert.equal(q.serviceCredit.allowance, 0);
+  assert.equal(q.quoteReady, false);
+  // Deselecting the CC (GCSE only) makes the quote available again.
+  assert.equal(priceQuote({ gcse: { students: 30 } }).quoteReady, true);
 });
 
 // ── GCSE: whole-cohort rate ──
@@ -96,12 +192,22 @@ test("no cross-product benefit below 15 students", () => {
   assert.equal(crossProductHint(15), null);
 });
 
-test("24 CC + 20 GCSE → X = £105; annual recurring £3,120", () => {
+test("24 CC + 20 GCSE → X = £105; annual recurring £4,055", () => {
   const q = priceQuote({ cc: { yearGroups: 4, pillars: 6 }, gcse: { students: 20 } });
   assert.equal(q.cc.units, 24);
+  assert.equal(q.cc.charge, gbp(2060));
   assert.equal(q.crossProduct.earned, gbp(105));
   assert.equal(q.crossProduct.applied, gbp(105));
-  assert.equal(q.annualRecurring, gbp(3120));
+  assert.equal(q.annualRecurring, gbp(4055));
+});
+
+test("40 CC + 120 GCSE → X capped at £300; annual recurring £8,800", () => {
+  // X = MIN(£1,200, £300, 15% × £3,800 = £570, 5% × £6,000 = £300) = £300.
+  const q = priceQuote({ cc: { yearGroups: 8, pillars: 5 }, gcse: { students: 120 } });
+  assert.equal(q.cc.charge, gbp(3100));
+  assert.equal(q.gcse.fee, gbp(6000));
+  assert.equal(q.crossProduct.applied, gbp(300));
+  assert.equal(q.annualRecurring, gbp(8800));
 });
 
 test("X needs both products", () => {
@@ -140,12 +246,13 @@ test("36 CC + 1 CPD + 1 Online → £197.50 + £99.50 = £297; remaining £3", (
   assert.equal(c.remaining, gbp(3));
 });
 
-test("3 CC + 1 CPD → £25 (allowance-limited)", () => {
-  assert.equal(credits(3, [{ id: "cpd" }]).total, gbp(25));
+// 5 programmes is now the smallest licence, so the £25 tier only applies at exactly 5.
+test("5 CC + 1 CPD → £25 (allowance-limited)", () => {
+  assert.equal(credits(5, [{ id: "cpd" }]).total, gbp(25));
 });
 
-test("3 CC + 1 Assembly → £22.50 (5% cap); remaining £2.50", () => {
-  const c = credits(3, [{ id: "assembly" }]);
+test("5 CC + 1 Assembly → £22.50 (5% cap); remaining £2.50", () => {
+  const c = credits(5, [{ id: "assembly" }]);
   assert.equal(c.lines[0].ceiling, gbp(22.5));
   assert.equal(c.total, gbp(22.5));
   assert.equal(c.remaining, gbp(2.5));
@@ -176,17 +283,27 @@ test("GCSE only + any add-on → no credit", () => {
 });
 
 // ── Anti-stacking ──
-test("24 CC + 20 GCSE + 1 CPD (single line) → X £105, S £150, C = MIN(£395, £180) → only S", () => {
+test("24 CC + 20 GCSE + 1 CPD (single line) → X £105, S £150, C = MIN(£395, £342) → both apply", () => {
   const q = priceQuote({ cc: { yearGroups: 4, pillars: 6 }, gcse: { students: 20 }, addOns: [{ id: "cpd" }] });
   assert.equal(q.crossProduct.earned, gbp(105));
   assert.equal(q.serviceCredit.earned, gbp(150));
-  assert.deepEqual(q.stacking, { basis: "single-line", lineId: "cpd", cap: gbp(180), combined: gbp(255), outcome: "larger" });
-  assert.equal(q.crossProduct.dropped, true);
+  assert.deepEqual(q.stacking, { basis: "single-line", lineId: "cpd", cap: gbp(342), combined: gbp(255), outcome: "both" });
+  assert.equal(q.crossProduct.dropped, false);
+  assert.equal(q.crossProduct.applied, gbp(105));
   assert.equal(q.serviceCredit.applied, gbp(150));
   assert.equal(q.pendingCombinationReview, false);
-  assert.equal(q.annualRecurring, gbp(3225));
+  assert.equal(q.annualRecurring, gbp(4055));
   assert.equal(q.oneOff, gbp(1825));
-  assert.equal(q.year1Total, gbp(5050));
+  assert.equal(q.year1Total, gbp(5880));
+});
+
+test("10 CC + 20 GCSE + 1 CPD (single line) → C = MIN(£395, £142.50) → only the larger (S)", () => {
+  // X = MIN(£200, £300, 15% × £950 = £142.50, 5% × £2,100 = £105) = £105; S = £75; £180 > £142.50.
+  const q = priceQuote({ cc: { yearGroups: 10, pillars: 1 }, gcse: { students: 20 }, addOns: [{ id: "cpd" }] });
+  assert.deepEqual(q.stacking, { basis: "single-line", lineId: "cpd", cap: gbp(142.5), combined: gbp(180), outcome: "larger" });
+  assert.equal(q.crossProduct.dropped, false);
+  assert.equal(q.crossProduct.applied, gbp(105));
+  assert.equal(q.serviceCredit.dropped, true);
 });
 
 test("24 CC + 20 GCSE + CPD + Online: the allowance is used up on CPD, so the single-line rule applies", () => {
@@ -194,9 +311,9 @@ test("24 CC + 20 GCSE + CPD + Online: the allowance is used up on CPD, so the si
   assert.equal(line(q, "cpd").credit, gbp(150));
   assert.equal(line(q, "online-experience").credit, 0);
   assert.equal(q.stacking.basis, "single-line");
-  assert.equal(q.stacking.cap, gbp(180));
+  assert.equal(q.stacking.cap, gbp(342));
   assert.equal(q.serviceCredit.applied, gbp(150));
-  assert.equal(q.crossProduct.applied, 0);
+  assert.equal(q.crossProduct.applied, gbp(105));
   assert.equal(q.pendingCombinationReview, false);
 });
 
@@ -208,12 +325,12 @@ test("36 CC + 20 GCSE + CPD + Online (two credited lines) → only the larger (S
   assert.equal(q.serviceCredit.applied, gbp(297));
   assert.equal(q.crossProduct.applied, 0);
   assert.equal(q.pendingCombinationReview, true);
-  assert.equal(q.annualRecurring, gbp(1635 + 2100));
+  assert.equal(q.annualRecurring, gbp(2880 + 2100));
   assert.equal(q.oneOff, gbp(1975 + 995 - 297));
 });
 
 test("both benefits apply when X + S fits under a single line's cap", () => {
-  // 78 units: list £3,900 (15% = £585); 1 CPD £1,975 (20% = £395); X £78.75 + S £197.50 = £276.25 ≤ £395.
+  // 78 programmes: list £7,410 (15% = £1,111.50); 1 CPD £1,975 (20% = £395); X £78.75 + S £197.50 = £276.25 ≤ £395.
   const q = priceQuote({ cc: { yearGroups: 13, pillars: 6 }, gcse: { students: 15 }, addOns: [{ id: "cpd" }] });
   assert.equal(q.stacking.outcome, "both");
   assert.equal(q.crossProduct.applied, gbp(78.75));
@@ -221,9 +338,10 @@ test("both benefits apply when X + S fits under a single line's cap", () => {
 });
 
 test("when X is the larger benefit, the add-on credit is dropped and lines pay full price", () => {
-  // 5 units: allowance £25; 1 Assembly credit £22.50. 5 units + 40 students: X = MIN(£400, £300, 15% × £250 = £37.50, 5% × £3,400) = £37.50.
+  // 5 programmes: allowance £25; 1 Assembly credit £22.50. 5 programmes + 40 students:
+  // X = MIN(£400, £300, 15% × £475 = £71.25, 5% × £3,400 = £170) = £71.25.
   const q = priceQuote({ cc: { yearGroups: 5, pillars: 1 }, gcse: { students: 40 }, addOns: [{ id: "assembly" }] });
-  assert.equal(q.crossProduct.applied, gbp(37.5));
+  assert.equal(q.crossProduct.applied, gbp(71.25));
   assert.equal(q.serviceCredit.dropped, true);
   assert.equal(line(q, "assembly").creditApplied, 0);
   assert.equal(line(q, "assembly").net, gbp(450));
@@ -259,6 +377,11 @@ test("money shows pennies only when needed", () => {
   assert.equal(formatMoney(gbp(450)), "£450");
   assert.equal(formatMoney(gbp(3345)), "£3,345");
   assert.equal(formatMoney(gbp(197.5)), "£197.50");
+  // The CC totals as shown on the page.
+  assert.deepEqual(
+    [5, 13, 14, 32, 33, 64, 65, 78].map((n) => formatMoney(ccCharge(n))),
+    ["£475", "£1,235", "£1,310", "£2,660", "£2,715", "£4,420", "£4,460", "£4,980"]
+  );
   assert.equal(ordinal(10), "10th");
   assert.equal(ordinal(25), "25th");
   assert.equal(ordinal(49), "49th");
@@ -277,26 +400,33 @@ test("summary labels", () => {
 
 test("HubSpot breakdown lines cover the whole calculation", () => {
   const q = priceQuote({ cc: { yearGroups: 4, pillars: 6 }, gcse: { students: 20 }, addOns: [{ id: "cpd" }] });
-  const text = quoteBreakdownLines(q, "2026-10-30T10:00:00+00:00", "2026-11-29").join("\n");
+  const text = quoteBreakdownLines(q, "2026-11-06T10:00:00+00:00", "2026-12-06").join("\n");
   for (const fragment of [
-    "Pricing rules version: 2026-10-30b",
-    "= 24 units",
-    "list £1,200",
-    "charge £1,125 / year",
+    "Pricing rules version: 2026-11-06",
+    "Critical Curriculum: Standard licence request (5+ programmes)",
+    "CC programmes: 24 (4 year group(s) × 6 pillar(s) per year group)",
+    "CC bands: 13 × £95 = £1,235; 11 × £75 = £825",
+    "CC price: £2,060 / year · list £2,280 (£95 per programme) · saving £220",
     "band 10–25 at £105 per student",
-    "Combined benefit (X): £105 earned, NOT applied",
+    "Combined benefit (X): −£105 applied",
     "CPD × 1: fee £1,975 · cap 10% · ceiling £197.50 · credit applied £150 · net £1,825",
     "Add-on credit (S): allowance £150 · credit used £150 · remaining £0",
-    "cap C £180",
+    "cap C £342",
+    "both applied",
     "Pending combination review (Decision 50): no",
-    "Price valid until: 2026-11-29",
-    "X dropped",
-    "Annual (recurring): £3,225",
+    "Price valid until: 2026-12-06",
+    "Annual (recurring): £4,055",
     "One-off services: £1,825",
-    "Year 1 total: £5,050",
-    "Submitted at: 2026-10-30T10:00:00+00:00",
+    "Year 1 total: £5,880",
+    "Submitted at: 2026-11-06T10:00:00+00:00",
     "Excludes VAT/tax",
   ]) {
     assert.ok(text.includes(fragment), `missing: ${fragment}`);
   }
+});
+
+test("HubSpot breakdown: every band used is listed (78 programmes)", () => {
+  const text = quoteBreakdownLines(priceQuote({ cc: { yearGroups: 13, pillars: 6 } }), "2026-11-06T10:00:00+00:00").join("\n");
+  assert.ok(text.includes("CC bands: 13 × £95 = £1,235; 19 × £75 = £1,425; 32 × £55 = £1,760; 14 × £40 = £560"));
+  assert.ok(text.includes("CC price: £4,980 / year"));
 });

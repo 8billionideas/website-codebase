@@ -588,7 +588,8 @@ export default function QuoteRequestModal({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (status === "submitting" || !isQuoteFormConfigured) return;
+    // Never submit a Critical Curriculum quote below the five-programme minimum.
+    if (status === "submitting" || !isQuoteFormConfigured || !q.quoteReady) return;
 
     const nextErrors: Errors = {};
     for (const name of ORDER) nextErrors[name] = validate(name, values[name]);

@@ -43,7 +43,7 @@ export const homepageFaqs: HomepageFaq[] = [
     question: "How much does it cost to bring 8billionideas into our school?",
     paragraphs: [
       "Our pricing is as flexible as the curriculum itself. Rather than expecting every school to fit into the same package, you can build an approach around your own priorities, choosing the year groups and Pillars of Learning that are right for your students.",
-      "That means you can start small, with access from less than £250, or build a much broader programme across multiple year groups and pillars. There's no need to pay for more than your school needs, and you can always grow your use of the curriculum over time.",
+      "That means you can start small, with five programmes from £475 a year, or build a much broader programme across multiple year groups and pillars. There's no need to pay for more than your school needs, and you can always grow your use of the curriculum over time.",
     ],
     link: { label: "Explore our pricing →", href: "/pricing" },
   },

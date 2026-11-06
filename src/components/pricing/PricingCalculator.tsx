@@ -20,6 +20,7 @@ import {
   CC_UNITS_MAX,
   CC_LIST_RATE,
   CC_BANDS,
+  CC_MIN_UNITS,
   CROSS_PRODUCT_CAP,
   CROSS_PRODUCT_MIN_STUDENTS,
   DEFAULT_YEAR_GROUPS,
@@ -30,12 +31,12 @@ import {
   DEFAULT_STUDENTS,
   GCSE_BANDS,
   PRICING_ESTIMATE_NOTE,
-  ccNextBand,
+  ccNextBandMessage,
   crossProductHint,
   formatMoney,
   gcseNextBand,
-  ordinal,
   priceQuote,
+  type CcSelection,
 } from "@/lib/pricing";
 import Button from "@/components/ui/Button";
 import QuoteRequestModal, { type QuoteSelection } from "@/components/pricing/QuoteRequestModal";
@@ -415,9 +416,46 @@ function SavingLine({ label, amount, bold = false }: { label: string; amount: st
   );
 }
 
+// The CC panel below the five-programme minimum: no price, just the prompt; from one programme,
+// how many more are needed and a five-step progress bar.
+function CcMinimumPrompt({ selection, id }: { selection: CcSelection; id: string }) {
+  const { units, needed, status } = selection;
+  return (
+    <div className="mt-6 text-[16px]" aria-live="polite">
+      <p className="text-white/80">Selected programmes: {units}</p>
+      <p id={id} className="mt-3 leading-[1.5] text-white">
+        Choose at least five programmes
+      </p>
+      {status === "below-minimum" && (
+        <>
+          <p className="mt-3 font-medium text-accent">{needed} more needed</p>
+          <div
+            role="progressbar"
+            aria-label="Programmes towards the minimum"
+            aria-valuemin={0}
+            aria-valuemax={CC_MIN_UNITS}
+            aria-valuenow={units}
+            aria-valuetext={`${units} of ${CC_MIN_UNITS} programmes`}
+            className="mt-3 grid max-w-[240px] gap-1.5"
+            style={{ gridTemplateColumns: `repeat(${CC_MIN_UNITS}, minmax(0, 1fr))` }}
+          >
+            {Array.from({ length: CC_MIN_UNITS }, (_, i) => (
+              <span
+                key={i}
+                aria-hidden="true"
+                className={`h-1.5 rounded-full transition-colors duration-300 motion-reduce:transition-none ${i < units ? "bg-accent" : "bg-white/20"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 const plural = (n: number, one: string, many: string) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 
-// CC: to scale, 1–78 units (shown as programmes), markers where each lower rate starts (10th, 25th, 49th).
+// CC: to scale, 0–78 units (shown as programmes), markers where each lower rate starts (14th, 33rd, 65th).
 const ccPosition = (v: number) => (Math.min(Math.max(v, 1), CC_UNITS_MAX) - 1) / (CC_UNITS_MAX - 1);
 const CC_MARKERS = CC_BANDS.slice(1).map((b) => ({ at: b.from, label: formatMoney(b.rate) }));
 
@@ -458,9 +496,11 @@ export default function PricingCalculator() {
     cc: showCC ? { yearGroups, pillars } : undefined,
     gcse: showGcse ? { students } : undefined,
   });
+  // ccSelection is whatever was chosen; cc (the price) is only set from five programmes.
+  const ccSelection = quote.ccSelection;
   const cc = quote.cc;
   const gcse = quote.gcse;
-  const ccNext = cc ? ccNextBand(cc.units) : null;
+  const ccNudge = ccSelection ? ccNextBandMessage(ccSelection.units) : null;
   const gcseNext = gcse ? gcseNextBand(gcse.students) : null;
   const crossHint = showCC && showGcse ? crossProductHint(students) : null;
   // Every saving line shown in the panel; the total shows for Both, or with more than one line.
@@ -468,6 +508,7 @@ export default function PricingCalculator() {
   const totalSaving = savings.reduce((sum, v) => sum + v, 0);
   const showTotalSaving = totalSaving > 0 && (product === "both" || savings.length > 1);
   const ccHelpId = `${radioGroupName}-cc-help`;
+  const ccMinimumId = `${radioGroupName}-cc-minimum`;
   const gcseHelpId = `${radioGroupName}-gcse-help`;
 
   const steps: StepKind[] =
@@ -478,6 +519,8 @@ export default function PricingCalculator() {
         : ["yearGroups", "pillars", "students"];
 
   function openQuote(event: React.MouseEvent<HTMLButtonElement>) {
+    // Never a CC quote below five programmes (the button is disabled then too).
+    if (!quote.quoteReady) return;
     trackEvent("quote_click");
     quoteButtonRef.current = event.currentTarget;
     setQuoteSelection({
@@ -526,26 +569,28 @@ export default function PricingCalculator() {
             />
             {/* Below 640px the note, bar and message use the full width (not the step's 56px
                 indent), so the bar's rate labels have room. */}
-            {cc && (
+            {ccSelection && (
               <div className="mt-6 -ml-14 sm:ml-0">
                 <p className="text-[13px] text-ink/60">1 programme = 1 pillar for 1 year group</p>
                 <div className="mt-4">
                   <DiscountProgress
                     label="Critical Curriculum programmes"
-                    value={cc.units}
-                    min={1}
+                    value={ccSelection.units}
+                    min={0}
                     max={CC_UNITS_MAX}
-                    valueText={plural(cc.units, "programme", "programmes")}
+                    valueText={plural(ccSelection.units, "programme", "programmes")}
                     startLabel={formatMoney(CC_LIST_RATE)}
                     markers={CC_MARKERS}
                     position={ccPosition}
                     describedBy={ccHelpId}
                   />
                 </div>
+                {/* The next-band nudge, from the bands in src/lib/pricing.ts (none at 0). */}
                 <p id={ccHelpId} aria-live="polite" className="text-[14px] leading-[1.5] text-ink/80">
-                  {ccNext
-                    ? `Add ${plural(ccNext.needed, "more programme", "more programmes")} and each one from the ${ordinal(ccNext.threshold)} costs ${formatMoney(ccNext.rate)} instead of ${formatMoney(ccNext.currentRate)}.`
-                    : `You're on our lowest price: each programme from the ${ordinal(CC_BANDS[CC_BANDS.length - 1].from)} costs ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)}.`}
+                  {ccNudge}
+                </p>
+                <p className="mt-2 text-[13px] leading-[1.5] text-ink/60">
+                  Pricing is calculated in bands. Lower rates apply only to additional programmes within each band.
                 </p>
               </div>
             )}
@@ -615,8 +660,12 @@ export default function PricingCalculator() {
             that fits your school.
           </h2>
           <p className="mt-4 max-w-xl text-[18px] leading-[1.6] text-ink/70">
-            Choose what you&apos;d like to include and see an estimated price straight away.
-            Our pricing is simple and clear, and grows with what you need.
+            Build the Critical Curriculum that fits your school. Select programmes across the year groups and
+            pillars you need, and see your indicative annual price as you go.
+          </p>
+          <p className="mt-3 max-w-xl text-[16px] leading-[1.6] text-ink/70">
+            Programmes start at {formatMoney(CC_BANDS[0].rate)} per year, with lower prices for additional programmes
+            as your selection grows. Minimum selection: five programmes.
           </p>
 
           {/* Product selector */}
@@ -666,7 +715,7 @@ export default function PricingCalculator() {
             YOUR ESTIMATED PRICE PER YEAR
           </p>
 
-          {cc && (
+          {ccSelection && (
             <div className="mt-6">
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
@@ -680,29 +729,40 @@ export default function PricingCalculator() {
                 </div>
               </div>
 
-              <p className="mt-6" aria-live="polite">
-                <FadeOnChange
-                  value={formatMoney(cc.charge)}
-                  className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
-                />
-                <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
-              </p>
+              {cc ? (
+                <>
+                  <p className="mt-6 text-[14px] text-white/80">Indicative annual Critical Curriculum licence</p>
+                  <p className="mt-2" aria-live="polite">
+                    <FadeOnChange
+                      value={formatMoney(cc.charge)}
+                      className="text-[48px] font-light leading-[1] text-white md:text-[64px]"
+                    />
+                    <span className="ml-2 text-[20px] font-light text-white/80">/ year</span>
+                  </p>
 
-              <PanelPriceLines
-                summary={plural(cc.units, "programme", "programmes")}
-                full={cc.list}
-                price={cc.charge}
-                saving={cc.saving}
-              />
+                  <PanelPriceLines
+                    summary={`Selected programmes: ${cc.units}`}
+                    full={cc.list}
+                    price={cc.charge}
+                    saving={cc.saving}
+                  />
+                  <p className="mt-3 text-[13px] leading-[1.5] text-white/60">
+                    As you add more programmes, additional programmes can cost less. Existing selections keep their
+                    original band price.
+                  </p>
+                </>
+              ) : (
+                <CcMinimumPrompt selection={ccSelection} id={ccMinimumId} />
+              )}
             </div>
           )}
 
-          {cc && gcse && (
+          {ccSelection && gcse && (
             <div className="my-8 h-px w-full bg-white/15" aria-hidden="true" />
           )}
 
           {gcse && (
-            <div className={cc ? "" : "mt-6"}>
+            <div className={ccSelection ? "" : "mt-6"}>
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20">
                   <GraduationCap className="h-6 w-6 text-white" strokeWidth={1.5} aria-hidden="true" />
@@ -747,20 +807,37 @@ export default function PricingCalculator() {
             </div>
           )}
 
-          <div className="mt-6 flex items-baseline justify-between gap-4 border-t border-white/15 pt-5">
-            <span className="text-[16px] font-medium text-white">Total per year</span>
-            <span aria-live="polite" className="text-[20px] font-medium text-white">
-              {formatMoney(quote.annualRecurring)} / year
-            </span>
-          </div>
+          {/* No total while the Critical Curriculum is below its five-programme minimum. */}
+          {quote.quoteReady && (
+            <div className="mt-6 border-t border-white/15 pt-5">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="text-[16px] font-medium text-white">Total per year</span>
+                <span aria-live="polite" className="text-[20px] font-medium text-white">
+                  {formatMoney(quote.annualRecurring)} / year
+                </span>
+              </div>
+              {/* The recurring total ÷ 12 (one-off extras aren't included). */}
+              <div className="mt-2 flex items-baseline justify-between gap-4">
+                <span className="whitespace-nowrap text-[15px] text-white/80">Total per month</span>
+                <span className="whitespace-nowrap text-[16px] text-white/80">{formatMoney(quote.monthlyRecurring)} / month</span>
+              </div>
+              <p className="mt-0.5 text-right text-[12px] leading-[1.5] text-white/60">Billed annually</p>
+            </div>
+          )}
           <p className="mt-3 text-[12px] leading-[1.5] text-white/60">{PRICING_ESTIMATE_NOTE}</p>
 
           <p className="mt-8 text-[15px] leading-[1.6] text-white/80">
-            These prices are an estimate based on what you&apos;ve chosen. Get in touch for a
-            quote that fits your school.
+            Your price is indicative and will be confirmed by our team based on your school&apos;s requirements.
           </p>
 
-          <Button aria-haspopup="dialog" onClick={openQuote} arrow className="mt-6 w-full">
+          <Button
+            aria-haspopup="dialog"
+            onClick={openQuote}
+            disabled={!quote.quoteReady}
+            aria-describedby={!quote.quoteReady && ccSelection ? ccMinimumId : undefined}
+            arrow
+            className="mt-6 w-full"
+          >
             Request a tailored quote
           </Button>
         </div>

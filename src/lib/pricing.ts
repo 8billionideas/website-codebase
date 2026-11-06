@@ -1,10 +1,11 @@
 // The /pricing maths, in one pure, tested module (tests/pricing.test.mjs). Every amount is in
 // whole pence; formatMoney() turns pence into "£1,167.50" / "£450" for display.
-// Rules version 2026-10-30b: marginal Critical Curriculum unit bands, a whole-cohort GCSE rate, a
-// conditional cross-product benefit (X), a CC-earned add-on credit (S) and an anti-stacking rule.
+// Rules version 2026-11-06: marginal Critical Curriculum programme bands (£95 / £75 / £55 / £40) with a
+// five-programme minimum, a whole-cohort GCSE rate, a conditional cross-product benefit (X), a
+// CC-earned add-on credit (S) and an anti-stacking rule.
 
 // Add-on credits per Decisions 48–49; Decision 50 pending.
-export const PRICE_RULES_VERSION = "2026-10-30b";
+export const PRICE_RULES_VERSION = "2026-11-06";
 
 // Calculator product selected on load: "cc" is Critical Curriculum (the others are "gcse" and "both").
 export const DEFAULT_PRODUCT = "cc";
@@ -13,21 +14,24 @@ const pounds = (amount: number) => Math.round(amount * 100);
 const pct = (pence: number, percent: number) => Math.round((pence * percent) / 100);
 
 // ── Critical Curriculum (CC) ────────────────────────────────────────────────────────────────
-// One unit = one pillar in one year group. Six pillars are available now (Sustainability and
-// Technology are coming soon), so up to 13 × 6 = 78 units.
+// One unit (a "programme" on the site) = one pillar in one year group. Six pillars are available now
+// (Sustainability and Technology are coming soon), so up to 13 × 6 = 78 programmes. Either count can
+// be set to 0, which clears the selection.
 
-export const YEAR_GROUPS_MIN = 1;
+export const YEAR_GROUPS_MIN = 0;
 export const YEAR_GROUPS_MAX = 13;
-export const PILLARS_MIN = 1;
+export const PILLARS_MIN = 0;
 export const PILLARS_MAX = 6;
 export const DEFAULT_YEAR_GROUPS = 1;
 export const DEFAULT_PILLARS = 1;
 export const CC_UNITS_MAX = YEAR_GROUPS_MAX * PILLARS_MAX;
 
-// List price per unit, before volume rates.
-export const CC_LIST_RATE = pounds(50);
+// A standard annual licence needs at least five programmes (£475). Below that there's no CC price
+// and no CC quote request.
+export const CC_MIN_UNITS = 5;
 
-// Marginal bands: each band prices only the units inside it.
+// Marginal bands: each band prices only the units inside it, so adding programmes never changes the
+// price of the ones already selected.
 export interface CcBand {
   from: number; // first unit in the band
   to: number | null; // last unit, or null for "and above"
@@ -35,21 +39,44 @@ export interface CcBand {
 }
 
 export const CC_BANDS: CcBand[] = [
-  { from: 1, to: 9, rate: pounds(50) },
-  { from: 10, to: 24, rate: pounds(45) },
-  { from: 25, to: 48, rate: pounds(42.5) },
-  { from: 49, to: null, rate: pounds(40) },
+  { from: 1, to: 13, rate: pounds(95) },
+  { from: 14, to: 32, rate: pounds(75) },
+  { from: 33, to: 64, rate: pounds(55) },
+  { from: 65, to: null, rate: pounds(40) },
 ];
+
+// List price per unit (the first band's rate): the "Full price" before lower band rates.
+export const CC_LIST_RATE = CC_BANDS[0].rate;
 
 export const ccUnits = (yearGroups: number, pillars: number) => yearGroups * pillars;
 
-export function ccCharge(units: number): number {
-  return CC_BANDS.reduce((sum, band) => {
-    const upper = band.to ?? Infinity;
-    const inBand = Math.max(0, Math.min(units, upper) - band.from + 1);
-    return sum + inBand * band.rate;
-  }, 0);
+// How many units fall in each band, and what they cost ("13 × £95 = £1,235"); bands with none are left out.
+export interface CcBandLine {
+  band: CcBand;
+  units: number;
+  subtotal: number;
 }
+
+export function ccBandLines(units: number): CcBandLine[] {
+  return CC_BANDS.map((band) => {
+    const inBand = Math.max(0, Math.min(units, band.to ?? Infinity) - band.from + 1);
+    return { band, units: inBand, subtotal: inBand * band.rate };
+  }).filter((line) => line.units > 0);
+}
+
+export function ccCharge(units: number): number {
+  return ccBandLines(units).reduce((sum, line) => sum + line.subtotal, 0);
+}
+
+// "none" (nothing selected), "below-minimum" (1–4) or "licence" (5+).
+export type CcStatus = "none" | "below-minimum" | "licence";
+
+export function ccStatus(units: number): CcStatus {
+  return units <= 0 ? "none" : units < CC_MIN_UNITS ? "below-minimum" : "licence";
+}
+
+// Units still needed for a standard licence (0 once there are enough).
+export const ccUnitsNeeded = (units: number) => Math.max(0, CC_MIN_UNITS - units);
 
 export const ccList = (units: number) => units * CC_LIST_RATE;
 
@@ -59,16 +86,27 @@ export function ccUnitRate(n: number): number {
 }
 
 export interface CcNextBand {
-  threshold: number; // the first unit at the next rate (10, 25 or 49)
+  threshold: number; // the first unit at the next rate (14, 33 or 65)
   needed: number; // units to add to reach it
   rate: number; // the rate from that unit on
   currentRate: number; // the rate of the band the units are in now
 }
 
 export function ccNextBand(units: number): CcNextBand | null {
-  const next = CC_BANDS.find((b) => b.from > units);
+  const next = CC_BANDS.find((b) => b.from > Math.max(1, units));
   if (!next) return null;
   return { threshold: next.from, needed: next.from - units, rate: next.rate, currentRate: ccUnitRate(Math.max(1, units)) };
+}
+
+// The next-band nudge under the programme bar (null when nothing is selected):
+// "Add 9 more programmes to unlock £75 for additional programmes", "Your next programme is £55" (one
+// away), or, in the last band, "Additional programmes are £40 each".
+export function ccNextBandMessage(units: number): string | null {
+  if (units <= 0) return null;
+  const next = ccNextBand(units);
+  if (!next) return `Additional programmes are ${formatMoney(CC_BANDS[CC_BANDS.length - 1].rate)} each`;
+  if (next.needed === 1) return `Your next programme is ${formatMoney(next.rate)}`;
+  return `Add ${next.needed} more programmes to unlock ${formatMoney(next.rate)} for additional programmes`;
 }
 
 export interface CcPrice {
@@ -361,8 +399,20 @@ export type Stacking =
   // More than one line has credit (Decision 50 pending): only the larger benefit applies.
   | { basis: "multi-line"; cap: null; combined: number; outcome: "larger" };
 
+// What was chosen for the Critical Curriculum, priced or not.
+export interface CcSelection {
+  yearGroups: number;
+  pillars: number;
+  units: number;
+  status: CcStatus;
+  needed: number; // units still needed for a licence
+}
+
 export interface QuoteBreakdown {
   rulesVersion: string;
+  ccSelection?: CcSelection;
+  // Only set from the five-programme minimum: below it the CC has no price, earns no benefits and
+  // can't be requested.
   cc?: CcPrice;
   gcse?: GcsePrice;
   // The combined (cross-product) benefit: what was earned, what applies, and whether it was dropped.
@@ -376,12 +426,22 @@ export interface QuoteBreakdown {
   services: QuoteService[];
   servicesTotal: number;
   annualRecurring: number;
+  // annualRecurring ÷ 12, to the penny (shown as "Total per month"; billing is still annual).
+  monthlyRecurring: number;
   oneOff: number;
   year1Total: number;
+  // False while the CC is chosen with fewer than five programmes (or nothing is chosen at all).
+  quoteReady: boolean;
 }
 
 export function priceQuote({ cc: ccInput, gcse: gcseInput, addOns = [] }: QuoteInput): QuoteBreakdown {
-  const cc = ccInput ? priceCc(ccInput.yearGroups, ccInput.pillars) : undefined;
+  const ccSelection: CcSelection | undefined = ccInput && {
+    ...ccInput,
+    units: ccUnits(ccInput.yearGroups, ccInput.pillars),
+    status: ccStatus(ccUnits(ccInput.yearGroups, ccInput.pillars)),
+    needed: ccUnitsNeeded(ccUnits(ccInput.yearGroups, ccInput.pillars)),
+  };
+  const cc = ccSelection?.status === "licence" ? priceCc(ccSelection.yearGroups, ccSelection.pillars) : undefined;
   const gcse = gcseInput ? priceGcse(gcseInput.students) : undefined;
   const x = crossProductBenefit(cc, gcse);
   const credits = addOnCredits(cc, addOns);
@@ -422,6 +482,7 @@ export function priceQuote({ cc: ccInput, gcse: gcseInput, addOns = [] }: QuoteI
 
   return {
     rulesVersion: PRICE_RULES_VERSION,
+    ccSelection,
     cc,
     gcse,
     crossProduct: { earned: x, applied: xApplied, dropped: x > 0 && xApplied === 0 },
@@ -437,8 +498,10 @@ export function priceQuote({ cc: ccInput, gcse: gcseInput, addOns = [] }: QuoteI
     services,
     servicesTotal,
     annualRecurring,
+    monthlyRecurring: Math.round(annualRecurring / 12),
     oneOff,
     year1Total: annualRecurring + oneOff,
+    quoteReady: (!ccSelection || ccSelection.status === "licence") && Boolean(cc || gcse),
   };
 }
 
@@ -504,7 +567,12 @@ export function quoteBreakdownLines(q: QuoteBreakdown, submittedAt: string, vali
   const lines = [`Pricing rules version: ${q.rulesVersion}`];
   if (q.cc) {
     lines.push(
-      `Critical Curriculum: ${q.cc.yearGroups} year group(s) × ${q.cc.pillars} pillar(s) = ${q.cc.units} units · list ${formatMoney(q.cc.list)} (£50 per unit) · charge ${formatMoney(q.cc.charge)} / year (saving ${formatMoney(q.cc.saving)})`
+      `Critical Curriculum: Standard licence request (${CC_MIN_UNITS}+ programmes)`,
+      `CC programmes: ${q.cc.units} (${q.cc.yearGroups} year group(s) × ${q.cc.pillars} pillar(s) per year group)`,
+      `CC bands: ${ccBandLines(q.cc.units)
+        .map((l) => `${l.units} × ${formatMoney(l.band.rate)} = ${formatMoney(l.subtotal)}`)
+        .join("; ")}`,
+      `CC price: ${formatMoney(q.cc.charge)} / year · list ${formatMoney(q.cc.list)} (${formatMoney(CC_LIST_RATE)} per programme) · saving ${formatMoney(q.cc.saving)}`
     );
   }
   if (q.gcse) {
