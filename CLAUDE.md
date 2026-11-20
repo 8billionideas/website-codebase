@@ -1,3 +1,5 @@
+**DRAFT BRANCH: parents – parent-facing site in progress. Never merge into main or push to main from this branch without Cam's explicit approval.**
+
 @AGENTS.md
 
 # CLAUDE.md – 8billionideas marketing website
