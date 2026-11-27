@@ -13,6 +13,7 @@ const PATHS = [
   "/case-studies",
   ...caseStudies.map((study) => `/case-studies/${study.slug}`),
   "/about",
+  "/careers",
   "/resources",
   "/contact",
   "/roar",

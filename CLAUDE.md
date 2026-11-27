@@ -43,7 +43,7 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 - Approved headline figures: **350+ schools** and **1 million+ students** as big stat numbers; in sentences, write "more than 350 schools" and "more than 1 million students".
 - Always name **OxfordAQA** when the GCSE is mentioned. On each page, the first mention is "OxfordAQA International GCSE Global Skills Projects", then "Global Skills Projects" (always plural). 8billionideas is the "teaching and learning partner" (never "official delivery partner").
 - In body text the programme is always *The Critical Curriculum* (capital T, italic), via src/components/shared/CriticalCurriculumName.tsx. Headings, pricing labels, buttons and form options are decided case by case.
-- The only email address shown on the website is hello@8billionideas.com. Never use personal email addresses.
+- The only email address shown on the website is hello@8billionideas.com, except /careers, which shows recruitment@8billionideas.com as plain text (no mailto links) for applications (Cam, November 2026). Never use personal email addresses.
 - The support role is the **Partnership Manager**. Never "project manager". Never promise "24/7".
 - Plain English. No marketing inflation, no unsourced industry statistics.
 
@@ -72,7 +72,7 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 
 Nav: Our Curriculum (link) · Qualifications (link to /qualifications) · Case Studies · Pricing · About (dropdown: About Us, Resources, Contact us) · Login · Request a demo.
 
-Pages: / (homepage), /curriculum (Our Curriculum), /qualifications, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /contact. /community and /blog redirect to /about. /implementation redirects to /curriculum. Old NOC and EPQ routes redirect to /qualifications. The earlier addresses /curriculum-mapping and /gcse redirect (308) to /curriculum and /qualifications.
+Pages: / (homepage), /curriculum (Our Curriculum), /qualifications, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /contact, /careers (linked from the footer's Company column; roles and their published flags in src/content/careers.ts, the role PDFs in public/downloads). /community and /blog redirect to /about. /implementation redirects to /curriculum. Old NOC and EPQ routes redirect to /qualifications. The earlier addresses /curriculum-mapping and /gcse redirect (308) to /curriculum and /qualifications.
 
 ## Key facts and data
 
@@ -102,4 +102,5 @@ Pages: / (homepage), /curriculum (Our Curriculum), /qualifications, /pricing, /c
 - Permission to show school and club names and logos (especially Chelsea and Harrow).
 - Lesson titles from the curriculum team (Samira, Lakshmi, Lyndsay). Subject-to-pillar mapping sign-off (Lyndsay).
 - Procurement one-pager (Elysha). About page 2025 timeline facts. Ann Haydon's current job title.
-- Safeguarding content currently doesn't appear anywhere on the site.
+- Safeguarding: the only safeguarding content on the site is the safer-recruitment note on /careers.
+- The two careers PDFs still say "over half a million students" (the page uses the approved "more than 1 million").

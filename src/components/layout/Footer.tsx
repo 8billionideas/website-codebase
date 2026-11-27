@@ -142,6 +142,7 @@ export default function Footer() {
             </FooterColumn>
             <FooterColumn heading="Company">
               <li><Link href="/about" className={COLUMN_LINK}>About us</Link></li>
+              <li><Link href="/careers" className={COLUMN_LINK}>Careers</Link></li>
               <li><Link href="/contact" className={COLUMN_LINK}>Contact us</Link></li>
               <li>
                 <button

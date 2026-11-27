@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 
 // The previous www.8billionideas.com site (its sitemap, November 2026), each old path sent to the
 // closest page here; no sensible match goes to the homepage. /, /about and /resources exist on both
-// sites, so they need no redirect. permanent: true is a 308.
+// sites, so they need no redirect; nor does /careers, which has its own page again (November 2026).
+// permanent: true is a 308.
 const OLD_SITE_REDIRECTS: [source: string, destination: string][] = [
   // Product, programme and school-type pages
   ["/product", "/curriculum"],
@@ -23,7 +24,6 @@ const OLD_SITE_REDIRECTS: [source: string, destination: string][] = [
   ["/what-we-do/live-experiences", "/pricing"],
   // Company, team, stories and contact
   ["/8billionideas-meet-the-team", "/about"],
-  ["/careers", "/about"],
   ["/customer-stories", "/case-studies"],
   ["/book-a-meeting", "/contact"],
   ["/partnerships", "/contact"],

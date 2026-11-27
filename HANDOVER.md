@@ -4,7 +4,7 @@ For Radu, who will deploy the site on the company Vercel account and connect 8bi
 
 ## What the site is
 
-The marketing website for 8billionideas: *The Critical Curriculum* (eight pillars, Year 1 to Year 13) and the OxfordAQA International GCSE Global Skills Projects. Pages include the homepage, /curriculum, /qualifications, /pricing, /case-studies, /about, /resources, /contact, /privacy-policy and a few partner pages (/roar, /cv-workshop, /minerva, /gec-academy).
+The marketing website for 8billionideas: *The Critical Curriculum* (eight pillars, Year 1 to Year 13) and the OxfordAQA International GCSE Global Skills Projects. Pages include the homepage, /curriculum, /qualifications, /pricing, /case-studies, /about, /resources, /contact, /careers, /privacy-policy and a few partner pages (/roar, /cv-workshop, /minerva, /gec-academy).
 
 ## Stack
 

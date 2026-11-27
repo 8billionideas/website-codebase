@@ -52,8 +52,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           <main className="flex-1">{children}</main>
           {/* /resources and /contact have their own closing sections instead; /money-masters, /minerva,
-              /roar, /cv-workshop and /gec-academy end with the footer. */}
-          <HideOnRoutes routes={["/resources", "/contact", "/money-masters", "/minerva", "/roar", "/cv-workshop", "/gec-academy"]}>
+              /roar, /cv-workshop, /gec-academy and /careers end with the footer. */}
+          <HideOnRoutes routes={["/resources", "/contact", "/money-masters", "/minerva", "/roar", "/cv-workshop", "/gec-academy", "/careers"]}>
             <BookDemoSection />
           </HideOnRoutes>
           <Footer />
