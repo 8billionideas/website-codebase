@@ -23,8 +23,9 @@ export const navItems: NavItem[] = [
     items: [
       { label: "About Us", href: "/about" },
       { label: "Resources", href: "/resources" },
+      { label: "Careers", href: "/careers" },
       { label: "Contact us", href: "/contact" },
     ],
-    activeOn: ["/about", "/resources", "/contact"],
+    activeOn: ["/about", "/resources", "/careers", "/contact"],
   },
 ];

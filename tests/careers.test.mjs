@@ -1,19 +1,22 @@
-// /careers: role data (src/content/careers.ts), the "how to apply" line on each card and the page wiring.
+// /careers: role data (src/content/careers.ts), the cards and their pop-outs, and the page wiring.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import * as careers from "../src/content/careers.ts";
 
-const { openRoles, freelanceRoles, publishedRoles, careersDownloads, CAREERS_EMAIL } = careers;
+const { openRoles, freelanceRoles, publishedRoles, careersDownloads, CAREERS_EMAIL, OPEN_ROLES_PDF, FREELANCE_PDF } = careers;
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const pageSources = () =>
-  read("src/content/careers.ts") + read("src/app/careers/page.tsx") + read("src/components/careers/RoleCard.tsx");
+  read("src/content/careers.ts") +
+  read("src/app/careers/page.tsx") +
+  read("src/components/careers/RoleCard.tsx") +
+  read("src/components/careers/RoleList.tsx");
 
-// The line under each card, as RoleCard renders it.
+// The line in each role's pop-out, as RoleList renders it.
 const applyLine = (role) =>
   `${role.applyLead}, email your CV to ${CAREERS_EMAIL} with “${role.emailSubject}” in the subject line.`;
 
-test("each card says how to apply, with the exact subject line", () => {
+test("each pop-out says how to apply, with the exact subject line", () => {
   assert.deepEqual(
     [...openRoles, ...freelanceRoles].map(applyLine),
     [
@@ -27,6 +30,45 @@ test("each card says how to apply, with the exact subject line", () => {
 
 test("no mailto links, apply buttons or apply_click event on /careers", () => {
   assert.doesNotMatch(pageSources(), /mailto:|apply_click|trackEvent|Apply now|Join the pool/);
+});
+
+test("cards show the one-line summary; each pop-out links to its PDF", () => {
+  assert.deepEqual(
+    [...openRoles, ...freelanceRoles].map((role) => [role.id, role.summary, role.pdf]),
+    [
+      [
+        "studio-manager",
+        "Lead our studio – running shoots in our studio and in schools, managing the production schedule and our UK-based editors, and raising the bar on every video we make.",
+        OPEN_ROLES_PDF,
+      ],
+      [
+        "global-skills-teacher",
+        "Teach and mentor students through the International GCSE Global Skills Projects online – leading live lessons, guiding project work and helping every student stay on track.",
+        OPEN_ROLES_PDF,
+      ],
+      [
+        "business-development-manager",
+        "Take the International GCSE Global Skills Projects to schools across the Middle East and beyond – running the full sales cycle with school leaders, from first call to signed contract.",
+        OPEN_ROLES_PDF,
+      ],
+      [
+        "freelance-facilitator",
+        "Lead high-energy workshops and enrichment sessions in schools across the UAE, bringing our award-winning Critical Curriculum to life.",
+        FREELANCE_PDF,
+      ],
+    ]
+  );
+  assert.deepEqual(careersDownloads.map((d) => d.href), [OPEN_ROLES_PDF, FREELANCE_PDF]);
+});
+
+test("role ids (the pop-out hashes) are unique, plain ASCII and don't clash with the page's ids", () => {
+  const ids = [...openRoles, ...freelanceRoles].map((role) => role.id);
+  assert.equal(new Set(ids).size, ids.length);
+  for (const id of ids) assert.match(id, /^[a-z0-9-]+$/);
+  assert.ok(!ids.includes("open-roles"));
+  const list = read("src/components/careers/RoleList.tsx");
+  assert.match(list, /window\.history\.replaceState\(window\.history\.state, "", `#\$\{id\}`\)/);
+  assert.match(list, /addEventListener\("hashchange"/);
 });
 
 test("only published roles are shown", () => {

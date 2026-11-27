@@ -70,9 +70,9 @@ Next.js (App Router), TypeScript, Tailwind v4 (tokens in the @theme block of src
 
 ## Site structure
 
-Nav: Our Curriculum (link) · Qualifications (link to /qualifications) · Case Studies · Pricing · About (dropdown: About Us, Resources, Contact us) · Login · Request a demo.
+Nav: Our Curriculum (link) · Qualifications (link to /qualifications) · Case Studies · Pricing · About (dropdown: About Us, Resources, Careers, Contact us) · Login · Request a demo.
 
-Pages: / (homepage), /curriculum (Our Curriculum), /qualifications, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /contact, /careers (linked from the footer's Company column; roles and their published flags in src/content/careers.ts, the role PDFs in public/downloads). /community and /blog redirect to /about. /implementation redirects to /curriculum. Old NOC and EPQ routes redirect to /qualifications. The earlier addresses /curriculum-mapping and /gcse redirect (308) to /curriculum and /qualifications.
+Pages: / (homepage), /curriculum (Our Curriculum), /qualifications, /pricing, /case-studies and /case-studies/[slug], /about, /resources, /contact, /careers (linked from the About dropdown and the footer's Company column; roles and their published flags in src/content/careers.ts, the role PDFs in public/downloads; each card opens a pop-out with the full details, linkable as /careers#role-id). /community and /blog redirect to /about. /implementation redirects to /curriculum. Old NOC and EPQ routes redirect to /qualifications. The earlier addresses /curriculum-mapping and /gcse redirect (308) to /curriculum and /qualifications.
 
 ## Key facts and data
 

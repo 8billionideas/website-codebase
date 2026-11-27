@@ -11,6 +11,11 @@ const FOCUSABLE =
 // the site's modals (Login, Request a demo, the quote and request pop-ups).
 // variant "sheet": below 768px the panel is a bottom sheet (full width, rounded top corners, at
 // most 85% of the screen tall and scrollable) that slides up; from 768px a centred dialog.
+// variant "scroll-sheet" (the /careers role pop-out): below 640px a nearly full-height bottom sheet,
+// from 640px a centred dialog no taller than the screen. The panel itself doesn't scroll, so the ×
+// stays put: wrap the content in an element with min-h-0 and overflow-y-auto. 200ms transitions.
+// exitMs: keep the modal mounted that long after it closes, so it animates out (default 0: it
+// disappears at once, as before).
 export default function ModalShell({
   open,
   onClose,
@@ -21,6 +26,7 @@ export default function ModalShell({
   closeTone = "ink",
   variant = "dialog",
   overlayOpacity = 0.6,
+  exitMs = 0,
   children,
 }: {
   open: boolean;
@@ -30,12 +36,25 @@ export default function ModalShell({
   returnFocusTo: () => HTMLElement | null;
   panelClassName: string;
   closeTone?: "ink" | "white";
-  variant?: "dialog" | "sheet";
+  variant?: "dialog" | "sheet" | "scroll-sheet";
   overlayOpacity?: number;
+  exitMs?: number;
   children: ReactNode;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
+  // While closing with exitMs, the modal stays mounted (and inert) until its exit animation ends.
+  const [lastOpen, setLastOpen] = useState(open);
+  const [exiting, setExiting] = useState(false);
+  if (open !== lastOpen) {
+    setLastOpen(open);
+    setExiting(!open && exitMs > 0);
+  }
+  useEffect(() => {
+    if (!exiting) return;
+    const timer = setTimeout(() => setExiting(false), exitMs);
+    return () => clearTimeout(timer);
+  }, [exiting, exitMs]);
   // Read the latest callbacks without re-running the open/close effect.
   const focusRefs = useRef({ initialFocus, returnFocusTo });
   useEffect(() => {
@@ -59,9 +78,10 @@ export default function ModalShell({
     };
   }, [open]);
 
-  if (!open) return null;
+  if (!open && !exiting) return null;
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (!open) return;
     if (event.key === "Escape") {
       event.stopPropagation();
       onClose();
@@ -86,9 +106,11 @@ export default function ModalShell({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex justify-center overflow-y-auto transition-opacity duration-150 motion-reduce:transition-none ${
-        variant === "sheet" ? "items-end md:items-center md:px-4 md:py-6" : "items-center px-4 py-6"
-      } ${shown ? "opacity-100" : "opacity-0"}`}
+      className={`fixed inset-0 z-50 flex justify-center transition-opacity motion-reduce:transition-none ${
+        variant === "scroll-sheet"
+          ? "items-end duration-200 sm:items-center sm:px-4 sm:py-6"
+          : `overflow-y-auto duration-150 ${variant === "sheet" ? "items-end md:items-center md:px-4 md:py-6" : "items-center px-4 py-6"}`
+      } ${shown ? "opacity-100" : "opacity-0"} ${open ? "" : "pointer-events-none"}`}
       onKeyDown={handleKeyDown}
     >
       <div
@@ -103,7 +125,11 @@ export default function ModalShell({
         aria-modal="true"
         aria-labelledby={labelledBy}
         className={`relative w-full shadow-[0_20px_60px_rgba(22,33,61,0.25)] transition-[transform,background-color] motion-reduce:transition-none ${
-          variant === "sheet"
+          variant === "scroll-sheet"
+            ? `mt-auto flex max-h-[92dvh] flex-col overflow-hidden rounded-t-2xl duration-200 ease-out sm:my-auto sm:max-h-full sm:rounded-2xl ${
+                shown ? "translate-y-0 sm:scale-100" : "translate-y-full sm:translate-y-0 sm:scale-95"
+              }`
+            : variant === "sheet"
             ? `mt-auto max-h-[85vh] overflow-y-auto rounded-t-2xl duration-300 ease-out md:my-auto md:max-h-none md:overflow-visible md:rounded-2xl md:duration-150 ${
                 shown ? "translate-y-0 md:scale-100" : "translate-y-full md:translate-y-0 md:scale-95"
               }`
@@ -115,6 +141,8 @@ export default function ModalShell({
           onClick={onClose}
           aria-label="Close"
           className={`absolute right-4 top-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 ${
+            variant === "scroll-sheet" ? "z-10 bg-white" : ""
+          } ${
             closeTone === "white"
               ? "text-white hover:bg-white/10 focus-visible:ring-white"
               : "text-ink hover:bg-ink/5 focus-visible:ring-ink"

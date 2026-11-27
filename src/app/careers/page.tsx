@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Download } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
-import RoleCard from "@/components/careers/RoleCard";
+import RoleList from "@/components/careers/RoleList";
 import {
   careersDownloads,
   careersHero,
@@ -15,8 +15,8 @@ import {
   safeguardingNote,
 } from "@/content/careers";
 
-// Careers: open roles in Dubai, the freelance pool (each card says how to apply), the full details as
-// PDFs and the safeguarding note. All content (and each role's
+// Careers: open roles in Dubai and the freelance pool (each card opens a pop-out with the full
+// description and how to apply; see RoleList), the full details as PDFs and the safeguarding note. All content (and each role's
 // published flag) is in src/content/careers.ts. Linked from the footer (Company). Ends with the
 // footer (no demo band; see layout.tsx).
 export const metadata: Metadata = {
@@ -73,11 +73,7 @@ export default function CareersPage() {
         <Container>
           <p className={EYEBROW}>{openRolesSection.eyebrow}</p>
           <h2 className={`mt-eyebrow ${H2}`}>{openRolesSection.heading}</h2>
-          <ol className="mt-content grid list-none grid-cols-1 gap-5 p-0 lg:grid-cols-3">
-            {roles.map((role, i) => (
-              <RoleCard key={role.id} role={role} number={i + 1} />
-            ))}
-          </ol>
+          <RoleList roles={roles} numbered className="mt-content grid grid-cols-1 gap-5 lg:grid-cols-3" />
         </Container>
       </section>
 
@@ -90,11 +86,7 @@ export default function CareersPage() {
               <h2 className={`mt-eyebrow ${H2}`}>{freelanceSection.heading}</h2>
               <p className={`mt-lead max-w-[520px] ${BODY} text-ink/75`}>{freelanceSection.intro}</p>
             </div>
-            <ol className="grid list-none grid-cols-1 gap-5 p-0">
-              {freelance.map((role, i) => (
-                <RoleCard key={role.id} role={role} number={i + 1} />
-              ))}
-            </ol>
+            <RoleList roles={freelance} numbered={false} className="grid grid-cols-1 gap-5" />
           </Container>
         </section>
       )}
